@@ -75,6 +75,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			boxShadow: {
+				'soft': '0 2px 20px hsl(25 50% 80% / 0.3)',
+				'card': '0 4px 25px hsl(210 25% 15% / 0.08)',
+				'primary': '0 8px 30px hsl(210 100% 45% / 0.3)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
