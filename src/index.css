@@ -2,41 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Opp Avenue Design System - Peach theme with professional accents */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Peach gradient background */
+    --background: 28 100% 96%;
+    --background-secondary: 25 100% 94%;
+    --foreground: 210 25% 15%;
 
+    /* Card system */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 25% 15%;
+    --card-border: 25 50% 88%;
 
+    /* Popovers */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Professional Blue */
+    --primary: 210 100% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 100% 40%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Soft Peach */
+    --secondary: 25 80% 90%;
+    --secondary-foreground: 210 25% 15%;
+    --secondary-hover: 25 80% 85%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - Vibrant Orange */
+    --accent: 35 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 35 100% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Muted tones */
+    --muted: 25 40% 92%;
+    --muted-foreground: 210 15% 45%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Status colors */
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 50% 45%;
+    --success-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 25 40% 85%;
+    --input: 25 40% 90%;
+    --input-border: 25 60% 80%;
+    --ring: 210 100% 45%;
 
-    --radius: 0.5rem;
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-peach: linear-gradient(135deg, hsl(28 100% 96%), hsl(25 100% 94%));
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 45%), hsl(210 100% 40%));
+    --gradient-accent: linear-gradient(135deg, hsl(35 100% 55%), hsl(35 100% 50%));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 20px hsl(25 50% 80% / 0.3);
+    --shadow-card: 0 4px 25px hsl(210 25% 15% / 0.08);
+    --shadow-primary: 0 8px 30px hsl(210 100% 45% / 0.3);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +130,108 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-background to-background-secondary text-foreground;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /* Floating bubbles animation */
+  .floating-bubbles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, 
+      hsl(25 60% 85% / 0.4), 
+      hsl(35 70% 88% / 0.2)
+    );
+    animation: float-up 8s infinite linear;
+  }
+
+  .bubble:nth-child(odd) {
+    animation-duration: 10s;
+    background: linear-gradient(135deg, 
+      hsl(30 50% 90% / 0.3), 
+      hsl(25 60% 92% / 0.2)
+    );
+  }
+
+  .bubble:nth-child(3n) {
+    animation-duration: 12s;
+    background: linear-gradient(135deg, 
+      hsl(35 40% 88% / 0.25), 
+      hsl(30 50% 90% / 0.15)
+    );
+  }
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Circular menu button with 360° rotation */
+  .circular-menu {
+    @apply relative w-20 h-20 rounded-full flex items-center justify-center;
+    @apply bg-gradient-to-br from-accent to-accent-hover;
+    @apply text-accent-foreground font-semibold text-sm;
+    @apply shadow-lg transition-all duration-500;
+    @apply hover:scale-110 hover:shadow-primary;
+    cursor: pointer;
+  }
+
+  .circular-menu:hover {
+    animation: rotate360 0.8s ease-in-out;
+  }
+
+  @keyframes rotate360 {
+    from { transform: rotate(0deg) scale(1.1); }
+    to { transform: rotate(360deg) scale(1.1); }
+  }
+
+  /* Job card animations */
+  .job-card {
+    @apply bg-card border border-card-border rounded-xl p-6;
+    @apply shadow-card hover:shadow-primary transition-all duration-300;
+    @apply hover:-translate-y-2 hover:scale-[1.02];
+  }
+
+  /* Social sidebar styling */
+  .social-sidebar {
+    @apply fixed left-0 top-0 h-full w-16 bg-card/80 backdrop-blur-sm;
+    @apply border-r border-border shadow-soft z-40;
+    @apply flex flex-col items-center justify-center gap-4;
+  }
+
+  .social-icon {
+    @apply w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary;
+    @apply flex items-center justify-center text-primary hover:text-primary-foreground;
+    @apply transition-all duration-300 hover:scale-110;
+  }
+
+  /* Sticky header */
+  .sticky-header {
+    @apply sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border;
+    @apply shadow-soft;
   }
 }
