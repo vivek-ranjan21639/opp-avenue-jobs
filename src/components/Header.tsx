@@ -25,36 +25,18 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   return (
     <header className="sticky-header">
       <div className="ml-20 px-8 py-4">
-        {/* Logo and Brand */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
+        {/* Top Row: Logo + Search + Menu Buttons */}
+        <div className="flex items-center justify-between gap-6 mb-6">
+          {/* Logo and Brand */}
+          <div className="flex items-center gap-3 flex-shrink-0">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">O</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground">Opp Avenue</h1>
           </div>
 
-          {/* Circular Menu Buttons */}
-          <div className="flex items-center gap-6">
-            <button
-              onClick={onAdvertiseClick}
-              className="circular-menu"
-            >
-              Advertise
-            </button>
-            <button
-              onClick={onCareerClick}
-              className="circular-menu"
-            >
-              Career
-            </button>
-          </div>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="space-y-4">
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative flex-1 max-w-2xl">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input
               type="text"
@@ -73,6 +55,25 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
             </Button>
           </div>
 
+          {/* Circular Menu Buttons */}
+          <div className="flex items-center gap-6 flex-shrink-0">
+            <button
+              onClick={onAdvertiseClick}
+              className="circular-menu"
+            >
+              Advertise
+            </button>
+            <button
+              onClick={onCareerClick}
+              className="circular-menu"
+            >
+              Career
+            </button>
+          </div>
+        </div>
+
+        {/* Filter Buttons Row */}
+        <div className="space-y-4">
           {/* Filter Buttons */}
           <div className="flex flex-wrap gap-3">
             {filterOptions.map((filter, index) => (
