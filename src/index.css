@@ -6,18 +6,18 @@
 
 @layer base {
   :root {
-    /* Peach gradient background */
-    --background: 28 100% 96%;
-    --background-secondary: 25 100% 94%;
+    /* Main background - #f6f1ed */
+    --background: 36 33% 95%;
+    --background-secondary: 36 30% 93%;
     --foreground: 210 25% 15%;
 
-    /* Card system */
-    --card: 0 0% 100%;
+    /* Card system - #faf9f8 */
+    --card: 30 25% 98%;
     --card-foreground: 210 25% 15%;
-    --card-border: 25 50% 88%;
+    --card-border: 36 20% 88%;
 
     /* Popovers */
-    --popover: 0 0% 100%;
+    --popover: 30 25% 98%;
     --popover-foreground: 210 25% 15%;
 
     /* Primary - Professional Blue */
@@ -25,10 +25,10 @@
     --primary-foreground: 0 0% 100%;
     --primary-hover: 210 100% 40%;
 
-    /* Secondary - Soft Peach */
-    --secondary: 25 80% 90%;
+    /* Secondary - Light cream tones */
+    --secondary: 36 25% 92%;
     --secondary-foreground: 210 25% 15%;
-    --secondary-hover: 25 80% 85%;
+    --secondary-hover: 36 25% 88%;
 
     /* Accent - Vibrant Orange */
     --accent: 35 100% 55%;
@@ -36,7 +36,7 @@
     --accent-hover: 35 100% 50%;
 
     /* Muted tones */
-    --muted: 25 40% 92%;
+    --muted: 36 20% 90%;
     --muted-foreground: 210 15% 45%;
 
     /* Status colors */
@@ -46,16 +46,16 @@
     --success-foreground: 0 0% 100%;
 
     /* Borders and inputs */
-    --border: 25 40% 85%;
-    --input: 25 40% 90%;
-    --input-border: 25 60% 80%;
+    --border: 36 25% 85%;
+    --input: 30 25% 96%;
+    --input-border: 36 30% 80%;
     --ring: 210 100% 45%;
 
     /* Radius */
     --radius: 0.75rem;
 
     /* Custom gradients */
-    --gradient-peach: linear-gradient(135deg, hsl(28 100% 96%), hsl(25 100% 94%));
+    --gradient-main: linear-gradient(135deg, hsl(36 33% 95%), hsl(36 30% 93%));
     --gradient-primary: linear-gradient(135deg, hsl(210 100% 45%), hsl(210 100% 40%));
     --gradient-accent: linear-gradient(135deg, hsl(35 100% 55%), hsl(35 100% 50%));
 
@@ -146,8 +146,8 @@
     position: absolute;
     border-radius: 50%;
     background: linear-gradient(135deg, 
-      hsl(25 60% 85% / 0.4), 
-      hsl(35 70% 88% / 0.2)
+      hsl(36 30% 85% / 0.4), 
+      hsl(36 25% 88% / 0.2)
     );
     animation: float-up 8s infinite linear;
   }
@@ -155,16 +155,16 @@
   .bubble:nth-child(odd) {
     animation-duration: 10s;
     background: linear-gradient(135deg, 
-      hsl(30 50% 90% / 0.3), 
-      hsl(25 60% 92% / 0.2)
+      hsl(36 25% 90% / 0.3), 
+      hsl(36 20% 92% / 0.2)
     );
   }
 
   .bubble:nth-child(3n) {
     animation-duration: 12s;
     background: linear-gradient(135deg, 
-      hsl(35 40% 88% / 0.25), 
-      hsl(30 50% 90% / 0.15)
+      hsl(36 20% 88% / 0.25), 
+      hsl(36 25% 90% / 0.15)
     );
   }
 
