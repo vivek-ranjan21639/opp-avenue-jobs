@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,22 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 50;
+      setIsScrolled(scrolled);
+      if (scrolled) {
+        setShowFilters(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const filterOptions = [
     { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
@@ -36,15 +50,27 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
           </div>
 
           {/* Search Bar */}
-          <div className="relative flex-1 max-w-2xl">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input
-              type="text"
-              placeholder="Search for jobs, companies, or skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 text-lg bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
-            />
+          <div className={`relative flex items-center gap-3 ${isScrolled ? 'flex-1 max-w-lg' : 'flex-1 max-w-2xl'}`}>
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search for jobs, companies, or skills..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-14 text-lg bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
+              />
+            </div>
+            {isScrolled && (
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                variant="outline"
+                size="sm"
+                className="h-12 w-12 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
+              >
+                <Filter className="w-5 h-5" />
+              </Button>
+            )}
           </div>
 
           {/* Circular Menu Buttons */}
@@ -65,31 +91,33 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
         </div>
 
         {/* Filter Buttons Row */}
-        <div className="space-y-4">
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-3 items-center justify-center">
-            {filterOptions.map((filter, index) => (
+        {(!isScrolled || showFilters) && (
+          <div className="space-y-4">
+            {/* Filter Buttons */}
+            <div className="flex flex-wrap gap-3 items-center justify-center">
+              {filterOptions.map((filter, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  className="h-10 px-4 rounded-full border-input-border hover:bg-secondary hover:border-primary text-muted-foreground hover:text-foreground"
+                >
+                  <filter.icon className="w-4 h-4 mr-2" />
+                  {filter.label}
+                </Button>
+              ))}
               <Button
-                key={index}
-                variant="outline"
+                onClick={() => console.log('Applying filters...')}
+                variant="default"
                 size="sm"
-                className="h-10 px-4 rounded-full border-input-border hover:bg-secondary hover:border-primary text-muted-foreground hover:text-foreground"
+                className="h-10 px-4 rounded-full ml-2"
               >
-                <filter.icon className="w-4 h-4 mr-2" />
-                {filter.label}
+                <Filter className="w-4 h-4 mr-2" />
+                Apply Filters
               </Button>
-            ))}
-            <Button
-              onClick={() => console.log('Applying filters...')}
-              variant="default"
-              size="sm"
-              className="h-10 px-4 rounded-full ml-2"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Apply Filters
-            </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </header>
   );
