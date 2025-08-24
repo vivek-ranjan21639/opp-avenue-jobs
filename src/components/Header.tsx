@@ -43,16 +43,8 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
               placeholder="Search for jobs, companies, or skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-16 h-14 text-lg bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
+              className="pl-12 h-14 text-lg bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
             />
-            <Button
-              onClick={() => setShowFilters(!showFilters)}
-              variant="outline"
-              size="icon"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-lg border-input-border hover:bg-secondary"
-            >
-              <Filter className="w-5 h-5" />
-            </Button>
           </div>
 
           {/* Circular Menu Buttons */}
@@ -75,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
         {/* Filter Buttons Row */}
         <div className="space-y-4">
           {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 items-center">
             {filterOptions.map((filter, index) => (
               <Button
                 key={index}
@@ -87,6 +79,15 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
                 {filter.label}
               </Button>
             ))}
+            <Button
+              onClick={() => console.log('Applying filters...')}
+              variant="default"
+              size="sm"
+              className="h-10 px-4 rounded-full ml-2"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Apply Filters
+            </Button>
           </div>
 
           {/* Active Filters Display */}

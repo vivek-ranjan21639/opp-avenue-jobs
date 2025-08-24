@@ -185,23 +185,14 @@
     }
   }
 
-  /* Circular menu button with 360° rotation */
+  /* Circular menu button */
   .circular-menu {
     @apply relative w-20 h-20 rounded-full flex items-center justify-center;
     @apply bg-gradient-to-br from-accent to-accent-hover;
     @apply text-accent-foreground font-semibold text-sm;
-    @apply shadow-lg transition-all duration-500;
+    @apply shadow-lg transition-all duration-300;
     @apply hover:scale-110 hover:shadow-primary;
     cursor: pointer;
-  }
-
-  .circular-menu:hover {
-    animation: rotate360 0.8s ease-in-out;
-  }
-
-  @keyframes rotate360 {
-    from { transform: rotate(0deg) scale(1.1); }
-    to { transform: rotate(360deg) scale(1.1); }
   }
 
   /* Job card animations */
