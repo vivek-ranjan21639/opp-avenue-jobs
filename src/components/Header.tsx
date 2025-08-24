@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
         {/* Filter Buttons Row */}
         <div className="space-y-4">
           {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-3 items-center">
+          <div className="flex flex-wrap gap-3 items-center justify-center">
             {filterOptions.map((filter, index) => (
               <Button
                 key={index}
@@ -88,16 +88,6 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
               <Filter className="w-4 h-4 mr-2" />
               Apply Filters
             </Button>
-          </div>
-
-          {/* Active Filters Display */}
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary" className="px-3 py-1 rounded-full">
-              Remote
-            </Badge>
-            <Badge variant="secondary" className="px-3 py-1 rounded-full">
-              Full-time
-            </Badge>
           </div>
         </div>
       </div>

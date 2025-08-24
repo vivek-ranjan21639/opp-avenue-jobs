@@ -187,11 +187,12 @@
 
   /* Circular menu button */
   .circular-menu {
-    @apply relative w-20 h-20 rounded-full flex items-center justify-center;
-    @apply bg-gradient-to-br from-accent to-accent-hover;
-    @apply text-accent-foreground font-semibold text-sm;
-    @apply shadow-lg transition-all duration-300;
-    @apply hover:scale-110 hover:shadow-primary;
+    @apply relative w-16 h-16 rounded-full flex items-center justify-center;
+    @apply bg-muted/60 hover:bg-muted;
+    @apply text-muted-foreground hover:text-foreground font-medium text-sm;
+    @apply border border-border/50 hover:border-border;
+    @apply shadow-sm hover:shadow-md transition-all duration-300;
+    @apply hover:scale-105;
     cursor: pointer;
   }
 
