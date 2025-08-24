@@ -15,27 +15,26 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    let ticking = false;
+    let timeoutId: NodeJS.Timeout;
     
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrolled = window.scrollY > 100;
-          if (scrolled !== isScrolled) {
-            setIsScrolled(scrolled);
-            if (scrolled) {
-              setShowFilters(false);
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        const scrolled = window.scrollY > 150;
+        setIsScrolled(scrolled);
+        if (scrolled && showFilters) {
+          setShowFilters(false);
+        }
+      }, 10);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isScrolled]);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, [showFilters]);
 
   const filterOptions = [
     { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
