@@ -187,13 +187,28 @@
 
   /* Circular menu button */
   .circular-menu {
-    @apply relative w-16 h-16 rounded-full flex items-center justify-center;
+    @apply relative w-20 h-20 rounded-full flex items-center justify-center;
     @apply bg-muted/60 hover:bg-muted;
     @apply text-muted-foreground hover:text-foreground font-medium text-sm;
     @apply border border-border/50 hover:border-border;
     @apply shadow-sm hover:shadow-md transition-all duration-300;
     @apply hover:scale-105;
     cursor: pointer;
+  }
+
+  /* Advertise button animation */
+  .advertise-pulse {
+    animation: advertise-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes advertise-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px hsl(var(--accent) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px hsl(var(--accent) / 0.6), 0 0 30px hsl(var(--accent) / 0.4);
+      transform: scale(1.05);
+    }
   }
 
   /* Job card animations */

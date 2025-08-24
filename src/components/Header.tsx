@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
           <div className="flex items-center gap-6 flex-shrink-0">
             <button
               onClick={onAdvertiseClick}
-              className="circular-menu"
+              className="circular-menu advertise-pulse"
             >
               Advertise
             </button>
