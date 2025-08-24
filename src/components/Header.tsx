@@ -15,17 +15,27 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      const scrolled = window.scrollY > 50;
-      setIsScrolled(scrolled);
-      if (scrolled) {
-        setShowFilters(false);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 100;
+          if (scrolled !== isScrolled) {
+            setIsScrolled(scrolled);
+            if (scrolled) {
+              setShowFilters(false);
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isScrolled]);
 
   const filterOptions = [
     { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
@@ -106,15 +116,17 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
                   {filter.label}
                 </Button>
               ))}
-              <Button
-                onClick={() => console.log('Applying filters...')}
-                variant="default"
-                size="sm"
-                className="h-10 px-4 rounded-full ml-2"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Apply Filters
-              </Button>
+              {showFilters && (
+                <Button
+                  onClick={() => console.log('Applying filters...')}
+                  variant="default"
+                  size="sm"
+                  className="h-10 px-4 rounded-full ml-2"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Apply Filters
+                </Button>
+              )}
             </div>
           </div>
         )}
