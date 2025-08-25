@@ -1,19 +1,17 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import SocialSidebar from '@/components/SocialSidebar';
 import Header from '@/components/Header';
 import JobCard, { Job } from '@/components/JobCard';
-import JobDetailModal from '@/components/JobDetailModal';
-import AdvertisePage from '@/components/AdvertisePage';
 import { getJobsPage } from '@/data/mockJobs';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [showJobDetail, setShowJobDetail] = useState(false);
-  const [showAdvertise, setShowAdvertise] = useState(false);
 
   // Load initial jobs
   useEffect(() => {
@@ -51,12 +49,11 @@ const Index = () => {
   }, [loadMoreJobs]);
 
   const handleJobClick = (job: Job) => {
-    setSelectedJob(job);
-    setShowJobDetail(true);
+    navigate(`/job/${job.id}`);
   };
 
   const handleAdvertiseClick = () => {
-    setShowAdvertise(true);
+    navigate('/advertise');
   };
 
   const handleCareerClick = () => {
@@ -107,21 +104,6 @@ const Index = () => {
           </div>
         </main>
       </div>
-      
-      {/* Modals */}
-      <JobDetailModal 
-        job={selectedJob}
-        isOpen={showJobDetail}
-        onClose={() => {
-          setShowJobDetail(false);
-          setSelectedJob(null);
-        }}
-      />
-      
-      <AdvertisePage 
-        isOpen={showAdvertise}
-        onClose={() => setShowAdvertise(false)}
-      />
     </div>
   );
 };
