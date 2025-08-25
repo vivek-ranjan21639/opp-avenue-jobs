@@ -50,28 +50,28 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   ];
 
   return (
-    <header className="sticky-header">
-      <div className="ml-20 px-8 py-4">
+    <header className="sticky-header border-none">
+      <div className="ml-20 px-8 py-2">
         {/* Top Row: Logo + Search + Menu Buttons */}
-        <div className="flex items-center justify-between gap-6 mb-6">
+        <div className="flex items-center justify-between gap-6 mb-3">
           {/* Logo and Brand */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">O</span>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">O</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Opp Avenue</h1>
+            <h1 className="text-xl font-bold text-foreground">Opp Avenue</h1>
           </div>
 
           {/* Search Bar */}
           <div className={`relative flex items-center gap-3 ${isScrolled ? 'flex-1 max-w-lg' : 'flex-1 max-w-2xl'}`}>
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
                 placeholder="Search for jobs, companies, or skills..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 text-lg bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
+                className="pl-10 h-10 text-sm bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
               />
             </div>
             {isScrolled && (
@@ -79,29 +79,29 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
                 onClick={() => setShowFilters(!showFilters)}
                 variant="outline"
                 size="sm"
-                className="h-12 w-12 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
+                className="h-10 w-10 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
               >
-                <Filter className="w-5 h-5" />
+                <Filter className="w-4 h-4" />
               </Button>
             )}
           </div>
 
           {/* Navigation Menu Buttons */}
-          <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <Button
               onClick={() => navigate('/')}
               variant="outline"
               size="sm"
-              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
+              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary text-sm"
             >
-              <Home className="w-4 h-4 mr-2" />
+              <Home className="w-4 h-4 mr-1" />
               Home
             </Button>
             <Button
               onClick={onAdvertiseClick}
               variant="outline"
               size="sm"
-              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary advertise-pulse"
+              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary advertise-pulse text-sm"
             >
               Advertise
             </Button>
@@ -109,7 +109,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
               onClick={onCareerClick}
               variant="outline"
               size="sm"
-              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
+              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary text-sm"
             >
               Career
             </Button>
@@ -118,17 +118,17 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
 
         {/* Filter Buttons Row */}
         {(!isScrolled || showFilters) && (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-3 items-center justify-center">
+            <div className="flex flex-wrap gap-2 items-center justify-center">
               {filterOptions.map((filter, index) => (
                 <Button
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="h-10 px-4 rounded-full border-input-border hover:bg-secondary hover:border-primary text-muted-foreground hover:text-foreground"
+                  className="h-8 px-3 rounded-full border-input-border hover:bg-secondary hover:border-primary text-muted-foreground hover:text-foreground text-xs"
                 >
-                  <filter.icon className="w-4 h-4 mr-2" />
+                  <filter.icon className="w-3 h-3 mr-1" />
                   {filter.label}
                 </Button>
               ))}
@@ -137,9 +137,9 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
                   onClick={() => console.log('Applying filters...')}
                   variant="default"
                   size="sm"
-                  className="h-10 px-4 rounded-full ml-2"
+                  className="h-8 px-3 rounded-full ml-1 text-xs"
                 >
-                  <Filter className="w-4 h-4 mr-2" />
+                  <Filter className="w-3 h-3 mr-1" />
                   Apply Filters
                 </Button>
               )}

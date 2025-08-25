@@ -222,7 +222,7 @@
   /* Social sidebar styling */
   .social-sidebar {
     @apply fixed left-0 top-0 h-full w-16 bg-background/95 backdrop-blur-sm;
-    @apply border-r border-border shadow-soft z-40;
+    @apply shadow-none z-40;
     @apply flex flex-col items-center justify-center gap-4;
   }
 
@@ -234,7 +234,7 @@
 
   /* Sticky header */
   .sticky-header {
-    @apply sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border;
-    @apply shadow-soft;
+    @apply sticky top-0 z-30 bg-background/95 backdrop-blur-md;
+    @apply shadow-none;
   }
 }
