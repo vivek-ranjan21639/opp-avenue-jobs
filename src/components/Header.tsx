@@ -88,17 +88,15 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
 
           {/* Navigation Menu Buttons */}
           <div className="flex items-center gap-4 flex-shrink-0">
-            {!isHomePage && (
-              <Button
-                onClick={() => navigate('/')}
-                variant="outline"
-                size="sm"
-                className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Home
-              </Button>
-            )}
+            <Button
+              onClick={() => navigate('/')}
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Home
+            </Button>
             <Button
               onClick={onAdvertiseClick}
               variant="outline"
