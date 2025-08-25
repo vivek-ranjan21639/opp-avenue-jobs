@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface HeaderProps {
   onAdvertiseClick: () => void;
@@ -13,6 +14,9 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   const [showFilters, setShowFilters] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -82,20 +86,35 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
             )}
           </div>
 
-          {/* Circular Menu Buttons */}
-          <div className="flex items-center gap-6 flex-shrink-0">
-            <button
+          {/* Navigation Menu Buttons */}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {!isHomePage && (
+              <Button
+                onClick={() => navigate('/')}
+                variant="outline"
+                size="sm"
+                className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Home
+              </Button>
+            )}
+            <Button
               onClick={onAdvertiseClick}
-              className="circular-menu advertise-pulse"
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary advertise-pulse"
             >
               Advertise
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={onCareerClick}
-              className="circular-menu"
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 rounded-lg border-input-border hover:bg-secondary hover:border-primary"
             >
               Career
-            </button>
+            </Button>
           </div>
         </div>
 
