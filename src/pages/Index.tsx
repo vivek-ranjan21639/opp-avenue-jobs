@@ -36,15 +36,17 @@ const Index = () => {
   // Scroll event listener for infinite scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >= 
-        document.documentElement.offsetHeight - 1000
-      ) {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+      
+      // Trigger when user is 1000px from bottom
+      if (scrollTop + clientHeight >= scrollHeight - 1000) {
         loadMoreJobs();
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreJobs]);
 
