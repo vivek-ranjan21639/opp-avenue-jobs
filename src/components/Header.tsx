@@ -80,10 +80,10 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
             </div>
             {isScrolled && (
               <Button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => setShowFilters(prev => !prev)}
                 variant="outline"
                 size="sm"
-                className="h-10 w-10 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
+                className="h-8 w-8 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
               >
                 <Filter className="w-4 h-4" />
               </Button>
