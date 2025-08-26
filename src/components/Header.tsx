@@ -27,8 +27,12 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
       timeoutId = setTimeout(() => {
         const scrolled = window.scrollY > 150;
         setIsScrolled(scrolled);
+        
         if (scrolled && showFilters) {
           setShowFilters(false);
+        } else if (!scrolled && !showFilters) {
+          // Reset filters to show when scrolling back to top
+          setShowFilters(true);
         }
       }, 10);
     };
