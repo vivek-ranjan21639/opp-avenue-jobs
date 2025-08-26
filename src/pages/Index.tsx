@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowUp } from 'lucide-react';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import SocialSidebar from '@/components/SocialSidebar';
 import Header from '@/components/Header';
 import JobCard, { Job } from '@/components/JobCard';
+import { Button } from '@/components/ui/button';
 import { getJobsPage } from '@/data/mockJobs';
 
 const Index = () => {
@@ -12,6 +14,7 @@ const Index = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Load initial jobs
   useEffect(() => {
@@ -33,14 +36,17 @@ const Index = () => {
     }, 1000); // Simulate API delay
   }, [currentPage, loading]);
 
-  // Scroll event listener for infinite scroll
+  // Scroll event listener for infinite scroll and scroll-to-top button
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = window.innerHeight;
       
-      // Trigger when user is 1000px from bottom
+      // Show scroll-to-top button when scrolled down 300px
+      setShowScrollTop(scrollTop > 300);
+      
+      // Trigger infinite scroll when user is 1000px from bottom
       if (scrollTop + clientHeight >= scrollHeight - 1000) {
         loadMoreJobs();
       }
@@ -49,6 +55,13 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreJobs]);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const handleJobClick = (job: Job) => {
     navigate(`/job/${job.id}`);
@@ -106,6 +119,24 @@ const Index = () => {
           </div>
         </main>
       </div>
+      
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <Button
+          onClick={scrollToTop}
+          size="sm"
+          className={`
+            fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50
+            h-10 w-10 rounded-full shadow-lg
+            bg-primary hover:bg-primary-hover
+            transition-all duration-300 ease-out
+            animate-fade-in hover:scale-110
+          `}
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 };
