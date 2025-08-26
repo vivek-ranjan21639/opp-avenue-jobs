@@ -5,25 +5,25 @@ const SocialSidebar: React.FC = () => {
   const socialLinks = [
     {
       icon: Linkedin,
-      href: '#',
+      href: 'https://www.linkedin.com/company/your-company', // Replace with your LinkedIn
       label: 'LinkedIn',
       color: 'text-blue-600'
     },
     {
       icon: MessageCircle,
-      href: '#',
+      href: 'https://wa.me/1234567890', // Replace with your WhatsApp number
       label: 'WhatsApp',
       color: 'text-green-600'
     },
     {
       icon: Phone,
-      href: '#',
+      href: 'tel:+1234567890', // Replace with your phone number
       label: 'Call Us',
       color: 'text-purple-600'
     },
     {
       icon: Mail,
-      href: '#',
+      href: 'mailto:contact@example.com', // Replace with your email
       label: 'Email',
       color: 'text-red-600'
     }
@@ -35,6 +35,8 @@ const SocialSidebar: React.FC = () => {
         <a
           key={index}
           href={link.href}
+          target={link.href.startsWith('http') ? '_blank' : '_self'}
+          rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
           className="social-icon group"
           title={link.label}
         >
