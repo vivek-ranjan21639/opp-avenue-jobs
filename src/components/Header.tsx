@@ -14,6 +14,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
   const [showFilters, setShowFilters] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [manualToggle, setManualToggle] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -28,11 +29,18 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
         const scrolled = window.scrollY > 150;
         setIsScrolled(scrolled);
         
-        if (scrolled && showFilters) {
-          setShowFilters(false);
-        } else if (!scrolled && !showFilters) {
-          // Reset filters to show when scrolling back to top
-          setShowFilters(true);
+        // Only auto-hide/show filters if user hasn't manually toggled them
+        if (!manualToggle) {
+          if (scrolled && showFilters) {
+            setShowFilters(false);
+          } else if (!scrolled && !showFilters) {
+            setShowFilters(true);
+          }
+        }
+        
+        // Reset manual toggle flag when scrolling back to top
+        if (!scrolled && manualToggle) {
+          setManualToggle(false);
         }
       }, 10);
     };
@@ -42,7 +50,12 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(timeoutId);
     };
-  }, [showFilters]);
+  }, [showFilters, manualToggle]);
+
+  const handleFilterToggle = () => {
+    setManualToggle(true);
+    setShowFilters(prev => !prev);
+  };
 
   const filterOptions = [
     { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
@@ -80,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
             </div>
             {isScrolled && (
               <Button
-                onClick={() => setShowFilters(prev => !prev)}
+                onClick={handleFilterToggle}
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
