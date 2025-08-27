@@ -214,9 +214,10 @@
 
   /* Job card animations */
   .job-card {
-    @apply bg-card border border-card-border rounded-xl p-4 max-w-sm mx-auto;
+    @apply bg-card border border-card-border rounded-xl p-4 mx-auto;
     @apply shadow-card hover:shadow-primary transition-all duration-300;
     @apply hover:-translate-y-2 hover:scale-[1.02];
+    max-width: 380px;
   }
 
   /* Social sidebar styling */
