@@ -217,6 +217,7 @@
     @apply bg-card border border-card-border rounded-xl p-3;
     @apply shadow-card hover:shadow-primary transition-all duration-300;
     @apply hover:-translate-y-2 hover:scale-[1.02];
+    width: 320px;
     min-height: 210px;
     max-height: 210px;
     display: flex;
