@@ -94,9 +94,9 @@ const Index = () => {
         
         {/* Job Listings */}
         <main className="ml-20 px-8 py-8">
-          <div className="max-w-[976px] mx-auto">
+          <div className="max-w-[1008px] mx-auto">
             {/* Job Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
               {jobs.map((job, index) => (
                 <JobCard 
                   key={job.id} 
