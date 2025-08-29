@@ -52,8 +52,26 @@ const Index = () => {
       }
     };
 
+    const handleResize = () => {
+      // Force scroll check after resize to ensure proper calculations
+      setTimeout(handleScroll, 100);
+    };
+
+    // Initial scroll check after content loads
+    const initialCheck = () => {
+      setTimeout(handleScroll, 100);
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize, { passive: true });
+    
+    // Force initial scroll check to handle cases where content is already below fold
+    initialCheck();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [loadMoreJobs]);
 
   const scrollToTop = () => {
