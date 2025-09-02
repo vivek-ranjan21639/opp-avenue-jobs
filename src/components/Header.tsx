@@ -108,18 +108,19 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
               onClick={() => navigate('/')}
               variant="outline"
               size="sm"
-              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary text-sm"
+              className="h-9 px-3 rounded-lg bg-card text-card-foreground border-border hover:bg-secondary hover:border-primary text-sm shadow-sm"
             >
               <Home className="w-4 h-4 mr-1" />
-              Home
+              <span className="hidden sm:inline">Home</span>
             </Button>
             <Button
               onClick={onAdvertiseClick}
               variant="outline"
               size="sm"
-              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary advertise-pulse text-sm"
+              className="h-9 px-3 rounded-lg bg-primary text-primary-foreground border-primary hover:bg-primary-hover advertise-pulse text-sm shadow-sm"
             >
-              Advertise
+              <span className="hidden sm:inline">Advertise</span>
+              <span className="sm:hidden">Ad</span>
             </Button>
           </div>
         </div>
