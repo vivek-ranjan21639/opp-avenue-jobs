@@ -69,13 +69,13 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
     <header className="sticky-header border-none">
       <div className="ml-20 px-8 py-2">
         {/* Top Row: Logo + Menu Buttons (Search hidden on mobile) */}
-        <div className="flex items-center justify-between gap-6 mb-3">
+        <div className="flex items-center justify-between gap-4 mb-3">
           {/* Logo and Brand */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">O</span>
             </div>
-            <h1 className="text-xl font-bold text-foreground">Opp Avenue</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">Opp Avenue</h1>
           </div>
 
           {/* Search Bar - Desktop Only */}
@@ -103,24 +103,22 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
           </div>
 
           {/* Navigation Menu Buttons */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               onClick={() => navigate('/')}
               variant="outline"
               size="sm"
-              className="h-9 px-3 rounded-lg bg-card text-card-foreground border-border hover:bg-secondary hover:border-primary text-sm shadow-sm"
+              className="h-9 px-2 sm:px-3 rounded-lg bg-card text-card-foreground border-border hover:bg-secondary hover:border-primary text-sm shadow-sm"
             >
-              <Home className="w-4 h-4 mr-1" />
+              <Home className="w-4 h-4 sm:mr-1" />
               <span className="hidden sm:inline">Home</span>
             </Button>
             <Button
               onClick={onAdvertiseClick}
-              variant="outline"
               size="sm"
-              className="h-9 px-3 rounded-lg bg-primary text-primary-foreground border-primary hover:bg-primary-hover advertise-pulse text-sm shadow-sm"
+              className="h-9 px-2 sm:px-3 rounded-lg bg-gradient-to-r from-accent to-accent-hover text-accent-foreground hover:from-accent-hover hover:to-accent border-0 advertise-pulse text-sm shadow-lg font-medium"
             >
-              <span className="hidden sm:inline">Advertise</span>
-              <span className="sm:hidden">Ad</span>
+              <span className="text-xs sm:text-sm">Advertise</span>
             </Button>
           </div>
         </div>
