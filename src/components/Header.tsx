@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
   return (
     <header className="sticky-header border-none">
       <div className="ml-20 px-8 py-2">
-        {/* Top Row: Logo + Search + Menu Buttons */}
+        {/* Top Row: Logo + Menu Buttons (Search hidden on mobile) */}
         <div className="flex items-center justify-between gap-6 mb-3">
           {/* Logo and Brand */}
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -78,8 +78,8 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
             <h1 className="text-xl font-bold text-foreground">Opp Avenue</h1>
           </div>
 
-          {/* Search Bar */}
-          <div className={`relative flex items-center gap-3 ${isScrolled ? 'flex-1 max-w-lg' : 'flex-1 max-w-2xl'}`}>
+          {/* Search Bar - Desktop Only */}
+          <div className={`relative items-center gap-3 hidden md:flex ${isScrolled ? 'flex-1 max-w-lg' : 'flex-1 max-w-2xl'}`}>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -122,6 +122,28 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
               Advertise
             </Button>
           </div>
+        </div>
+
+        {/* Mobile Search Bar - Below Title */}
+        <div className="flex md:hidden items-center gap-3 mb-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="Search for jobs, companies, or skills..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-10 text-sm bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
+            />
+          </div>
+          <Button
+            onClick={handleFilterToggle}
+            variant="outline"
+            size="sm"
+            className="h-10 w-10 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
+          >
+            <Filter className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Filter Buttons Row */}
