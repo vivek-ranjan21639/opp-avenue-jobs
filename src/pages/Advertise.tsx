@@ -26,7 +26,6 @@ const Advertise = () => {
       <div className="relative z-10">
         <Header 
           onAdvertiseClick={() => {}} // Already on advertise page
-          onCareerClick={() => console.log('Career clicked')}
         />
         
         <main className="ml-20 px-8 py-8">

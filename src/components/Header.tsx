@@ -7,10 +7,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 interface HeaderProps {
   onAdvertiseClick: () => void;
-  onCareerClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
+const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
   const [showFilters, setShowFilters] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -121,14 +120,6 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick, onCareerClick }) => {
               className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary advertise-pulse text-sm"
             >
               Advertise
-            </Button>
-            <Button
-              onClick={onCareerClick}
-              variant="outline"
-              size="sm"
-              className="h-9 px-3 rounded-lg border-input-border hover:bg-secondary hover:border-primary text-sm"
-            >
-              Career
             </Button>
           </div>
         </div>

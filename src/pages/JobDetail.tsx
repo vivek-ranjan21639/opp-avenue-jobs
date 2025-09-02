@@ -23,7 +23,6 @@ const JobDetail = () => {
         <div className="relative z-10">
           <Header 
             onAdvertiseClick={() => navigate('/advertise')}
-            onCareerClick={() => console.log('Career clicked')}
           />
           <main className="ml-20 px-8 py-8">
             <div className="max-w-4xl mx-auto text-center">
@@ -47,7 +46,6 @@ const JobDetail = () => {
       <div className="relative z-10">
         <Header 
           onAdvertiseClick={() => navigate('/advertise')}
-          onCareerClick={() => console.log('Career clicked')}
         />
         
         <main className="ml-20 px-8 py-8">

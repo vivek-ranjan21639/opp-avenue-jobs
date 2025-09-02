@@ -89,10 +89,6 @@ const Index = () => {
     navigate('/advertise');
   };
 
-  const handleCareerClick = () => {
-    // Navigate to career page or show career modal
-    console.log('Career clicked');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
@@ -107,7 +103,6 @@ const Index = () => {
         {/* Header */}
         <Header 
           onAdvertiseClick={handleAdvertiseClick}
-          onCareerClick={handleCareerClick}
         />
         
         {/* Job Listings */}
