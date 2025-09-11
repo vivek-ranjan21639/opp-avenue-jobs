@@ -94,6 +94,22 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
 
   return (
     <header className="sticky-header border-none">
+      {/* Social Media Links - Mobile Top */}
+      <div className="flex justify-center gap-3 py-2 md:hidden border-b border-border/20">
+        {socialLinks.map((link, index) => (
+          <a
+            key={index}
+            href={link.href}
+            target={link.href.startsWith('http') ? '_blank' : '_self'}
+            rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
+            title={link.label}
+          >
+            <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+          </a>
+        ))}
+      </div>
+
       <div className="ml-20 px-8 py-2">
         {/* Top Row: Logo + Menu Buttons (Search hidden on mobile) */}
         <div className="flex items-center justify-between gap-4 mb-3">
@@ -188,21 +204,6 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
           </Button>
         </div>
 
-        {/* Social Media Links */}
-        <div className="flex justify-center gap-3 mb-3 md:hidden">
-          {socialLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              target={link.href.startsWith('http') ? '_blank' : '_self'}
-              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
-              title={link.label}
-            >
-              <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
-            </a>
-          ))}
-        </div>
 
         {/* Filter Buttons Row */}
         {(!isScrolled || showFilters) && (
