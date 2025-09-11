@@ -110,7 +110,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
         ))}
       </div>
 
-      <div className="ml-20 px-8 py-2">
+      <div className="px-8 py-2">
         {/* Top Row: Logo + Menu Buttons (Search hidden on mobile) */}
         <div className="flex items-center justify-between gap-4 mb-3">
           {/* Logo and Brand */}
