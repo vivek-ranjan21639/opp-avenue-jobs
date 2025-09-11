@@ -214,12 +214,11 @@
 
   /* Job card animations */
   .job-card {
-    @apply bg-card border border-card-border rounded-xl p-3;
+    @apply bg-card border border-card-border rounded-xl p-4;
     @apply shadow-card hover:shadow-primary transition-all duration-300;
     @apply hover:-translate-y-2 hover:scale-[1.02];
     @apply w-full;
-    min-height: 210px;
-    max-height: 210px;
+    min-height: 280px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
