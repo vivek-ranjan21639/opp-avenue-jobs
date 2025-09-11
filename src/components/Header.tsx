@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -56,6 +56,33 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
     setShowFilters(prev => !prev);
   };
 
+  const socialLinks = [
+    {
+      icon: Linkedin,
+      href: 'https://www.linkedin.com/company/your-company',
+      label: 'LinkedIn',
+      color: 'text-blue-600'
+    },
+    {
+      icon: MessageCircle,
+      href: 'https://wa.me/1234567890',
+      label: 'WhatsApp',
+      color: 'text-green-600'
+    },
+    {
+      icon: Phone,
+      href: 'tel:+1234567890',
+      label: 'Call Us',
+      color: 'text-purple-600'
+    },
+    {
+      icon: Mail,
+      href: 'mailto:contact@example.com',
+      label: 'Email',
+      color: 'text-red-600'
+    }
+  ];
+
   const filterOptions = [
     { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
     { icon: Briefcase, label: 'Job Type', options: ['Full-time', 'Part-time', 'Contract', 'Internship'] },
@@ -102,6 +129,22 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
             )}
           </div>
 
+          {/* Social Media Links - Desktop Only */}
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+            {socialLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                target={link.href.startsWith('http') ? '_blank' : '_self'}
+                rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
+                title={link.label}
+              >
+                <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+              </a>
+            ))}
+          </div>
+
           {/* Navigation Menu Buttons */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button
@@ -143,6 +186,22 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
           >
             <Filter className="w-4 h-4" />
           </Button>
+        </div>
+
+        {/* Social Media Links */}
+        <div className="flex justify-center gap-3 mb-3 md:hidden">
+          {socialLinks.map((link, index) => (
+            <a
+              key={index}
+              href={link.href}
+              target={link.href.startsWith('http') ? '_blank' : '_self'}
+              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
+              title={link.label}
+            >
+              <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+            </a>
+          ))}
         </div>
 
         {/* Filter Buttons Row */}

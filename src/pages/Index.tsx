@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 import FloatingBubbles from '@/components/FloatingBubbles';
-import SocialSidebar from '@/components/SocialSidebar';
+
 import Header from '@/components/Header';
 import JobCard, { Job } from '@/components/JobCard';
 import { Button } from '@/components/ui/button';
@@ -95,8 +95,6 @@ const Index = () => {
       {/* Floating Bubbles Background */}
       <FloatingBubbles />
       
-      {/* Social Sidebar */}
-      <SocialSidebar />
       
       {/* Main Content */}
       <div className="relative z-10">
