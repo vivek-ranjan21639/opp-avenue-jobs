@@ -5,7 +5,7 @@ import { ArrowLeft, MapPin, Clock, DollarSign, Building, Users, Calendar, Extern
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
-import SocialSidebar from '@/components/SocialSidebar';
+
 import FloatingBubbles from '@/components/FloatingBubbles';
 import { mockJobs } from '@/data/mockJobs';
 
@@ -19,12 +19,11 @@ const JobDetail = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
         <FloatingBubbles />
-        <SocialSidebar />
         <div className="relative z-10">
           <Header 
             onAdvertiseClick={() => navigate('/advertise')}
           />
-          <main className="ml-20 px-8 py-8">
+          <main className="px-8 py-8">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-2xl font-bold mb-4">Job Not Found</h1>
               <Button onClick={() => navigate('/')} className="rounded-full">
@@ -41,14 +40,14 @@ const JobDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
       <FloatingBubbles />
-      <SocialSidebar />
+      
       
       <div className="relative z-10">
         <Header 
           onAdvertiseClick={() => navigate('/advertise')}
         />
         
-        <main className="ml-20 px-8 py-8">
+        <main className="px-8 py-8">
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
             <Button 
