@@ -13,7 +13,8 @@ const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
   
-  const job = mockJobs.find(j => j.id === jobId);
+  const normalizedId = (jobId || '').split('-page-')[0];
+  const job = mockJobs.find(j => j.id === normalizedId);
   
   if (!job) {
     return (
