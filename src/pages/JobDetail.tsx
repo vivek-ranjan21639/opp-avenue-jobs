@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, DollarSign, Building, Users, Calendar, ExternalLink } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, DollarSign, Building, Users, Calendar, ExternalLink, Mail, Phone, Globe, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
@@ -23,7 +23,7 @@ const JobDetail = () => {
           <Header 
             onAdvertiseClick={() => navigate('/advertise')}
           />
-          <main className="px-8 py-8">
+          <main className="px-4 md:px-8 py-8">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-2xl font-bold mb-4">Job Not Found</h1>
               <Button onClick={() => navigate('/')} className="rounded-full">
@@ -47,7 +47,7 @@ const JobDetail = () => {
           onAdvertiseClick={() => navigate('/advertise')}
         />
         
-        <main className="px-8 py-8">
+        <main className="px-4 md:px-8 py-8">
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
             <Button 
@@ -113,15 +113,24 @@ const JobDetail = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-4">
-                <Button className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-2 rounded-full font-medium">
-                  Apply Now
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <Button 
+                  onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  Apply via Email
                 </Button>
-                <Button variant="outline" className="rounded-full">
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                <Button 
+                  onClick={() => window.open(`https://www.${job.company.toLowerCase().replace(/\s+/g, '')}.com/careers`, '_blank')}
+                  variant="outline" 
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
                   View Company
                 </Button>
-                <Button variant="outline" className="rounded-full">
+                <Button variant="outline" className="rounded-full flex items-center justify-center gap-2">
+                  <Calendar className="w-4 h-4" />
                   Save Job
                 </Button>
               </div>
@@ -224,17 +233,44 @@ const JobDetail = () => {
             </div>
 
             {/* Application Process */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+            <div className="bg-card rounded-2xl shadow-primary p-4 sm:p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-card-foreground">How to Apply</h2>
               <div className="space-y-4 text-muted-foreground">
+                <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
+                  <h3 className="font-semibold text-card-foreground mb-3 flex items-center gap-2">
+                    <Send className="w-5 h-5" />
+                    Quick Apply Options:
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Button 
+                      onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                      variant="outline" 
+                      className="w-full justify-center gap-2"
+                    >
+                      <Mail className="w-4 h-4" />
+                      Apply via Email
+                    </Button>
+                    <Button 
+                      onClick={() => window.open('tel:+1-800-CAREERS', '_blank')}
+                      variant="outline" 
+                      className="w-full justify-center gap-2"
+                    >
+                      <Phone className="w-4 h-4" />
+                      Call HR: +1-800-CAREERS
+                    </Button>
+                  </div>
+                </div>
+                
                 <div>
                   <h3 className="font-semibold text-card-foreground mb-2">Application Steps:</h3>
-                  <ol className="space-y-2 list-decimal list-inside">
-                    <li>Submit your application through our online portal</li>
-                    <li>Initial screening and review of your profile</li>
-                    <li>Technical assessment or coding challenge</li>
-                    <li>Virtual or in-person interviews with the team</li>
-                    <li>Final decision and offer discussion</li>
+                  <ol className="space-y-2 list-decimal list-inside text-sm">
+                    <li>Click "Apply via Email" above or send your resume to hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com</li>
+                    <li>Include "Application for {job.title} Position" in the subject line</li>
+                    <li>Attach your resume, cover letter, and portfolio (if applicable)</li>
+                    <li>Wait for initial screening and review (2-3 business days)</li>
+                    <li>Complete technical assessment or coding challenge if invited</li>
+                    <li>Participate in virtual or in-person interviews with the team</li>
+                    <li>Receive final decision and discuss offer details</li>
                   </ol>
                 </div>
                 <div>
@@ -312,19 +348,38 @@ const JobDetail = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-card rounded-2xl shadow-primary p-6">
+            <div className="bg-card rounded-2xl shadow-primary p-4 sm:p-6">
               <h2 className="text-xl font-semibold mb-4 text-card-foreground">Contact Information</h2>
-              <div className="space-y-3 text-muted-foreground">
-                <p>Have questions about this position? Get in touch with our recruitment team:</p>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Building className="w-4 h-4" />
-                    <span>HR Department - {job.company}</span>
+              <div className="space-y-4 text-muted-foreground">
+                <p className="text-sm sm:text-base">Have questions about this position? Get in touch with our recruitment team:</p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="w-4 h-4 text-primary" />
+                      <span>hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Phone className="w-4 h-4 text-primary" />
+                      <span>+1-800-CAREERS</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>Response time: Within 5-7 business days</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Globe className="w-4 h-4 text-primary" />
+                      <span>www.{job.company.toLowerCase().replace(/\s+/g, '')}.com/careers</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>Response: 3-5 business days</span>
+                    </div>
                   </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-accent/10 rounded-lg border border-accent/20">
+                  <p className="text-xs sm:text-sm text-accent-foreground">
+                    💡 <strong>Quick Tip:</strong> Mention this job posting reference when contacting us: {job.id}
+                  </p>
                 </div>
               </div>
             </div>
