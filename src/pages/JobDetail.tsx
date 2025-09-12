@@ -358,17 +358,34 @@ const JobDetail = () => {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-sm">
                       <Mail className="w-4 h-4 text-primary" />
-                      <span>hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com</span>
+                      <a 
+                        href={`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com`}
+                        className="text-primary hover:text-primary-hover underline"
+                      >
+                        hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com
+                      </a>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Phone className="w-4 h-4 text-primary" />
-                      <span>+1-800-CAREERS</span>
+                      <a 
+                        href="tel:+1-800-CAREERS"
+                        className="text-primary hover:text-primary-hover underline"
+                      >
+                        +1-800-CAREERS
+                      </a>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-sm">
                       <Globe className="w-4 h-4 text-primary" />
-                      <span>www.{job.company.toLowerCase().replace(/\s+/g, '')}.com/careers</span>
+                      <a 
+                        href={`https://www.${job.company.toLowerCase().replace(/\s+/g, '')}.com/careers`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary-hover underline"
+                      >
+                        www.{job.company.toLowerCase().replace(/\s+/g, '')}.com/careers
+                      </a>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Calendar className="w-4 h-4 text-primary" />
