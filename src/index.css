@@ -147,26 +147,38 @@
     position: absolute;
     border-radius: 50%;
     background: linear-gradient(135deg, 
-      hsl(36 30% 85% / 0.4), 
-      hsl(36 25% 88% / 0.2)
+      hsl(190 60% 85% / 0.6), 
+      hsl(190 50% 90% / 0.4)
     );
+    box-shadow: 0 4px 20px hsl(190 50% 85% / 0.3);
     animation: float-up 8s infinite linear;
   }
 
   .bubble:nth-child(odd) {
     animation-duration: 10s;
     background: linear-gradient(135deg, 
-      hsl(36 25% 90% / 0.3), 
-      hsl(36 20% 92% / 0.2)
+      hsl(200 55% 88% / 0.5), 
+      hsl(200 45% 92% / 0.3)
     );
+    box-shadow: 0 4px 15px hsl(200 50% 85% / 0.25);
   }
 
   .bubble:nth-child(3n) {
     animation-duration: 12s;
     background: linear-gradient(135deg, 
-      hsl(36 20% 88% / 0.25), 
-      hsl(36 25% 90% / 0.15)
+      hsl(180 50% 90% / 0.45), 
+      hsl(180 40% 94% / 0.25)
     );
+    box-shadow: 0 3px 12px hsl(180 45% 85% / 0.2);
+  }
+
+  .bubble:nth-child(5n) {
+    animation-duration: 14s;
+    background: linear-gradient(135deg, 
+      hsl(210 45% 85% / 0.4), 
+      hsl(210 35% 88% / 0.25)
+    );
+    box-shadow: 0 5px 18px hsl(210 40% 80% / 0.2);
   }
 
   @keyframes float-up {

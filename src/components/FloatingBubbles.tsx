@@ -13,12 +13,12 @@ const FloatingBubbles: React.FC = () => {
   useEffect(() => {
     const generateBubbles = () => {
       const newBubbles: Bubble[] = [];
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 35; i++) {
         newBubbles.push({
           id: i,
-          size: Math.random() * 80 + 20, // 20-100px
+          size: Math.random() * 120 + 30, // 30-150px
           left: Math.random() * 100, // 0-100%
-          animationDelay: Math.random() * 8, // 0-8s delay
+          animationDelay: Math.random() * 12, // 0-12s delay
         });
       }
       setBubbles(newBubbles);
