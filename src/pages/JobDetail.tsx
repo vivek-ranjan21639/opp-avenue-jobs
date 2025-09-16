@@ -278,63 +278,14 @@ const JobDetail = () => {
               </div>
             </div>
 
-            {/* Application Process */}
-            <div className="bg-card rounded-2xl shadow-primary p-4 sm:p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-card-foreground">How to Apply</h2>
-              <div className="space-y-4 text-muted-foreground">
-                <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
-                  <h3 className="font-semibold text-card-foreground mb-3 flex items-center gap-2">
-                    <Send className="w-5 h-5" />
-                    Quick Apply Options:
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Button 
-                      onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
-                      variant="outline" 
-                      className="w-full justify-center gap-2"
-                    >
-                      <Mail className="w-4 h-4" />
-                      Apply via Email
-                    </Button>
-                    <Button 
-                      onClick={() => window.open('tel:+1-800-CAREERS', '_blank')}
-                      variant="outline" 
-                      className="w-full justify-center gap-2"
-                    >
-                      <Phone className="w-4 h-4" />
-                      Call HR: +1-800-CAREERS
-                    </Button>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-card-foreground mb-2">Application Steps:</h3>
-                  <ol className="space-y-2 list-decimal list-inside text-sm">
-                    <li>Click "Apply via Email" above or send your resume to hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com</li>
-                    <li>Include "Application for {job.title} Position" in the subject line</li>
-                    <li>Attach your resume, cover letter, and portfolio (if applicable)</li>
-                    <li>Wait for initial screening and review (2-3 business days)</li>
-                    <li>Complete technical assessment or coding challenge if invited</li>
-                    <li>Participate in virtual or in-person interviews with the team</li>
-                    <li>Receive final decision and discuss offer details</li>
-                  </ol>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-card-foreground mb-2">Required Documents:</h3>
-                  <ul className="space-y-1">
-                    <li>• Updated resume/CV</li>
-                    <li>• Cover letter (optional but recommended)</li>
-                    <li>• Portfolio or work samples (if applicable)</li>
-                    <li>• Academic transcripts</li>
-                  </ul>
-                </div>
-                <div className="bg-accent/10 rounded-lg p-4 border border-accent/20">
-                  <p className="text-sm">
-                    <strong>Application Deadline:</strong> Applications are reviewed on a rolling basis. 
-                    Apply early for the best chance of consideration.
-                  </p>
-                </div>
-              </div>
+            {/* Apply Button */}
+            <div className="flex justify-center mb-6">
+              <Button 
+                onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
+              >
+                Apply
+              </Button>
             </div>
 
 
