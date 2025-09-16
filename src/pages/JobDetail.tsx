@@ -289,59 +289,6 @@ const JobDetail = () => {
             </div>
 
 
-            {/* Contact Information */}
-            <div className="bg-card rounded-2xl shadow-primary p-4 sm:p-6">
-              <h2 className="text-xl font-semibold mb-4 text-card-foreground">Contact Information</h2>
-              <div className="space-y-4 text-muted-foreground">
-                <p className="text-sm sm:text-base">Have questions about this position? Get in touch with our recruitment team:</p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-primary" />
-                      <a 
-                        href={`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com`}
-                        className="text-primary hover:text-primary-hover underline"
-                      >
-                        hr@{job.company.toLowerCase().replace(/\s+/g, '')}.com
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4 text-primary" />
-                      <a 
-                        href="tel:+1-800-CAREERS"
-                        className="text-primary hover:text-primary-hover underline"
-                      >
-                        +1-800-CAREERS
-                      </a>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Globe className="w-4 h-4 text-primary" />
-                      <a 
-                        href={`https://www.${job.company.toLowerCase().replace(/\s+/g, '')}.com/careers`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:text-primary-hover underline"
-                      >
-                        www.{job.company.toLowerCase().replace(/\s+/g, '')}.com/careers
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="w-4 h-4 text-primary" />
-                      <span>Response: 3-5 business days</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 p-3 bg-accent/10 rounded-lg border border-accent/20">
-                  <p className="text-xs sm:text-sm text-card-foreground">
-                    💡 <strong>Quick Tip:</strong> Mention this job posting reference when contacting us: {job.id}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </main>
       </div>
