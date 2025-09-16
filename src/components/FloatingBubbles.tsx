@@ -17,7 +17,7 @@ const FloatingBubbles: React.FC = () => {
         newBubbles.push({
           id: i,
           size: Math.random() * 120 + 30, // 30-150px
-          left: Math.random() * 100, // 0-100%
+          left: Math.random() * 95 + 2.5, // 2.5-97.5% to ensure even distribution
           animationDelay: Math.random() * 12, // 0-12s delay
         });
       }
