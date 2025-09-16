@@ -169,7 +169,7 @@ const JobDetail = () => {
                   className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
                 >
                   <Send className="w-4 h-4" />
-                  Apply via Email
+                  Apply
                 </Button>
                 <Button 
                   onClick={() => window.open(`https://www.${job.company.toLowerCase().replace(/\s+/g, '')}.com/careers`, '_blank')}
