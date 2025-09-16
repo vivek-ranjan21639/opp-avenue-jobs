@@ -115,7 +115,7 @@ const JobDetail = () => {
 
               {/* Company Information */}
               <div className="space-y-3 text-sm text-muted-foreground mb-6">
-                <p>
+                <p className="mb-4">
                   A state-of-the-art technology company with the necessary 
                   knowledge and skills that enable it to act with speed, promote research and innovation, provide 
                   strategic vision, and deal with emerging challenges in the industry.
