@@ -124,7 +124,7 @@ const JobDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-semibold text-card-foreground mb-2">Company Stats</h4>
-                    <div className="space-y-1 text-xs">
+                    <div className="space-y-1 text-sm">
                       <div className="flex items-center gap-1">
                         <Users className="w-3 h-3" />
                         <span>500+ employees globally</span>
@@ -141,7 +141,7 @@ const JobDetail = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-card-foreground mb-2">Company Culture</h4>
-                    <div className="space-y-1 text-xs">
+                    <div className="space-y-1 text-sm">
                       <p>• Innovation-driven environment</p>
                       <p>• Collaborative team spirit</p>
                       <p>• Continuous learning culture</p>
@@ -150,7 +150,7 @@ const JobDetail = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs pt-2 border-t border-border">
+                <div className="flex items-center gap-4 text-sm pt-2 border-t border-border">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     <span>Posted {job.postedTime}</span>
