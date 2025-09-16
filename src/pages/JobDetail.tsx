@@ -114,7 +114,7 @@ const JobDetail = () => {
               </div>
 
               {/* Company Information */}
-              <div className="space-y-3 text-sm text-muted-foreground mb-6">
+              <div className="space-y-3 text-muted-foreground mb-6">
                 <p className="mb-4">
                   A state-of-the-art technology company with the necessary 
                   knowledge and skills that enable it to act with speed, promote research and innovation, provide 
