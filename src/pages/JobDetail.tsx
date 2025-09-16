@@ -391,7 +391,7 @@ const JobDetail = () => {
                 </div>
 
                 <div className="mt-4 p-3 bg-accent/10 rounded-lg border border-accent/20">
-                  <p className="text-xs sm:text-sm text-accent-foreground">
+                  <p className="text-xs sm:text-sm text-card-foreground">
                     💡 <strong>Quick Tip:</strong> Mention this job posting reference when contacting us: {job.id}
                   </p>
                 </div>
