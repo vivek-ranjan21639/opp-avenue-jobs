@@ -114,53 +114,50 @@ const JobDetail = () => {
               </div>
 
               {/* Company Information */}
-              <div className="bg-secondary/30 rounded-xl p-4 mb-6">
-                <h3 className="text-lg font-semibold mb-3 text-card-foreground">About {job.company}</h3>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <p>
-                    A state-of-the-art technology company with the necessary 
-                    knowledge and skills that enable it to act with speed, promote research and innovation, provide 
-                    strategic vision, and deal with emerging challenges in the industry.
-                  </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-semibold text-card-foreground mb-2">Company Stats</h4>
-                      <div className="space-y-1 text-xs">
-                        <div className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          <span>500+ employees globally</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          <span>Founded in 2015</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Building className="w-3 h-3" />
-                          <span>15+ office locations</span>
-                        </div>
+              <div className="space-y-3 text-sm text-muted-foreground mb-6">
+                <p>
+                  A state-of-the-art technology company with the necessary 
+                  knowledge and skills that enable it to act with speed, promote research and innovation, provide 
+                  strategic vision, and deal with emerging challenges in the industry.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-card-foreground mb-2">Company Stats</h4>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        <span>500+ employees globally</span>
                       </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-card-foreground mb-2">Company Culture</h4>
-                      <div className="space-y-1 text-xs">
-                        <p>• Innovation-driven environment</p>
-                        <p>• Collaborative team spirit</p>
-                        <p>• Continuous learning culture</p>
-                        <p>• Work-life balance focused</p>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span>Founded in 2015</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Building className="w-3 h-3" />
+                        <span>15+ office locations</span>
                       </div>
                     </div>
                   </div>
+                  <div>
+                    <h4 className="font-semibold text-card-foreground mb-2">Company Culture</h4>
+                    <div className="space-y-1 text-xs">
+                      <p>• Innovation-driven environment</p>
+                      <p>• Collaborative team spirit</p>
+                      <p>• Continuous learning culture</p>
+                      <p>• Work-life balance focused</p>
+                    </div>
+                  </div>
+                </div>
 
-                  <div className="flex items-center gap-4 text-xs pt-2 border-t border-border">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>Posted {job.postedTime}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      <span>Multiple locations available</span>
-                    </div>
+                <div className="flex items-center gap-4 text-xs pt-2 border-t border-border">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    <span>Posted {job.postedTime}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    <span>Multiple locations available</span>
                   </div>
                 </div>
               </div>
