@@ -130,10 +130,6 @@ const JobDetail = () => {
                   <ExternalLink className="w-4 h-4" />
                   View Company
                 </Button>
-                <Button variant="outline" className="rounded-full flex items-center justify-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Save Job
-                </Button>
               </div>
             </div>
 
