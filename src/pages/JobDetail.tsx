@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, DollarSign, Building, Users, Calendar, ExternalLink, Mail, Phone, Globe, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Mail, Phone, Globe, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header, { FilterState } from '@/components/Header';
@@ -106,7 +106,7 @@ const JobDetail = () => {
                 </div>
                 
                 <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-xl">
-                  <DollarSign className="w-5 h-5 text-success" />
+                  <IndianRupee className="w-5 h-5 text-success" />
                   <div>
                     <p className="text-sm text-muted-foreground">Salary</p>
                     <p className="font-medium">{job.salary}</p>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -127,7 +127,7 @@ const Header: React.FC<HeaderProps> = ({
       options: ['Entry Level', '2-4 years', '3-5 years', '3-6 years', '4-7 years', '5+ years', '7+ years']
     },
     { 
-      icon: DollarSign, 
+      icon: IndianRupee, 
       label: 'Salary', 
       key: 'salaryRange' as keyof FilterState,
       options: ['₹15k-₹30k', '₹50k-₹100k', '₹100k-₹150k', '₹150k-₹200k']

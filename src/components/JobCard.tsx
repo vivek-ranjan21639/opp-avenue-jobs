@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Clock, DollarSign, Building } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, Building } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export interface Job {
@@ -50,7 +50,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
             {job.remote && <Badge variant="secondary" className="ml-2 text-xs">Remote</Badge>}
           </div>
           <div className="flex items-center gap-1">
-            <DollarSign className="w-4 h-4" />
+            <IndianRupee className="w-4 h-4" />
             <span>{job.salary}</span>
           </div>
         </div>

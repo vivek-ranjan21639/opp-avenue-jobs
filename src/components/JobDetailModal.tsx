@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Clock, DollarSign, Building, Users, Calendar, ExternalLink } from 'lucide-react';
+import { X, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Job } from './JobCard';
@@ -52,7 +52,7 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, isOpen, onClose })
               </div>
               
               <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-xl">
-                <DollarSign className="w-5 h-5 text-success" />
+                <IndianRupee className="w-5 h-5 text-success" />
                 <div>
                   <p className="text-sm text-muted-foreground">Salary</p>
                   <p className="font-medium">{job.salary}</p>
