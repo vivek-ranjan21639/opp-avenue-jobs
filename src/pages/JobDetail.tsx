@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, DollarSign, Building, Users, Calendar, ExternalLink, Mail, Phone, Globe, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import Header from '@/components/Header';
+import Header, { FilterState } from '@/components/Header';
 
 import FloatingBubbles from '@/components/FloatingBubbles';
 import { mockJobs } from '@/data/mockJobs';
@@ -12,6 +12,15 @@ import { mockJobs } from '@/data/mockJobs';
 const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
+    location: [],
+    jobType: [],
+    experience: [],
+    salaryRange: [],
+    sector: [],
+    companies: []
+  });
   
   const normalizedId = (jobId || '').split('-page-')[0];
   const job = mockJobs.find(j => j.id === normalizedId);
@@ -23,6 +32,10 @@ const JobDetail = () => {
         <div className="relative z-10">
           <Header 
             onAdvertiseClick={() => navigate('/advertise')}
+            onSearchChange={setSearchQuery}
+            onFiltersChange={setActiveFilters}
+            searchQuery={searchQuery}
+            activeFilters={activeFilters}
           />
           <main className="px-4 md:px-8 py-8">
             <div className="max-w-4xl mx-auto text-center">
@@ -46,6 +59,10 @@ const JobDetail = () => {
       <div className="relative z-10">
         <Header 
           onAdvertiseClick={() => navigate('/advertise')}
+          onSearchChange={setSearchQuery}
+          onFiltersChange={setActiveFilters}
+          searchQuery={searchQuery}
+          activeFilters={activeFilters}
         />
         
         <main className="px-4 md:px-8 py-8">

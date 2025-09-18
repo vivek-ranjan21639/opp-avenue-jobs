@@ -1,14 +1,23 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Eye, MessageCircle, Linkedin, Phone, Mail, Calendar, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import Header from '@/components/Header';
+import Header, { FilterState } from '@/components/Header';
 import FloatingBubbles from '@/components/FloatingBubbles';
 
 const Advertise = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
+    location: [],
+    jobType: [],
+    experience: [],
+    salaryRange: [],
+    sector: [],
+    companies: []
+  });
 
   const platformStats = [
     { metric: 'Total Page Views', value: '53 Lakhs/monthly', icon: Eye, color: 'text-blue-600' },
@@ -24,6 +33,10 @@ const Advertise = () => {
       <div className="relative z-10">
         <Header 
           onAdvertiseClick={() => {}} // Already on advertise page
+          onSearchChange={setSearchQuery}
+          onFiltersChange={setActiveFilters}
+          searchQuery={searchQuery}
+          activeFilters={activeFilters}
         />
         
         <main className="px-4 sm:px-8 py-4 sm:py-8">

@@ -1,18 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, DollarSign, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+} from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
   onAdvertiseClick: () => void;
+  onSearchChange: (query: string) => void;
+  onFiltersChange: (filters: FilterState) => void;
+  searchQuery: string;
+  activeFilters: FilterState;
 }
 
-const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
+export interface FilterState {
+  location: string[];
+  jobType: string[];
+  experience: string[];
+  salaryRange: string[];
+  sector: string[];
+  companies: string[];
+}
+
+const Header: React.FC<HeaderProps> = ({ 
+  onAdvertiseClick, 
+  onSearchChange, 
+  onFiltersChange, 
+  searchQuery, 
+  activeFilters 
+}) => {
   const [showFilters, setShowFilters] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [manualToggle, setManualToggle] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,13 +108,73 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
   ];
 
   const filterOptions = [
-    { icon: MapPin, label: 'Location', options: ['Remote', 'Austin, TX', 'New York', 'San Francisco'] },
-    { icon: Briefcase, label: 'Job Type', options: ['Full-time', 'Part-time', 'Contract', 'Internship'] },
-    { icon: GraduationCap, label: 'Experience', options: ['Entry Level', '1-3 years', '3-5 years', '5+ years'] },
-    { icon: DollarSign, label: 'Salary range', options: ['$50k-$70k', '$70k-$100k', '$100k-$150k', '$150k+'] },
-    { icon: Building, label: 'Sector', options: ['Technology', 'Finance', 'Healthcare', 'Education'] },
-    { icon: Users, label: 'Companies', options: ['Amazon', 'Google', 'Microsoft', 'Meta'] },
+    { 
+      icon: MapPin, 
+      label: 'Location', 
+      key: 'location' as keyof FilterState,
+      options: ['Remote', 'Austin, TX', 'New York, NY', 'San Francisco, CA', 'Seattle, WA', 'Mountain View, CA', 'Menlo Park, CA', 'Los Gatos, CA', 'New Delhi, India']
+    },
+    { 
+      icon: Briefcase, 
+      label: 'Job Type', 
+      key: 'jobType' as keyof FilterState,
+      options: ['Full-time', 'Part-time', 'Contract', 'Internship']
+    },
+    { 
+      icon: GraduationCap, 
+      label: 'Experience', 
+      key: 'experience' as keyof FilterState,
+      options: ['Entry Level', '2-4 years', '3-5 years', '3-6 years', '4-7 years', '5+ years', '7+ years']
+    },
+    { 
+      icon: DollarSign, 
+      label: 'Salary', 
+      key: 'salaryRange' as keyof FilterState,
+      options: ['$15k-$30k', '$50k-$100k', '$100k-$150k', '$150k-$200k']
+    },
+    { 
+      icon: Building, 
+      label: 'Sector', 
+      key: 'sector' as keyof FilterState,
+      options: ['Technology', 'Entertainment', 'Legal', 'Transportation', 'E-commerce']
+    },
+    { 
+      icon: Users, 
+      label: 'Companies', 
+      key: 'companies' as keyof FilterState,
+      options: ['Amazon', 'Google', 'Microsoft', 'Meta', 'Netflix', 'Spotify', 'Tesla', 'Uber', 'National Legal Services Authority']
+    },
   ];
+
+  const handleFilterChange = (filterKey: keyof FilterState, option: string) => {
+    const currentValues = activeFilters[filterKey];
+    const newValues = currentValues.includes(option)
+      ? currentValues.filter(item => item !== option)
+      : [...currentValues, option];
+    
+    const newFilters = {
+      ...activeFilters,
+      [filterKey]: newValues
+    };
+    
+    onFiltersChange(newFilters);
+  };
+
+  const clearAllFilters = () => {
+    const emptyFilters: FilterState = {
+      location: [],
+      jobType: [],
+      experience: [],
+      salaryRange: [],
+      sector: [],
+      companies: []
+    };
+    onFiltersChange(emptyFilters);
+  };
+
+  const getActiveFilterCount = () => {
+    return Object.values(activeFilters).reduce((count, filters) => count + filters.length, 0);
+  };
 
   return (
     <header className="sticky-header border-none">
@@ -129,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
                 type="text"
                 placeholder="Search for jobs, companies, or skills..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => onSearchChange(e.target.value)}
                 className="pl-10 h-10 text-sm bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
               />
             </div>
@@ -190,7 +274,7 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
               type="text"
               placeholder="Search for jobs, companies, or skills..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
               className="pl-10 h-10 text-sm bg-card border-input-border focus:border-primary focus:ring-primary rounded-xl"
             />
           </div>
@@ -207,32 +291,76 @@ const Header: React.FC<HeaderProps> = ({ onAdvertiseClick }) => {
 
         {/* Filter Buttons Row */}
         {(!isScrolled || showFilters) && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {/* Filter Buttons */}
             <div className="flex flex-wrap gap-2 items-center justify-center">
               {filterOptions.map((filter, index) => (
+                <DropdownMenu key={index}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`h-8 px-3 rounded-full border-input-border hover:bg-secondary hover:border-primary text-xs ${
+                        activeFilters[filter.key].length > 0 
+                          ? 'bg-primary text-primary-foreground border-primary' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <filter.icon className="w-3 h-3 mr-1" />
+                      {filter.label}
+                      {activeFilters[filter.key].length > 0 && (
+                        <Badge variant="secondary" className="ml-1 h-4 w-4 p-0 text-xs">
+                          {activeFilters[filter.key].length}
+                        </Badge>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center">
+                    {filter.options.map((option) => (
+                      <DropdownMenuCheckboxItem
+                        key={option}
+                        checked={activeFilters[filter.key].includes(option)}
+                        onCheckedChange={() => handleFilterChange(filter.key, option)}
+                        className="text-sm"
+                      >
+                        {option}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ))}
+              
+              {getActiveFilterCount() > 0 && (
                 <Button
-                  key={index}
+                  onClick={clearAllFilters}
                   variant="outline"
                   size="sm"
-                  className="h-8 px-3 rounded-full border-input-border hover:bg-secondary hover:border-primary text-muted-foreground hover:text-foreground text-xs"
+                  className="h-8 px-3 rounded-full border-input-border hover:bg-destructive hover:text-destructive-foreground text-xs"
                 >
-                  <filter.icon className="w-3 h-3 mr-1" />
-                  {filter.label}
-                </Button>
-              ))}
-              {showFilters && (
-                <Button
-                  onClick={() => console.log('Applying filters...')}
-                  variant="default"
-                  size="sm"
-                  className="h-8 px-3 rounded-full ml-1 text-xs"
-                >
-                  <Filter className="w-3 h-3 mr-1" />
-                  Apply Filters
+                  <X className="w-3 h-3 mr-1" />
+                  Clear All
                 </Button>
               )}
             </div>
+            
+            {/* Active Filter Tags */}
+            {getActiveFilterCount() > 0 && (
+              <div className="flex flex-wrap gap-1 items-center justify-center">
+                {Object.entries(activeFilters).map(([key, values]) =>
+                  values.map((value) => (
+                    <Badge
+                      key={`${key}-${value}`}
+                      variant="secondary"
+                      className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => handleFilterChange(key as keyof FilterState, value)}
+                    >
+                      {value}
+                      <X className="w-3 h-3 ml-1" />
+                    </Badge>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
