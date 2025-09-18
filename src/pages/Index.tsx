@@ -201,16 +201,6 @@ const Index = () => {
         {/* Job Listings */}
         <main className="px-8 py-8">
           <div className="max-w-[1008px] mx-auto">
-            {/* Results count */}
-            <div className="text-center mb-6">
-              <p className="text-muted-foreground">
-                {searchQuery || Object.values(activeFilters).some(f => f.length > 0) 
-                  ? `Found ${filteredJobs.length} jobs matching your criteria`
-                  : `${jobs.length} job opportunities available`
-                }
-              </p>
-            </div>
-            
             {/* Job Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
               {(searchQuery || Object.values(activeFilters).some(f => f.length > 0) 
