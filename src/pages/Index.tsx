@@ -71,8 +71,8 @@ const Index = () => {
       filtered = filtered.filter(job => {
         const jobSalary = job.salary.toLowerCase();
         return activeFilters.salaryRange.some(range => {
-          const rangeKey = range.toLowerCase().replace(/[k$-]/g, '');
-          const jobSalaryKey = jobSalary.replace(/[k$-]/g, '');
+          const rangeKey = range.toLowerCase().replace(/[k₹-]/g, '');
+          const jobSalaryKey = jobSalary.replace(/[k₹-]/g, '');
           return jobSalaryKey.includes(rangeKey.slice(0, 2)) || 
                  jobSalaryKey.includes(rangeKey.slice(-2));
         });

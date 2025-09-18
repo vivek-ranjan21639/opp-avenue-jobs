@@ -130,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({
       icon: DollarSign, 
       label: 'Salary', 
       key: 'salaryRange' as keyof FilterState,
-      options: ['$15k-$30k', '$50k-$100k', '$100k-$150k', '$150k-$200k']
+      options: ['₹15k-₹30k', '₹50k-₹100k', '₹100k-₹150k', '₹150k-₹200k']
     },
     { 
       icon: Building, 
