@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { mockJobs } from '@/data/mockJobs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -107,44 +108,157 @@ const Header: React.FC<HeaderProps> = ({
     }
   ];
 
-  const filterOptions = [
-    { 
-      icon: MapPin, 
-      label: 'Location', 
-      key: 'location' as keyof FilterState,
-      options: ['Remote', 'Austin, TX', 'New York, NY', 'San Francisco, CA', 'Seattle, WA', 'Mountain View, CA', 'Menlo Park, CA', 'Los Gatos, CA', 'New Delhi, India']
-    },
-    { 
-      icon: Briefcase, 
-      label: 'Job Type', 
-      key: 'jobType' as keyof FilterState,
-      options: ['Full-time', 'Part-time', 'Contract', 'Internship']
-    },
-    { 
-      icon: GraduationCap, 
-      label: 'Experience', 
-      key: 'experience' as keyof FilterState,
-      options: ['Entry Level', '2-4 years', '3-5 years', '3-6 years', '4-7 years', '5+ years', '7+ years']
-    },
-    { 
-      icon: IndianRupee, 
-      label: 'Salary', 
-      key: 'salaryRange' as keyof FilterState,
-      options: ['₹15k-₹30k', '₹50k-₹100k', '₹100k-₹150k', '₹150k-₹200k']
-    },
-    { 
-      icon: Building, 
-      label: 'Sector', 
-      key: 'sector' as keyof FilterState,
-      options: ['Technology', 'Entertainment', 'Legal', 'Transportation', 'E-commerce']
-    },
-    { 
-      icon: Users, 
-      label: 'Companies', 
-      key: 'companies' as keyof FilterState,
-      options: ['Amazon', 'Google', 'Microsoft', 'Meta', 'Netflix', 'Spotify', 'Tesla', 'Uber', 'National Legal Services Authority']
-    },
-  ];
+  // Get dynamic filter options based on current selections and available jobs
+  const getDynamicFilterOptions = () => {
+    // Get all jobs that match current filters (excluding the filter we're calculating options for)
+    const getFilteredJobsExcluding = (excludeFilter: keyof FilterState) => {
+      let filtered = [...mockJobs];
+      
+      // Apply search filter
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(job =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query) ||
+          job.skills.some(skill => skill.toLowerCase().includes(query)) ||
+          job.description.toLowerCase().includes(query)
+        );
+      }
+      
+      // Apply all filters except the one we're excluding
+      Object.entries(activeFilters).forEach(([key, values]) => {
+        if (key === excludeFilter || values.length === 0) return;
+        
+        const filterKey = key as keyof FilterState;
+        
+        if (filterKey === 'location') {
+          filtered = filtered.filter(job => {
+            if (values.includes('Remote') && job.remote) return true;
+            return values.some(location => job.location.toLowerCase().includes(location.toLowerCase()));
+          });
+        } else if (filterKey === 'jobType') {
+          filtered = filtered.filter(job => values.includes(job.type));
+        } else if (filterKey === 'experience') {
+          filtered = filtered.filter(job => values.includes(job.experience));
+        } else if (filterKey === 'salaryRange') {
+          filtered = filtered.filter(job => {
+            const jobSalary = job.salary.toLowerCase();
+            return values.some(range => {
+              const rangeKey = range.toLowerCase().replace(/[k₹-]/g, '');
+              const jobSalaryKey = jobSalary.replace(/[k₹-]/g, '');
+              return jobSalaryKey.includes(rangeKey.slice(0, 2)) || 
+                     jobSalaryKey.includes(rangeKey.slice(-2));
+            });
+          });
+        } else if (filterKey === 'companies') {
+          filtered = filtered.filter(job => values.includes(job.company));
+        } else if (filterKey === 'sector') {
+          const sectorCompanyMap: Record<string, string[]> = {
+            'Technology': ['Amazon', 'Google', 'Microsoft', 'Meta', 'Tesla'],
+            'Entertainment': ['Netflix', 'Spotify'],
+            'Legal': ['National Legal Services Authority'],
+            'Transportation': ['Uber'],
+            'E-commerce': ['Amazon']
+          };
+          filtered = filtered.filter(job => {
+            return values.some(sector => {
+              const companies = sectorCompanyMap[sector] || [];
+              return companies.includes(job.company);
+            });
+          });
+        }
+      });
+      
+      return filtered;
+    };
+
+    // Calculate dynamic options for each filter
+    const locationJobs = getFilteredJobsExcluding('location');
+    const locationOptions = Array.from(new Set([
+      'Remote',
+      ...locationJobs.map(job => job.location)
+    ])).filter(location => {
+      if (location === 'Remote') {
+        return locationJobs.some(job => job.remote);
+      }
+      return locationJobs.some(job => job.location === location);
+    }).sort();
+
+    const jobTypeJobs = getFilteredJobsExcluding('jobType');
+    const jobTypeOptions = Array.from(new Set(jobTypeJobs.map(job => job.type))).sort();
+
+    const experienceJobs = getFilteredJobsExcluding('experience');
+    const experienceOptions = Array.from(new Set(experienceJobs.map(job => job.experience))).sort();
+
+    const salaryJobs = getFilteredJobsExcluding('salaryRange');
+    const availableSalaryRanges = ['₹15k-₹30k', '₹50k-₹100k', '₹100k-₹150k', '₹150k-₹200k'];
+    const salaryOptions = availableSalaryRanges.filter(range => {
+      return salaryJobs.some(job => {
+        const jobSalary = job.salary.toLowerCase();
+        const rangeKey = range.toLowerCase().replace(/[k₹-]/g, '');
+        const jobSalaryKey = jobSalary.replace(/[k₹-]/g, '');
+        return jobSalaryKey.includes(rangeKey.slice(0, 2)) || 
+               jobSalaryKey.includes(rangeKey.slice(-2));
+      });
+    });
+
+    const companyJobs = getFilteredJobsExcluding('companies');
+    const companyOptions = Array.from(new Set(companyJobs.map(job => job.company))).sort();
+
+    const sectorJobs = getFilteredJobsExcluding('sector');
+    const sectorCompanyMap: Record<string, string[]> = {
+      'Technology': ['Amazon', 'Google', 'Microsoft', 'Meta', 'Tesla'],
+      'Entertainment': ['Netflix', 'Spotify'],
+      'Legal': ['National Legal Services Authority'],
+      'Transportation': ['Uber'],
+      'E-commerce': ['Amazon']
+    };
+    const sectorOptions = Object.keys(sectorCompanyMap).filter(sector => {
+      const sectorCompanies = sectorCompanyMap[sector];
+      return sectorJobs.some(job => sectorCompanies.includes(job.company));
+    }).sort();
+
+    return [
+      { 
+        icon: MapPin, 
+        label: 'Location', 
+        key: 'location' as keyof FilterState,
+        options: locationOptions
+      },
+      { 
+        icon: Briefcase, 
+        label: 'Job Type', 
+        key: 'jobType' as keyof FilterState,
+        options: jobTypeOptions
+      },
+      { 
+        icon: GraduationCap, 
+        label: 'Experience', 
+        key: 'experience' as keyof FilterState,
+        options: experienceOptions
+      },
+      { 
+        icon: IndianRupee, 
+        label: 'Salary', 
+        key: 'salaryRange' as keyof FilterState,
+        options: salaryOptions
+      },
+      { 
+        icon: Building, 
+        label: 'Sector', 
+        key: 'sector' as keyof FilterState,
+        options: sectorOptions
+      },
+      { 
+        icon: Users, 
+        label: 'Companies', 
+        key: 'companies' as keyof FilterState,
+        options: companyOptions
+      },
+    ];
+  };
+
+  const filterOptions = getDynamicFilterOptions();
 
   const handleFilterChange = (filterKey: keyof FilterState, option: string) => {
     const currentValues = activeFilters[filterKey];
@@ -316,16 +430,22 @@ const Header: React.FC<HeaderProps> = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center">
-                    {filter.options.map((option) => (
-                      <DropdownMenuCheckboxItem
-                        key={option}
-                        checked={activeFilters[filter.key].includes(option)}
-                        onCheckedChange={() => handleFilterChange(filter.key, option)}
-                        className="text-sm"
-                      >
-                        {option}
-                      </DropdownMenuCheckboxItem>
-                    ))}
+                    {filter.options.length > 0 ? (
+                      filter.options.map((option) => (
+                        <DropdownMenuCheckboxItem
+                          key={option}
+                          checked={activeFilters[filter.key].includes(option)}
+                          onCheckedChange={() => handleFilterChange(filter.key, option)}
+                          className="text-sm"
+                        >
+                          {option}
+                        </DropdownMenuCheckboxItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-2 text-sm text-muted-foreground">
+                        No options available
+                      </div>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               ))}
