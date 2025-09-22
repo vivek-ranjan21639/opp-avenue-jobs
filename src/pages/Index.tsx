@@ -199,13 +199,6 @@ const Index = () => {
           activeFilters={activeFilters}
         />
         
-        {/* Top Banner Ad */}
-        <div className="px-4 md:px-8 pt-4">
-          <div className="max-w-[1008px] mx-auto">
-            <AdUnit size="banner" label="Header Banner Ad" />
-          </div>
-        </div>
-        
         {/* Job Listings */}
         <main className="px-8 py-8">
           <div className="max-w-[1008px] mx-auto">
@@ -220,10 +213,10 @@ const Index = () => {
                     job={job} 
                     onClick={handleJobClick}
                   />
-                  {/* Ad after every 6 jobs */}
-                  {(index + 1) % 6 === 0 && (
+                  {/* Ad after every 9 jobs (3 rows) */}
+                  {(index + 1) % 9 === 0 && (
                     <div className="md:col-span-2 lg:col-span-3">
-                      <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 6)}`} />
+                      <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 9)}`} />
                     </div>
                   )}
                 </React.Fragment>
