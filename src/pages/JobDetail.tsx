@@ -5,7 +5,7 @@ import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, Exter
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header, { FilterState } from '@/components/Header';
-
+import AdUnit from '@/components/AdUnit';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import { mockJobs } from '@/data/mockJobs';
 
@@ -76,6 +76,11 @@ const JobDetail = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Jobs
             </Button>
+            
+            {/* Top Job Detail Ad */}
+            <div className="mb-6">
+              <AdUnit size="banner" label="Job Detail Header Ad" />
+            </div>
 
             {/* Job Header */}
             <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
@@ -236,6 +241,11 @@ const JobDetail = () => {
                 </ul>
               </div>
             </div>
+            
+            {/* Mid-content Ad */}
+            <div className="mb-6">
+              <AdUnit size="rectangle" label="Mid-content Rectangle Ad" />
+            </div>
 
             {/* Eligibility Criteria */}
             <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
@@ -303,6 +313,11 @@ const JobDetail = () => {
               >
                 Apply
               </Button>
+            </div>
+            
+            {/* Bottom Ad */}
+            <div className="mb-6">
+              <AdUnit size="banner" label="Bottom Banner Ad" />
             </div>
 
 
