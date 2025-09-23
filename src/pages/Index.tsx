@@ -201,7 +201,16 @@ const Index = () => {
         
         {/* Job Listings */}
         <main className="px-8 py-8">
-          <div className="max-w-[1008px] mx-auto">
+          <div className="flex justify-center gap-8">
+            {/* Left Sidebar Ad - Hidden on mobile/tablet */}
+            <div className="hidden xl:block w-[160px] flex-shrink-0">
+              <div className="sticky top-8">
+                <AdUnit size="sidebar" label="Left Sidebar Ad" />
+              </div>
+            </div>
+            
+            {/* Main Content */}
+            <div className="max-w-[1008px] flex-1">
             {/* Job Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
               {(searchQuery || Object.values(activeFilters).some(f => f.length > 0) 
@@ -243,6 +252,14 @@ const Index = () => {
             {!searchQuery && !Object.values(activeFilters).some(f => f.length > 0) && (
               <div className="h-20"></div>
             )}
+            </div>
+            
+            {/* Right Sidebar Ad - Hidden on mobile/tablet */}
+            <div className="hidden xl:block w-[160px] flex-shrink-0">
+              <div className="sticky top-8">
+                <AdUnit size="sidebar" label="Right Sidebar Ad" />
+              </div>
+            </div>
           </div>
         </main>
       </div>
