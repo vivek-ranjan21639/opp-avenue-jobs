@@ -222,10 +222,10 @@ const Index = () => {
                     job={job} 
                     onClick={handleJobClick}
                   />
-                  {/* Ad after every 9 jobs (3 rows) */}
-                  {(index + 1) % 9 === 0 && (
+                  {/* Ad after every 15 jobs (5 rows) */}
+                  {(index + 1) % 15 === 0 && (
                     <div className="md:col-span-2 lg:col-span-3">
-                      <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 9)}`} />
+                      <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 15)}`} />
                     </div>
                   )}
                 </React.Fragment>
