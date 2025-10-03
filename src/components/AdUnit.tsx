@@ -4,9 +4,15 @@ interface AdUnitProps {
   size: 'banner' | 'rectangle' | 'sidebar' | 'mobile-banner';
   className?: string;
   label?: string;
+  hasAd?: boolean; // Set to false to hide empty ad slots
 }
 
-const AdUnit: React.FC<AdUnitProps> = ({ size, className = '', label }) => {
+const AdUnit: React.FC<AdUnitProps> = ({ size, className = '', label, hasAd = true }) => {
+  // Don't render anything if there's no ad
+  if (!hasAd) {
+    return null;
+  }
+
   const sizeClasses = {
     'banner': 'w-full h-24 md:h-32', // Top banner 728x90 or 970x250
     'rectangle': 'w-full h-64', // Medium rectangle 300x250
