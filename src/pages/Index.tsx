@@ -204,9 +204,8 @@ const Index = () => {
           <div className="flex justify-center gap-8">
             {/* Left Sidebar Ad - Hidden on mobile/tablet */}
             <div className="hidden xl:block w-[160px] flex-shrink-0">
-              <div className="sticky top-28 space-y-6">
-                <AdUnit size="sidebar" label="Left Sidebar Ad 1" />
-                <AdUnit size="sidebar" label="Left Sidebar Ad 2" />
+              <div className="sticky top-28">
+                <AdUnit size="sidebar" label="Left Sidebar Ad" />
               </div>
             </div>
             
@@ -257,9 +256,8 @@ const Index = () => {
             
             {/* Right Sidebar Ad - Hidden on mobile/tablet */}
             <div className="hidden xl:block w-[160px] flex-shrink-0">
-              <div className="sticky top-28 space-y-6">
-                <AdUnit size="sidebar" label="Right Sidebar Ad 1" />
-                <AdUnit size="sidebar" label="Right Sidebar Ad 2" />
+              <div className="sticky top-28">
+                <AdUnit size="sidebar" label="Right Sidebar Ad" />
               </div>
             </div>
           </div>
