@@ -14,7 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          website: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          website?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      jobs: {
+        Row: {
+          company_id: string | null
+          company_name: string
+          created_at: string | null
+          description: string
+          experience: string
+          id: string
+          is_active: boolean | null
+          location: string
+          posted_at: string | null
+          remote: boolean | null
+          salary: string
+          skills: string[]
+          title: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          company_name: string
+          created_at?: string | null
+          description: string
+          experience: string
+          id?: string
+          is_active?: boolean | null
+          location: string
+          posted_at?: string | null
+          remote?: boolean | null
+          salary: string
+          skills?: string[]
+          title: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          company_name?: string
+          created_at?: string | null
+          description?: string
+          experience?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          posted_at?: string | null
+          remote?: boolean | null
+          salary?: string
+          skills?: string[]
+          title?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
