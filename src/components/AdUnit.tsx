@@ -7,7 +7,7 @@ interface AdUnitProps {
   hasAd?: boolean; // Set to false to hide empty ad slots
 }
 
-const AdUnit: React.FC<AdUnitProps> = ({ size, className = '', label, hasAd = false }) => {
+const AdUnit: React.FC<AdUnitProps> = ({ size, className = '', label, hasAd = true }) => {
   // Don't render anything if there's no ad
   if (!hasAd) {
     return null;
