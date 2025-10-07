@@ -8,13 +8,13 @@ import Header, { FilterState } from '@/components/Header';
 import JobCard, { Job } from '@/components/JobCard';
 import AdUnit from '@/components/AdUnit';
 import { Button } from '@/components/ui/button';
-import { getJobsPage, mockJobs } from '@/data/mockJobs';
+import { useJobs } from '@/hooks/useJobs';
 
 const Index = () => {
   const navigate = useNavigate();
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const { data: allJobs = [], isLoading } = useJobs();
+  const [visibleJobs, setVisibleJobs] = useState<Job[]>([]);
+  const [displayCount, setDisplayCount] = useState(15);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
@@ -28,7 +28,7 @@ const Index = () => {
 
   // Filter jobs based on search and filters
   const filteredJobs = useMemo(() => {
-    let filtered = [...mockJobs];
+    let filtered = [...allJobs];
     
     // Apply search filter
     if (searchQuery.trim()) {
@@ -106,27 +106,18 @@ const Index = () => {
     }
     
     return filtered;
-  }, [searchQuery, activeFilters]);
+  }, [searchQuery, activeFilters, allJobs]);
 
-  // Load initial jobs
+  // Update visible jobs based on display count
   useEffect(() => {
-    const initialJobs = getJobsPage(0, 6);
-    setJobs(initialJobs);
-  }, []);
+    setVisibleJobs(filteredJobs.slice(0, displayCount));
+  }, [filteredJobs, displayCount]);
 
   // Infinite scroll handler
   const loadMoreJobs = useCallback(() => {
-    if (loading) return;
-
-    setLoading(true);
-    setTimeout(() => {
-      const nextPage = currentPage + 1;
-      const newJobs = getJobsPage(nextPage, 6);
-      setJobs(prevJobs => [...prevJobs, ...newJobs]);
-      setCurrentPage(nextPage);
-      setLoading(false);
-    }, 1000); // Simulate API delay
-  }, [currentPage, loading]);
+    if (displayCount >= filteredJobs.length) return;
+    setDisplayCount(prev => prev + 15);
+  }, [displayCount, filteredJobs.length]);
 
   // Scroll event listener for infinite scroll and scroll-to-top button
   useEffect(() => {
@@ -213,10 +204,16 @@ const Index = () => {
             <div className="max-w-[1008px] flex-1">
             {/* Job Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
-              {(searchQuery || Object.values(activeFilters).some(f => f.length > 0) 
-                ? filteredJobs 
-                : jobs
-              ).map((job, index) => (
+              {isLoading ? (
+                // Loading skeleton
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="bg-card rounded-xl p-6 animate-pulse">
+                    <div className="h-6 bg-muted rounded w-3/4 mb-4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
+                  </div>
+                ))
+              ) : visibleJobs.map((job, index) => (
                 <React.Fragment key={job.id}>
                   <JobCard 
                     job={job} 
@@ -233,24 +230,19 @@ const Index = () => {
             </div>
             
             {/* No results message */}
-            {(searchQuery || Object.values(activeFilters).some(f => f.length > 0)) && filteredJobs.length === 0 && (
-              <div className="text-center py-12">
+            {!isLoading && filteredJobs.length === 0 && (
+              <div className="text-center py-12 md:col-span-2 lg:col-span-3">
                 <p className="text-muted-foreground text-lg">No jobs found matching your criteria</p>
                 <p className="text-muted-foreground text-sm mt-2">Try adjusting your search or filters</p>
               </div>
             )}
             
-            {/* Loading Indicator - only show when no filters active */}
-            {loading && !searchQuery && !Object.values(activeFilters).some(f => f.length > 0) && (
-              <div className="flex justify-center items-center py-12">
+            {/* Load More Indicator */}
+            {!isLoading && displayCount < filteredJobs.length && (
+              <div className="flex justify-center items-center py-12 md:col-span-2 lg:col-span-3">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 <span className="ml-3 text-muted-foreground">Loading more opportunities...</span>
               </div>
-            )}
-            
-            {/* Load More Trigger - only when no filters active */}
-            {!searchQuery && !Object.values(activeFilters).some(f => f.length > 0) && (
-              <div className="h-20"></div>
             )}
             </div>
             

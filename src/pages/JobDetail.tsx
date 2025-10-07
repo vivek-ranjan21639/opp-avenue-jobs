@@ -1,17 +1,18 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Mail, Phone, Globe, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header, { FilterState } from '@/components/Header';
 import AdUnit from '@/components/AdUnit';
 import FloatingBubbles from '@/components/FloatingBubbles';
-import { mockJobs } from '@/data/mockJobs';
+import { useJob } from '@/hooks/useJobs';
 
 const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
+  const { data: job, isLoading } = useJob(jobId);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     location: [],
@@ -22,8 +23,31 @@ const JobDetail = () => {
     companies: []
   });
   
-  const normalizedId = (jobId || '').split('-page-')[0];
-  const job = mockJobs.find(j => j.id === normalizedId);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
+        <FloatingBubbles />
+        <div className="relative z-10">
+          <Header 
+            onAdvertiseClick={() => navigate('/advertise')}
+            onSearchChange={setSearchQuery}
+            onFiltersChange={setActiveFilters}
+            searchQuery={searchQuery}
+            activeFilters={activeFilters}
+          />
+          <main className="px-4 md:px-8 py-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-card rounded-2xl shadow-primary p-6 animate-pulse">
+                <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+                <div className="h-6 bg-muted rounded w-1/2 mb-6"></div>
+                <div className="h-32 bg-muted rounded"></div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
   
   if (!job) {
     return (
@@ -85,16 +109,24 @@ const JobDetail = () => {
             {/* Job Header */}
             <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-hover rounded-xl flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-2xl">
-                    {job.company.charAt(0)}
-                  </span>
-                </div>
+                {job.companyLogo ? (
+                  <img 
+                    src={job.companyLogo} 
+                    alt={`${job.company_name} logo`}
+                    className="w-16 h-16 rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-hover rounded-xl flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-2xl">
+                      {job.company_name.charAt(0)}
+                    </span>
+                  </div>
+                )}
                 <div className="flex-1">
                   <h1 className="text-3xl font-bold text-card-foreground mb-2">{job.title}</h1>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Building className="w-5 h-5" />
-                    <span className="text-lg">{job.company}</span>
+                    <span className="text-lg">{job.company_name}</span>
                   </div>
                 </div>
               </div>
@@ -137,11 +169,9 @@ const JobDetail = () => {
 
               {/* Company Information */}
               <div className="space-y-3 text-muted-foreground mb-6">
-                <p className="mb-4">
-                  A state-of-the-art technology company with the necessary 
-                  knowledge and skills that enable it to act with speed, promote research and innovation, provide 
-                  strategic vision, and deal with emerging challenges in the industry.
-                </p>
+                {job.companyDescription && (
+                  <p className="mb-4">{job.companyDescription}</p>
+                )}
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -177,30 +207,28 @@ const JobDetail = () => {
                     <Calendar className="w-3 h-3" />
                     <span>Posted {job.postedTime}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    <span>Multiple locations available</span>
-                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Button 
-                  onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                  onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
                   className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
                 >
                   <Send className="w-4 h-4" />
                   Apply
                 </Button>
-                <Button 
-                  onClick={() => window.open(`https://www.${job.company.toLowerCase().replace(/\s+/g, '')}.com/careers`, '_blank')}
-                  variant="outline" 
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  View Company
-                </Button>
+                {job.companyWebsite && (
+                  <Button 
+                    onClick={() => window.open(job.companyWebsite, '_blank')}
+                    variant="outline" 
+                    className="rounded-full flex items-center justify-center gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    View Company
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -308,7 +336,7 @@ const JobDetail = () => {
             {/* Apply Button */}
             <div className="flex justify-center mb-6">
               <Button 
-                onClick={() => window.open(`mailto:hr@${job.company.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
                 className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
               >
                 Apply
