@@ -381,7 +381,7 @@ const Header: React.FC<HeaderProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer">
+                <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer mb-2">
                   About
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onAdvertiseClick} className="cursor-pointer advertise-pulse font-medium bg-gradient-to-r from-accent/20 to-accent-hover/20 hover:from-accent/30 hover:to-accent-hover/30">
