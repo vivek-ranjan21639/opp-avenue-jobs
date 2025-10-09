@@ -375,7 +375,7 @@ const Header: React.FC<HeaderProps> = ({
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
-                  className="h-9 w-9 rounded-lg bg-gradient-to-r from-accent to-accent-hover text-accent-foreground hover:from-accent-hover hover:to-accent border-0 advertise-pulse shadow-lg"
+                  className="h-9 w-9 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 border-0 shadow-lg"
                 >
                   <Menu className="w-4 h-4" />
                 </Button>
@@ -384,7 +384,7 @@ const Header: React.FC<HeaderProps> = ({
                 <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer">
                   About
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onAdvertiseClick} className="cursor-pointer">
+                <DropdownMenuItem onClick={onAdvertiseClick} className="cursor-pointer advertise-pulse font-medium bg-gradient-to-r from-accent/20 to-accent-hover/20 hover:from-accent/30 hover:to-accent-hover/30">
                   Advertise
                 </DropdownMenuItem>
               </DropdownMenuContent>
