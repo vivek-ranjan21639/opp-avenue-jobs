@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
+  DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
@@ -370,13 +371,24 @@ const Header: React.FC<HeaderProps> = ({
               <Home className="w-4 h-4 sm:mr-1" />
               <span className="hidden sm:inline">Home</span>
             </Button>
-            <Button
-              onClick={onAdvertiseClick}
-              size="sm"
-              className="h-9 px-2 sm:px-3 rounded-lg bg-gradient-to-r from-accent to-accent-hover text-accent-foreground hover:from-accent-hover hover:to-accent border-0 advertise-pulse text-sm shadow-lg font-medium"
-            >
-              <span className="text-xs sm:text-sm">Advertise</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="sm"
+                  className="h-9 w-9 rounded-lg bg-gradient-to-r from-accent to-accent-hover text-accent-foreground hover:from-accent-hover hover:to-accent border-0 advertise-pulse shadow-lg"
+                >
+                  <Menu className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer">
+                  About
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onAdvertiseClick} className="cursor-pointer">
+                  Advertise
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
