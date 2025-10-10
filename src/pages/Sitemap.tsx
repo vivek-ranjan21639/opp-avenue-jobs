@@ -27,6 +27,8 @@ const Sitemap = () => {
       pages: [
         { name: 'Home', path: '/', description: 'Browse job listings and opportunities' },
         { name: 'About', path: '/about', description: 'Learn more about Opp Avenue' },
+        { name: 'Resources', path: '/resources', description: 'Helpful resources for your career' },
+        { name: 'Blogs', path: '/blogs', description: 'Latest news and insights' },
         { name: 'Advertise', path: '/advertise', description: 'Advertise your job openings with us' },
       ]
     },

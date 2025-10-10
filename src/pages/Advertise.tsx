@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Header, { FilterState } from '@/components/Header';
 import FloatingBubbles from '@/components/FloatingBubbles';
+import Footer from '@/components/Footer';
 
 const Advertise = () => {
   const navigate = useNavigate();
@@ -169,6 +170,8 @@ const Advertise = () => {
             </div>
           </div>
         </main>
+        
+        <Footer />
       </div>
     </div>
   );
