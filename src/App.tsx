@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import JobDetail from "./pages/JobDetail";
 import Advertise from "./pages/Advertise";
 import About from "./pages/About";
+import Resources from "./pages/Resources";
+import Blogs from "./pages/Blogs";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/job/:jobId" element={<JobDetail />} />
           <Route path="/advertise" element={<Advertise />} />
           <Route path="/about" element={<About />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/blogs" element={<Blogs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
