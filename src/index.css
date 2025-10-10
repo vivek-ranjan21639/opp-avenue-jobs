@@ -255,4 +255,20 @@
     @apply sticky top-0 z-30 bg-background/95 backdrop-blur-md;
     @apply shadow-none;
   }
+
+  /* Subtle pulse animation for social handles */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: scale(1.02);
+    }
+  }
 }
