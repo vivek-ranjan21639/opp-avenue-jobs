@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import Header, { FilterState } from '@/components/Header';
 import AdUnit from '@/components/AdUnit';
 import FloatingBubbles from '@/components/FloatingBubbles';
+import Footer from '@/components/Footer';
 import { useJob } from '@/hooks/useJobs';
 
 const JobDetail = () => {
@@ -93,7 +94,7 @@ const JobDetail = () => {
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
             <Button 
-              onClick={() => navigate('/')} 
+              onClick={() => navigate(-1)} 
               variant="outline" 
               className="mb-6 rounded-full"
             >
@@ -347,11 +348,10 @@ const JobDetail = () => {
             <div className="mb-6">
               <AdUnit size="banner" label="Bottom Banner Ad" />
             </div>
-
-
           </div>
         </main>
       </div>
+      <Footer />
     </div>
   );
 };

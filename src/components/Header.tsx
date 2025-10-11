@@ -393,12 +393,25 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               onClick={() => navigate('/')}
-              variant="outline"
+              variant={location.pathname === '/' ? 'default' : 'outline'}
               size="sm"
-              className="h-9 px-2 sm:px-3 rounded-lg bg-card text-card-foreground border-border hover:bg-secondary hover:border-primary text-sm shadow-sm"
+              className={`h-9 px-2 sm:px-3 rounded-lg text-sm shadow-sm transition-all ${
+                location.pathname === '/' 
+                  ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90' 
+                  : 'bg-card text-card-foreground border-border hover:bg-primary hover:text-primary-foreground hover:border-primary'
+              }`}
             >
               <Home className="w-4 h-4 sm:mr-1" />
               <span className="hidden sm:inline">Home</span>
+            </Button>
+            <Button
+              onClick={() => navigate('/advertise')}
+              variant="outline"
+              size="sm"
+              className="h-9 px-2 sm:px-3 rounded-lg bg-gradient-to-r from-accent/20 to-accent-hover/20 text-accent border-accent/50 hover:from-accent hover:to-accent-hover hover:text-accent-foreground text-sm shadow-sm font-medium"
+            >
+              <span className="hidden sm:inline">Advertise</span>
+              <span className="sm:hidden">Ads</span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -409,7 +422,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Menu className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-card z-50">
                 <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer mb-2 hover:bg-primary/20 hover:text-primary focus:bg-primary/20 focus:text-primary">
                   About
                 </DropdownMenuItem>
@@ -418,9 +431,6 @@ const Header: React.FC<HeaderProps> = ({
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/blogs')} className="cursor-pointer mb-2 hover:bg-primary/20 hover:text-primary focus:bg-primary/20 focus:text-primary">
                   Blogs
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/advertise')} className="cursor-pointer advertise-pulse font-medium bg-gradient-to-r from-accent/20 to-accent-hover/20 hover:from-primary/30 hover:to-primary/30 hover:text-primary focus:from-primary/30 focus:to-primary/30">
-                  Advertise
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

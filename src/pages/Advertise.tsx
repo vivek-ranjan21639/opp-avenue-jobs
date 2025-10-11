@@ -40,18 +40,8 @@ const Advertise = () => {
           activeFilters={activeFilters}
         />
         
-        <main className="px-4 sm:px-8 py-4 sm:py-8">
+        <main className="px-4 sm:px-8 pt-4 pb-8">
           <div className="max-w-5xl mx-auto">
-            {/* Back Button */}
-            <Button 
-              onClick={() => navigate('/')} 
-              variant="outline" 
-              className="mb-6 rounded-full"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Jobs
-            </Button>
-
             {/* Header */}
             <div className="bg-card rounded-2xl shadow-primary p-4 sm:p-8 mb-6 sm:mb-8">
               <div className="text-center">

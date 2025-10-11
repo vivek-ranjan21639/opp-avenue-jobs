@@ -62,16 +62,7 @@ const Sitemap = () => {
         activeFilters={activeFilters}
       />
 
-      <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <Button
-          onClick={() => navigate('/about')}
-          variant="outline"
-          className="mb-8"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to About
-        </Button>
-
+      <main className="container mx-auto px-4 pt-4 pb-12 max-w-6xl">
         <div className="space-y-12">
           <section className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">

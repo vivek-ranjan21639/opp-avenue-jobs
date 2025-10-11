@@ -75,6 +75,11 @@ const Footer = () => {
                   Advertise
                 </Link>
               </li>
+              <li>
+                <Link to="/blogs" className="text-muted-foreground hover:text-primary transition-colors">
+                  Blogs
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

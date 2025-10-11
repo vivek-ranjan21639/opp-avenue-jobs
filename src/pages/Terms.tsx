@@ -29,16 +29,7 @@ const Terms = () => {
         activeFilters={activeFilters}
       />
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <Button
-          onClick={() => navigate('/about')}
-          variant="outline"
-          className="mb-8"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to About
-        </Button>
-
+      <main className="container mx-auto px-4 pt-4 pb-12 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none space-y-6">
           <h1 className="text-4xl font-bold mb-4">Terms and Conditions</h1>
           <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>

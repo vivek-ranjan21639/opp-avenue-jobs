@@ -21,7 +21,7 @@ const Resources = () => {
         onFiltersChange={() => {}}
       />
       
-      <main className="container mx-auto px-4 py-12 mt-20">
+      <main className="container mx-auto px-4 pt-4 pb-12">
         <h1 className="text-4xl font-bold mb-6 text-foreground">Resources</h1>
         
         <div className="prose prose-lg max-w-none">
