@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { BookOpen, FileText, Video, Download } from "lucide-react";
 
 const Resources = () => {
@@ -21,8 +22,13 @@ const Resources = () => {
         onFiltersChange={() => {}}
       />
       
-      <main className="container mx-auto px-4 pt-4 pb-12">
+      <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
         <h1 className="text-4xl font-bold mb-6 text-foreground">Resources</h1>
+        
+        {/* Top Ad Space */}
+        <div className="mb-8">
+          <AdUnit size="banner" label="Top Banner Ad" />
+        </div>
         
         <div className="prose prose-lg max-w-none">
           <p className="text-muted-foreground mb-8">
@@ -85,6 +91,11 @@ const Resources = () => {
               <li>• Technical Certifications Guide</li>
             </ul>
           </section>
+          
+          {/* Bottom Ad Space */}
+          <div className="mt-8">
+            <AdUnit size="rectangle" label="Bottom Rectangle Ad" />
+          </div>
         </div>
       </main>
 

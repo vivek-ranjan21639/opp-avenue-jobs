@@ -338,7 +338,7 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={handleFilterToggle}
                   variant="outline"
                   size="sm"
-                  className="h-8 w-8 rounded-xl border-input-border hover:bg-secondary hover:border-primary flex-shrink-0"
+                  className="h-8 w-8 rounded-xl border-input-border hover:bg-primary hover:text-primary-foreground hover:border-primary flex-shrink-0"
                 >
                   <Filter className="w-4 h-4" />
                 </Button>

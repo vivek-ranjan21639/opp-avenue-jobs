@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Home, Info, Mail, FileText, Shield, Cookie, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,10 @@ const Sitemap = () => {
     sector: [],
     companies: []
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const siteStructure = [
     {

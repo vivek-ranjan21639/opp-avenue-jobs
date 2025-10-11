@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { Calendar, User, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const blogPosts = [
     {
@@ -65,8 +71,13 @@ const Blogs = () => {
         onFiltersChange={() => {}}
       />
       
-      <main className="container mx-auto px-4 pt-4 pb-12">
+      <main className="max-w-[1328px] mx-auto px-4 pt-4 pb-12">
         <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
+        
+        {/* Top Ad Space */}
+        <div className="mb-6">
+          <AdUnit size="banner" label="Top Banner Ad" />
+        </div>
         
         <p className="text-muted-foreground mb-8 text-lg">
           Stay updated with the latest news, insights, and trends in the railway industry.
@@ -135,6 +146,11 @@ const Blogs = () => {
 
             <div className="text-center">
               <p className="text-muted-foreground">More articles coming soon!</p>
+            </div>
+            
+            {/* Mid-content Ad */}
+            <div className="mt-8">
+              <AdUnit size="rectangle" label="Mid-content Rectangle Ad" />
             </div>
           </div>
 

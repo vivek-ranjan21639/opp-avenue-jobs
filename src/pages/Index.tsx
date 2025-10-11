@@ -201,7 +201,7 @@ const Index = () => {
             </div>
             
             {/* Main Content */}
-            <div className="max-w-[1008px] flex-1">
+            <div className="w-full max-w-[1008px] flex-1">
             {/* Job Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
               {isLoading ? (

@@ -12,7 +12,7 @@ import Resources from "./pages/Resources";
 import Blogs from "./pages/Blogs";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
+import TermsConditions from "./pages/TermsConditions";
 import Disclaimer from "./pages/Disclaimer";
 import CookiePolicy from "./pages/CookiePolicy";
 import Sitemap from "./pages/Sitemap";
@@ -35,7 +35,7 @@ const App = () => (
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
+          <Route path="/terms" element={<TermsConditions />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/sitemap" element={<Sitemap />} />
