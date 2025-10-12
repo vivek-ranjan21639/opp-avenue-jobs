@@ -15,7 +15,7 @@ const AdUnit: React.FC<AdUnitProps> = ({ size, className = '', label, hasAd = tr
 
   const sizeClasses = {
     'banner': 'w-full h-24 md:h-32', // Top banner 728x90 or 970x250
-    'rectangle': 'w-full h-64', // Medium rectangle 300x250
+    'rectangle': 'w-full h-40', // Medium rectangle 300x250
     'sidebar': 'w-full h-96', // Sidebar 160x600
     'mobile-banner': 'w-full h-20' // Mobile banner 320x50
   };

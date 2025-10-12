@@ -18,7 +18,7 @@ const Blogs = () => {
     {
       id: 1,
       title: "The Future of Railway Technology",
-      excerpt: "Exploring the latest innovations shaping the future of rail transport...",
+      excerpt: "Exploring the latest innovations shaping the future of rail transport. From AI-powered predictive maintenance to autonomous trains, discover how cutting-edge technology is revolutionizing the railway industry. Learn about smart signaling systems, IoT integration, and the role of machine learning in optimizing railway operations for enhanced safety and efficiency.",
       author: "John Smith",
       date: "March 15, 2024",
       category: "Technology",
@@ -27,7 +27,7 @@ const Blogs = () => {
     {
       id: 2,
       title: "Career Growth in Railway Industry",
-      excerpt: "Tips and strategies for advancing your career in the railway sector...",
+      excerpt: "Tips and strategies for advancing your career in the railway sector. Whether you're just starting out or looking to climb the corporate ladder, this comprehensive guide covers essential skills, networking strategies, professional certifications, and career pathways. Discover mentorship opportunities, leadership development programs, and how to position yourself for success in this dynamic industry.",
       author: "Sarah Johnson",
       date: "March 12, 2024",
       category: "Career",
@@ -36,7 +36,7 @@ const Blogs = () => {
     {
       id: 3,
       title: "Railway Safety Best Practices",
-      excerpt: "Essential safety protocols every railway professional should know...",
+      excerpt: "Essential safety protocols every railway professional should know. This detailed guide covers critical safety procedures, risk assessment methodologies, emergency response protocols, and compliance requirements. Learn about the latest safety technologies, training programs, and how to create a culture of safety in railway operations to protect both workers and passengers.",
       author: "Michael Brown",
       date: "March 10, 2024",
       category: "Safety",
@@ -71,13 +71,8 @@ const Blogs = () => {
         onFiltersChange={() => {}}
       />
       
-      <main className="max-w-[1328px] mx-auto px-4 pt-4 pb-12">
+      <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
         <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
-        
-        {/* Top Ad Space */}
-        <div className="mb-6">
-          <AdUnit size="banner" label="Top Banner Ad" />
-        </div>
         
         <p className="text-muted-foreground mb-8 text-lg">
           Stay updated with the latest news, insights, and trends in the railway industry.
@@ -147,15 +142,10 @@ const Blogs = () => {
             <div className="text-center">
               <p className="text-muted-foreground">More articles coming soon!</p>
             </div>
-            
-            {/* Mid-content Ad */}
-            <div className="mt-8">
-              <AdUnit size="rectangle" label="Mid-content Rectangle Ad" />
-            </div>
           </div>
 
           {/* Tags Sidebar */}
-          <aside className="lg:sticky lg:top-4 h-fit">
+          <aside className="lg:sticky lg:top-24 h-fit self-start">
             <div className="border rounded-lg p-6 bg-card">
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Tag className="w-5 h-5 text-primary" />
