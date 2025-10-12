@@ -93,7 +93,7 @@ const Blogs = () => {
                 </div>
                 
                 <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
-                  <Link to={`#`}>{post.title}</Link>
+                  <Link to={`/blog/${post.id}`}>{post.title}</Link>
                 </h2>
                 
                 <p className="text-muted-foreground mb-4">{post.excerpt}</p>
@@ -125,7 +125,7 @@ const Blogs = () => {
                 </div>
                 
                 <Link 
-                  to={`#`}
+                  to={`/blog/${post.id}`}
                   className="inline-block text-primary hover:underline font-medium"
                 >
                   Read More →

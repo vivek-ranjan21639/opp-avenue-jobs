@@ -10,6 +10,11 @@ import Advertise from "./pages/Advertise";
 import About from "./pages/About";
 import Resources from "./pages/Resources";
 import Blogs from "./pages/Blogs";
+import BlogDetail from "./pages/BlogDetail";
+import CareerGuides from "./pages/CareerGuides";
+import ResumeTemplates from "./pages/ResumeTemplates";
+import InterviewTips from "./pages/InterviewTips";
+import IndustryReports from "./pages/IndustryReports";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
@@ -32,7 +37,12 @@ const App = () => (
           <Route path="/advertise" element={<Advertise />} />
           <Route path="/about" element={<About />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/resources/career-guides" element={<CareerGuides />} />
+          <Route path="/resources/resume-templates" element={<ResumeTemplates />} />
+          <Route path="/resources/interview-tips" element={<InterviewTips />} />
+          <Route path="/resources/industry-reports" element={<IndustryReports />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsConditions />} />
