@@ -178,29 +178,42 @@ const JobDetail = () => {
                   <div>
                     <h4 className="font-semibold text-card-foreground mb-2">Company Stats</h4>
                     <div className="space-y-1 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        <span>500+ employees globally</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        <span>Founded in 2015</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Building className="w-3 h-3" />
-                        <span>15+ office locations</span>
-                      </div>
+                      {job.companyEmployeeCount && (
+                        <div className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          <span>{job.companyEmployeeCount} employees</span>
+                        </div>
+                      )}
+                      {job.companyFoundedYear && (
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>Founded in {job.companyFoundedYear}</span>
+                        </div>
+                      )}
+                      {job.companyOfficeLocations && job.companyOfficeLocations.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Building className="w-3 h-3" />
+                          <span>{job.companyOfficeLocations.length}+ office locations</span>
+                        </div>
+                      )}
+                      {job.companyHqLocation && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          <span>HQ: {job.companyHqLocation}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-card-foreground mb-2">Company Culture</h4>
-                    <div className="space-y-1 text-sm">
-                      <p>• Innovation-driven environment</p>
-                      <p>• Collaborative team spirit</p>
-                      <p>• Continuous learning culture</p>
-                      <p>• Work-life balance focused</p>
+                  {job.culture_points && job.culture_points.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-card-foreground mb-2">Company Culture</h4>
+                      <div className="space-y-1 text-sm">
+                        {job.culture_points.map((point, index) => (
+                          <p key={index}>• {point}</p>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-4 text-sm pt-2 border-t border-border">
@@ -208,18 +221,34 @@ const JobDetail = () => {
                     <Calendar className="w-3 h-3" />
                     <span>Posted {job.postedTime}</span>
                   </div>
+                  {job.deadline && (
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>Deadline: {new Date(job.deadline).toLocaleDateString()}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <Button 
-                  onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
-                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
-                >
-                  <Send className="w-4 h-4" />
-                  Apply
-                </Button>
+                {job.application_link ? (
+                  <Button 
+                    onClick={() => window.open(job.application_link, '_blank')}
+                    className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    Apply Now
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                    className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    Apply via Email
+                  </Button>
+                )}
                 {job.companyWebsite && (
                   <Button 
                     onClick={() => window.open(job.companyWebsite, '_blank')}
@@ -234,40 +263,46 @@ const JobDetail = () => {
             </div>
 
             {/* Skills Required */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-card-foreground">Skills Required</h2>
-              <div className="flex flex-wrap gap-2">
-                {job.skills.map((skill, index) => (
-                  <Badge key={index} variant="outline" className="px-3 py-1 rounded-full">
-                    {skill}
-                  </Badge>
-                ))}
+            {job.skills && job.skills.length > 0 && (
+              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-card-foreground">Skills Required</h2>
+                <div className="flex flex-wrap gap-2">
+                  {job.skills.map((skill, index) => (
+                    <Badge key={index} variant="outline" className="px-3 py-1 rounded-full">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Job Description */}
             <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-card-foreground">About the Role</h2>
               <div className="prose prose-sm max-w-none text-muted-foreground">
-                <p className="mb-4">{job.description}</p>
+                {job.description && <p className="mb-4">{job.description}</p>}
                 
-                <h3 className="font-semibold text-card-foreground mt-6 mb-3">Key Responsibilities:</h3>
-                <ul className="space-y-2 mb-6">
-                  <li>• Design and develop scalable data pipelines and analytics solutions</li>
-                  <li>• Collaborate with cross-functional teams to understand business requirements</li>
-                  <li>• Build machine learning models and statistical analyses</li>
-                  <li>• Present insights and recommendations to stakeholders</li>
-                  <li>• Mentor junior team members and contribute to best practices</li>
-                </ul>
+                {job.responsibilities && job.responsibilities.length > 0 && (
+                  <>
+                    <h3 className="font-semibold text-card-foreground mt-6 mb-3">Key Responsibilities:</h3>
+                    <ul className="space-y-2 mb-6">
+                      {job.responsibilities.map((resp, index) => (
+                        <li key={index}>• {resp}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
 
-                <h3 className="font-semibold text-card-foreground mt-6 mb-3">Qualifications & Requirements:</h3>
-                <ul className="space-y-2">
-                  <li>• Bachelor's degree in Computer Science, Statistics, or related field</li>
-                  <li>• 3+ years of experience in data science or analytics</li>
-                  <li>• Proficiency in Python, R, SQL, and machine learning frameworks</li>
-                  <li>• Experience with cloud platforms (AWS, GCP, Azure)</li>
-                  <li>• Strong analytical and problem-solving skills</li>
-                </ul>
+                {job.qualifications && job.qualifications.length > 0 && (
+                  <>
+                    <h3 className="font-semibold text-card-foreground mt-6 mb-3">Qualifications & Requirements:</h3>
+                    <ul className="space-y-2">
+                      {job.qualifications.map((qual, index) => (
+                        <li key={index}>• {qual}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </div>
             
@@ -277,71 +312,77 @@ const JobDetail = () => {
             </div>
 
             {/* Eligibility Criteria */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-card-foreground">Eligibility Criteria</h2>
-              <div className="space-y-4 text-muted-foreground">
-                <div>
-                  <h3 className="font-semibold text-card-foreground mb-2">Education Requirements:</h3>
-                  <ul className="space-y-2">
-                    <li>• Bachelor's degree holders with minimum 70% or equivalent marks</li>
-                    <li>• Master's degree candidates currently pursuing or completed</li>
-                    <li>• Fresh graduates within 6 months of completion are welcome</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-card-foreground mb-2">Experience Level:</h3>
-                  <p>Entry to mid-level professionals with 0-5 years of relevant experience</p>
+            {job.eligibility && (
+              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-card-foreground">Eligibility Criteria</h2>
+                <div className="space-y-4 text-muted-foreground">
+                  {job.eligibility.education_level && (
+                    <div>
+                      <h3 className="font-semibold text-card-foreground mb-2">Education Requirements:</h3>
+                      <p>{job.eligibility.education_level}</p>
+                    </div>
+                  )}
+                  {(job.eligibility.min_experience || job.eligibility.max_experience) && (
+                    <div>
+                      <h3 className="font-semibold text-card-foreground mb-2">Experience Level:</h3>
+                      <p>
+                        {job.eligibility.min_experience && job.eligibility.max_experience
+                          ? `${job.eligibility.min_experience}-${job.eligibility.max_experience} years of experience`
+                          : job.eligibility.min_experience
+                          ? `Minimum ${job.eligibility.min_experience} years of experience`
+                          : job.eligibility.max_experience
+                          ? `Maximum ${job.eligibility.max_experience} years of experience`
+                          : 'Experience level not specified'}
+                      </p>
+                    </div>
+                  )}
+                  {job.eligibility.age_limit && (
+                    <div>
+                      <h3 className="font-semibold text-card-foreground mb-2">Age Limit:</h3>
+                      <p>Maximum {job.eligibility.age_limit} years</p>
+                    </div>
+                  )}
+                  {job.eligibility.other_criteria && (
+                    <div>
+                      <h3 className="font-semibold text-card-foreground mb-2">Other Criteria:</h3>
+                      <p>{job.eligibility.other_criteria}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Benefits & Perks */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-card-foreground">Benefits & Perks</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-card-foreground">Health & Wellness</h3>
-                  <ul className="space-y-1 text-muted-foreground text-sm">
-                    <li>• Comprehensive health insurance</li>
-                    <li>• Mental health support</li>
-                    <li>• Wellness programs</li>
-                  </ul>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-card-foreground">Work-Life Balance</h3>
-                  <ul className="space-y-1 text-muted-foreground text-sm">
-                    <li>• Flexible working hours</li>
-                    <li>• Remote work options</li>
-                    <li>• Paid time off</li>
-                  </ul>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-card-foreground">Growth & Development</h3>
-                  <ul className="space-y-1 text-muted-foreground text-sm">
-                    <li>• Learning & development budget</li>
-                    <li>• Conference attendance</li>
-                    <li>• Career advancement opportunities</li>
-                  </ul>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-card-foreground">Additional Benefits</h3>
-                  <ul className="space-y-1 text-muted-foreground text-sm">
-                    <li>• Performance bonuses</li>
-                    <li>• Employee stock options</li>
-                    <li>• Team events & activities</li>
-                  </ul>
+            {job.benefits && job.benefits.length > 0 && (
+              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-card-foreground">Benefits & Perks</h2>
+                <div className="flex flex-wrap gap-2">
+                  {job.benefits.map((benefit, index) => (
+                    <Badge key={index} variant="secondary" className="px-3 py-1 rounded-full">
+                      {benefit}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Apply Button */}
             <div className="flex justify-center mb-6">
-              <Button 
-                onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
-                className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
-              >
-                Apply
-              </Button>
+              {job.application_link ? (
+                <Button 
+                  onClick={() => window.open(job.application_link, '_blank')}
+                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
+                >
+                  Apply Now
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
+                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
+                >
+                  Apply via Email
+                </Button>
+              )}
             </div>
             
             {/* Bottom Ad */}
