@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -110,7 +110,8 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   // Get dynamic filter options based on current selections and available jobs
-  const getDynamicFilterOptions = () => {
+  const filterOptions = useMemo(() => {
+    const getDynamicFilterOptions = () => {
     // Get all jobs that match current filters (excluding the filter we're calculating options for)
     const getFilteredJobsExcluding = (excludeFilter: keyof FilterState) => {
       let filtered = [...mockJobs];
@@ -257,9 +258,10 @@ const Header: React.FC<HeaderProps> = ({
         options: companyOptions
       },
     ];
-  };
-
-  const filterOptions = getDynamicFilterOptions();
+    };
+    
+    return getDynamicFilterOptions();
+  }, [searchQuery, activeFilters]);
 
   const handleFilterChange = (filterKey: keyof FilterState, option: string) => {
     const currentValues = activeFilters[filterKey];
