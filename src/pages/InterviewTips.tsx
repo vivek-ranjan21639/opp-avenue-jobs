@@ -4,46 +4,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Video, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useResources } from "@/hooks/useResources";
 
 const InterviewTips = () => {
   const navigate = useNavigate();
+  const { data: tips, isLoading } = useResources('content');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const tips = [
-    {
-      title: "Common Railway Interview Questions",
-      description: "Prepare for the most frequently asked questions in railway interviews.",
-      content: "Master the essential interview questions about safety protocols, technical knowledge, and situational responses. Includes sample answers and tips for articulating your experience effectively.",
-      topics: ["Safety commitment questions", "Technical knowledge assessment", "Behavioral scenarios", "Company-specific inquiries"]
-    },
-    {
-      title: "Technical Assessment Preparation",
-      description: "Tips for succeeding in technical assessments and practical tests.",
-      content: "Get ready for hands-on technical evaluations. Learn what to expect in practical tests, how to demonstrate your technical competence, and strategies for staying calm under pressure.",
-      topics: ["Equipment operation tests", "Safety procedure demonstrations", "Problem-solving exercises", "Technical drawing interpretation"]
-    },
-    {
-      title: "Behavioral Interview Strategies",
-      description: "Master the STAR method for behavioral interview questions.",
-      content: "Learn how to structure your responses using the STAR (Situation, Task, Action, Result) method. Prepare compelling stories that showcase your skills and experience.",
-      topics: ["STAR method framework", "Conflict resolution examples", "Leadership demonstrations", "Team collaboration stories"]
-    },
-    {
-      title: "First Impression and Professional Presence",
-      description: "Make a strong first impression in your railway industry interview.",
-      content: "Understand the importance of professional appearance, punctuality, and communication in the railway sector. Learn industry-specific etiquette and how to present yourself confidently.",
-      topics: ["Professional attire guidelines", "Body language tips", "Communication skills", "Following up after interviews"]
-    },
-    {
-      title: "Salary Negotiation Techniques",
-      description: "Navigate salary discussions with confidence and professionalism.",
-      content: "Learn when and how to discuss compensation, how to research industry standards, and strategies for negotiating a fair package that reflects your value.",
-      topics: ["Market research strategies", "Timing your negotiation", "Total compensation packages", "Professional negotiation tactics"]
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,26 +49,47 @@ const InterviewTips = () => {
         </div>
 
         <div className="space-y-6">
-          {tips.map((tip, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="text-2xl">{tip.title}</CardTitle>
-                <CardDescription>{tip.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">{tip.content}</p>
-                <h3 className="font-semibold mb-3">Key Topics Covered:</h3>
-                <ul className="list-disc list-inside space-y-2 mb-4 text-muted-foreground">
-                  {tip.topics.map((topic, idx) => (
-                    <li key={idx}>{topic}</li>
-                  ))}
-                </ul>
-                <button className="text-primary hover:underline font-medium">
-                  Learn More →
-                </button>
-              </CardContent>
-            </Card>
-          ))}
+          {isLoading ? (
+            <p className="text-muted-foreground">Loading interview tips...</p>
+          ) : tips && tips.length > 0 ? (
+            tips.map((tip) => (
+              <Card key={tip.id}>
+                <CardHeader>
+                  <CardTitle className="text-2xl">{tip.title}</CardTitle>
+                  {tip.description && <CardDescription>{tip.description}</CardDescription>}
+                </CardHeader>
+                <CardContent>
+                  {tip.content_text && (
+                    <p className="text-muted-foreground mb-4">{tip.content_text}</p>
+                  )}
+                  {tip.video_url && (
+                    <div className="mb-4">
+                      <video 
+                        controls 
+                        className="w-full rounded-lg"
+                        poster={tip.thumbnail_url || undefined}
+                      >
+                        <source src={tip.video_url} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  )}
+                  {tip.external_url && (
+                    <a 
+                      href={tip.external_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Learn More →
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No interview tips available yet.</p>
+          )}
         </div>
       </main>
 

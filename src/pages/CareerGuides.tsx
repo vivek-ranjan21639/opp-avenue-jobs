@@ -4,41 +4,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useResources } from "@/hooks/useResources";
 
 const CareerGuides = () => {
   const navigate = useNavigate();
+  const { data: guides, isLoading } = useResources('category');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const guides = [
-    {
-      title: "Getting Started in Railway Operations",
-      description: "A comprehensive guide for beginners entering the railway industry.",
-      content: "Learn the fundamentals of railway operations, including safety protocols, operational procedures, and career pathways. This guide covers everything from entry-level positions to advanced roles in operations management."
-    },
-    {
-      title: "Advanced Signal Engineering Career Path",
-      description: "Navigate your career progression in signal engineering roles.",
-      content: "Explore the technical requirements and career progression opportunities in signal engineering. From basic signaling principles to advanced automation systems, this guide maps out your journey to becoming a senior signal engineer."
-    },
-    {
-      title: "Railway Project Management Guide",
-      description: "Essential skills and certifications for railway project managers.",
-      content: "Master the art of managing railway infrastructure projects. Learn about project planning, stakeholder management, risk assessment, and the key certifications that will advance your project management career in the railway sector."
-    },
-    {
-      title: "Technical Specialist Career Development",
-      description: "Building expertise in railway technical specializations.",
-      content: "Discover how to develop deep technical expertise in areas like rolling stock maintenance, track engineering, or electrical systems. This guide provides insights into certification paths and professional development opportunities."
-    },
-    {
-      title: "Leadership and Management in Railways",
-      description: "Transitioning from technical roles to management positions.",
-      content: "Learn how to make the transition from technical expert to effective leader. This guide covers essential leadership skills, management techniques, and strategies for building high-performing railway operations teams."
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,20 +49,35 @@ const CareerGuides = () => {
         </div>
 
         <div className="space-y-6">
-          {guides.map((guide, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="text-2xl">{guide.title}</CardTitle>
-                <CardDescription>{guide.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">{guide.content}</p>
-                <button className="text-primary hover:underline font-medium">
-                  Read Full Guide →
-                </button>
-              </CardContent>
-            </Card>
-          ))}
+          {isLoading ? (
+            <p className="text-muted-foreground">Loading career guides...</p>
+          ) : guides && guides.length > 0 ? (
+            guides.map((guide) => (
+              <Card key={guide.id}>
+                <CardHeader>
+                  <CardTitle className="text-2xl">{guide.title}</CardTitle>
+                  {guide.description && <CardDescription>{guide.description}</CardDescription>}
+                </CardHeader>
+                <CardContent>
+                  {guide.content_text && (
+                    <p className="text-muted-foreground mb-4">{guide.content_text}</p>
+                  )}
+                  {guide.external_url && (
+                    <a 
+                      href={guide.external_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Read Full Guide →
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No career guides available yet.</p>
+          )}
         </div>
       </main>
 

@@ -2,57 +2,19 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import AdUnit from "@/components/AdUnit";
 import { Calendar, User, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useBlogs, useBlogTags } from "@/hooks/useBlogs";
+import { format } from "date-fns";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { data: blogs, isLoading } = useBlogs(selectedTag);
+  const { data: tags } = useBlogTags();
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Future of Railway Technology",
-      excerpt: "Exploring the latest innovations shaping the future of rail transport. From AI-powered predictive maintenance to autonomous trains, discover how cutting-edge technology is revolutionizing the railway industry. Learn about smart signaling systems, IoT integration, and the role of machine learning in optimizing railway operations for enhanced safety and efficiency.",
-      author: "John Smith",
-      date: "March 15, 2024",
-      category: "Technology",
-      tags: ["Technology", "Innovation", "Future", "AI", "Automation"]
-    },
-    {
-      id: 2,
-      title: "Career Growth in Railway Industry",
-      excerpt: "Tips and strategies for advancing your career in the railway sector. Whether you're just starting out or looking to climb the corporate ladder, this comprehensive guide covers essential skills, networking strategies, professional certifications, and career pathways. Discover mentorship opportunities, leadership development programs, and how to position yourself for success in this dynamic industry.",
-      author: "Sarah Johnson",
-      date: "March 12, 2024",
-      category: "Career",
-      tags: ["Career", "Growth", "Professional Development", "Tips"]
-    },
-    {
-      id: 3,
-      title: "Railway Safety Best Practices",
-      excerpt: "Essential safety protocols every railway professional should know. This detailed guide covers critical safety procedures, risk assessment methodologies, emergency response protocols, and compliance requirements. Learn about the latest safety technologies, training programs, and how to create a culture of safety in railway operations to protect both workers and passengers.",
-      author: "Michael Brown",
-      date: "March 10, 2024",
-      category: "Safety",
-      tags: ["Safety", "Best Practices", "Protocols", "Training"]
-    },
-  ];
-
-  // Get all unique tags
-  const allTags = Array.from(
-    new Set(blogPosts.flatMap(post => post.tags))
-  ).sort();
-
-  // Filter posts by selected tag
-  const filteredPosts = selectedTag
-    ? blogPosts.filter(post => post.tags.includes(selectedTag))
-    : blogPosts;
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,67 +43,67 @@ const Blogs = () => {
         <div className="grid lg:grid-cols-[1fr_300px] gap-8">
           {/* Blog Posts */}
           <div className="space-y-8">
-            {filteredPosts.map((post) => (
-              <article 
-                key={post.id} 
-                className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="mb-3">
-                  <span className="inline-block px-3 py-1 text-sm bg-primary/10 text-primary rounded-full">
-                    {post.category}
-                  </span>
-                </div>
-                
-                <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
-                  <Link to={`/blog/${post.id}`}>{post.title}</Link>
-                </h2>
-                
-                <p className="text-muted-foreground mb-4">{post.excerpt}</p>
-                
-                {/* Tags for each blog */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {post.tags.map((tag, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
-                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                      onClick={() => setSelectedTag(tag)}
-                    >
-                      <Tag className="w-3 h-3 mr-1" />
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                
-                <div className="flex items-center gap-6 text-sm text-muted-foreground mb-4">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>{post.author}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{post.date}</span>
-                  </div>
-                </div>
-                
-                <Link 
-                  to={`/blog/${post.id}`}
-                  className="inline-block text-primary hover:underline font-medium"
-                >
-                  Read More →
-                </Link>
-              </article>
-            ))}
-
-            {filteredPosts.length === 0 && (
+            {isLoading ? (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No blogs found for this tag.</p>
+                <p className="text-muted-foreground">Loading blogs...</p>
+              </div>
+            ) : blogs && blogs.length > 0 ? (
+              blogs.map((blog) => (
+                <article 
+                  key={blog.id} 
+                  className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
+                >
+                  <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
+                    <Link to={`/blog/${blog.slug}`}>{blog.title}</Link>
+                  </h2>
+                  
+                  <p className="text-muted-foreground mb-4">{blog.summary}</p>
+                  
+                  {/* Tags for each blog */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {blog.tags.map((tag) => (
+                      <Badge 
+                        key={tag.id} 
+                        variant="outline" 
+                        className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                        onClick={() => setSelectedTag(tag.name)}
+                      >
+                        <Tag className="w-3 h-3 mr-1" />
+                        {tag.name}
+                      </Badge>
+                    ))}
+                  </div>
+                  
+                  <div className="flex items-center gap-6 text-sm text-muted-foreground mb-4">
+                    {blog.author && (
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        <span>{blog.author.name}</span>
+                      </div>
+                    )}
+                    {blog.published_at && (
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{format(new Date(blog.published_at), 'MMM dd, yyyy')}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Link 
+                    to={`/blog/${blog.slug}`}
+                    className="inline-block text-primary hover:underline font-medium"
+                  >
+                    Read More →
+                  </Link>
+                </article>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  {selectedTag ? 'No blogs found for this tag.' : 'No blogs available yet.'}
+                </p>
               </div>
             )}
-
-            <div className="text-center">
-              <p className="text-muted-foreground">More articles coming soon!</p>
-            </div>
           </div>
 
           {/* Tags Sidebar */}
@@ -164,14 +126,14 @@ const Blogs = () => {
               )}
               
               <div className="flex flex-wrap gap-2">
-                {allTags.map((tag, index) => (
+                {tags && tags.map((tag) => (
                   <Badge
-                    key={index}
-                    variant={selectedTag === tag ? "default" : "outline"}
+                    key={tag.id}
+                    variant={selectedTag === tag.name ? "default" : "outline"}
                     className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                    onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                    onClick={() => setSelectedTag(tag.name === selectedTag ? null : tag.name)}
                   >
-                    {tag}
+                    {tag.name}
                   </Badge>
                 ))}
               </div>

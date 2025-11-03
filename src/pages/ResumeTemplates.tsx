@@ -5,41 +5,15 @@ import Footer from "@/components/Footer";
 import { FileText, ArrowLeft, Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useResources } from "@/hooks/useResources";
 
 const ResumeTemplates = () => {
   const navigate = useNavigate();
+  const { data: templates, isLoading } = useResources('content');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const templates = [
-    {
-      title: "Railway Engineer Resume Template",
-      description: "Professional template tailored for engineering positions.",
-      features: ["Technical skills section", "Project highlights", "Certifications showcase", "ATS-friendly format"]
-    },
-    {
-      title: "Operations Manager CV Template",
-      description: "Optimized format for operations management roles.",
-      features: ["Leadership experience focus", "Operational metrics", "Team management highlights", "Process improvement achievements"]
-    },
-    {
-      title: "Technical Specialist Resume",
-      description: "Highlight your technical expertise with this specialized template.",
-      features: ["Technical competencies matrix", "Equipment proficiency", "Safety certifications", "Problem-solving examples"]
-    },
-    {
-      title: "Entry-Level Railway Position Template",
-      description: "Perfect for graduates and career starters in the railway industry.",
-      features: ["Education emphasis", "Internship experience", "Transferable skills", "Career objective statement"]
-    },
-    {
-      title: "Senior Management Executive CV",
-      description: "Executive-level template for senior railway management positions.",
-      features: ["Strategic achievements", "Budget management", "Stakeholder relations", "Industry recognition"]
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,26 +50,35 @@ const ResumeTemplates = () => {
         </div>
 
         <div className="space-y-6">
-          {templates.map((template, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="text-2xl">{template.title}</CardTitle>
-                <CardDescription>{template.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <h3 className="font-semibold mb-3">Key Features:</h3>
-                <ul className="list-disc list-inside space-y-2 mb-4 text-muted-foreground">
-                  {template.features.map((feature, idx) => (
-                    <li key={idx}>{feature}</li>
-                  ))}
-                </ul>
-                <Button className="gap-2">
-                  <Download className="w-4 h-4" />
-                  Download Template
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+          {isLoading ? (
+            <p className="text-muted-foreground">Loading resume templates...</p>
+          ) : templates && templates.length > 0 ? (
+            templates.map((template) => (
+              <Card key={template.id}>
+                <CardHeader>
+                  <CardTitle className="text-2xl">{template.title}</CardTitle>
+                  {template.description && <CardDescription>{template.description}</CardDescription>}
+                </CardHeader>
+                <CardContent>
+                  {template.content_text && (
+                    <div className="mb-4">
+                      <p className="text-muted-foreground">{template.content_text}</p>
+                    </div>
+                  )}
+                  {template.file_url && (
+                    <Button className="gap-2" asChild>
+                      <a href={template.file_url} download>
+                        <Download className="w-4 h-4" />
+                        Download Template
+                      </a>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No resume templates available yet.</p>
+          )}
         </div>
       </main>
 
