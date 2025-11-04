@@ -64,8 +64,8 @@ const Blogs = () => {
                     {blog.tags.map((tag) => (
                       <Badge 
                         key={tag.id} 
-                        variant="secondary" 
-                        className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                        variant="tag" 
+                        className="cursor-pointer"
                         onClick={() => setSelectedTag(tag.name)}
                       >
                         <Tag className="w-3 h-3 mr-1" />
@@ -129,8 +129,8 @@ const Blogs = () => {
                 {tags && tags.map((tag) => (
                   <Badge
                     key={tag.id}
-                    variant={selectedTag === tag.name ? "default" : "secondary"}
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    variant={selectedTag === tag.name ? "default" : "tag"}
+                    className="cursor-pointer"
                     onClick={() => setSelectedTag(tag.name === selectedTag ? null : tag.name)}
                   >
                     {tag.name}
