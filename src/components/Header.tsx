@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { mockJobs } from '@/data/mockJobs';
+import { useJobs } from '@/hooks/useJobs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const { data: allJobs = [], isLoading } = useJobs();
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -114,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({
     const getDynamicFilterOptions = () => {
     // Get all jobs that match current filters (excluding the filter we're calculating options for)
     const getFilteredJobsExcluding = (excludeFilter: keyof FilterState) => {
-      let filtered = [...mockJobs];
+      let filtered = [...allJobs];
       
       // Apply search filter
       if (searchQuery.trim()) {
@@ -155,19 +156,7 @@ const Header: React.FC<HeaderProps> = ({
         } else if (filterKey === 'companies') {
           filtered = filtered.filter(job => values.includes(job.company));
         } else if (filterKey === 'sector') {
-          const sectorCompanyMap: Record<string, string[]> = {
-            'Technology': ['Amazon', 'Google', 'Microsoft', 'Meta', 'Tesla'],
-            'Entertainment': ['Netflix', 'Spotify'],
-            'Legal': ['National Legal Services Authority'],
-            'Transportation': ['Uber'],
-            'E-commerce': ['Amazon']
-          };
-          filtered = filtered.filter(job => {
-            return values.some(sector => {
-              const companies = sectorCompanyMap[sector] || [];
-              return companies.includes(job.company);
-            });
-          });
+          filtered = filtered.filter(job => job.sector && values.includes(job.sector));
         }
       });
       
@@ -208,17 +197,7 @@ const Header: React.FC<HeaderProps> = ({
     const companyOptions = Array.from(new Set(companyJobs.map(job => job.company))).sort();
 
     const sectorJobs = getFilteredJobsExcluding('sector');
-    const sectorCompanyMap: Record<string, string[]> = {
-      'Technology': ['Amazon', 'Google', 'Microsoft', 'Meta', 'Tesla'],
-      'Entertainment': ['Netflix', 'Spotify'],
-      'Legal': ['National Legal Services Authority'],
-      'Transportation': ['Uber'],
-      'E-commerce': ['Amazon']
-    };
-    const sectorOptions = Object.keys(sectorCompanyMap).filter(sector => {
-      const sectorCompanies = sectorCompanyMap[sector];
-      return sectorJobs.some(job => sectorCompanies.includes(job.company));
-    }).sort();
+    const sectorOptions = Array.from(new Set(sectorJobs.map(job => job.sector).filter(Boolean) as string[])).sort();
 
     return [
       { 
@@ -262,6 +241,7 @@ const Header: React.FC<HeaderProps> = ({
     
     return getDynamicFilterOptions();
   }, [
+    allJobs,
     searchQuery, 
     JSON.stringify(activeFilters.location),
     JSON.stringify(activeFilters.jobType),

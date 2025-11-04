@@ -159,6 +159,7 @@ export type Database = {
           logo_url: string | null
           name: string
           office_locations: string[] | null
+          sector: string | null
           website: string | null
         }
         Insert: {
@@ -174,6 +175,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           office_locations?: string[] | null
+          sector?: string | null
           website?: string | null
         }
         Update: {
@@ -189,6 +191,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           office_locations?: string[] | null
+          sector?: string | null
           website?: string | null
         }
         Relationships: []

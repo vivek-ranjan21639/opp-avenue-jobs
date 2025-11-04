@@ -15,6 +15,7 @@ export interface Job {
   description: string;
   remote: boolean;
   companyLogo?: string;
+  sector?: string;
 }
 
 interface JobCardProps {

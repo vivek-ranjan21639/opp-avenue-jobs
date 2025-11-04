@@ -87,22 +87,11 @@ const Index = () => {
       );
     }
     
-    // Apply sector filter (simplified - you could add sector field to Job type)
+    // Apply sector filter
     if (activeFilters.sector.length > 0) {
-      const sectorCompanyMap: Record<string, string[]> = {
-        'Technology': ['Amazon', 'Google', 'Microsoft', 'Meta', 'Tesla'],
-        'Entertainment': ['Netflix', 'Spotify'],
-        'Legal': ['National Legal Services Authority'],
-        'Transportation': ['Uber'],
-        'E-commerce': ['Amazon']
-      };
-      
-      filtered = filtered.filter(job => {
-        return activeFilters.sector.some(sector => {
-          const companies = sectorCompanyMap[sector] || [];
-          return companies.includes(job.company);
-        });
-      });
+      filtered = filtered.filter(job => 
+        job.sector && activeFilters.sector.includes(job.sector)
+      );
     }
     
     return filtered;

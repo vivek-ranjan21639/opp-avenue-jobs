@@ -13,7 +13,8 @@ export const useJobs = () => {
           companies (
             id,
             name,
-            logo_url
+            logo_url,
+            sector
           ),
           locations (
             city,
@@ -47,7 +48,8 @@ export const useJobs = () => {
         postedTime: formatPostedTime(job.created_at),
         description: job.description || '',
         remote: job.work_mode === 'Remote' || job.work_mode === 'Hybrid',
-        companyLogo: job.companies?.logo_url
+        companyLogo: job.companies?.logo_url,
+        sector: job.companies?.sector
       }));
     },
   });
