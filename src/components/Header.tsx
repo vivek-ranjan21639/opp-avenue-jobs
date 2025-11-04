@@ -283,21 +283,23 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky-header border-none">
-      {/* Social Media Links - Mobile Top */}
-      <div className="flex justify-center gap-3 py-2 md:hidden border-b border-border/20">
-        {socialLinks.map((link, index) => (
-          <a
-            key={index}
-            href={link.href}
-            target={link.href.startsWith('http') ? '_blank' : '_self'}
-            rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
-            title={link.label}
-          >
-            <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
-          </a>
-        ))}
-      </div>
+      {/* Social Media Links - Mobile Top (Home Page Only) */}
+      {isHomePage && (
+        <div className="flex justify-center gap-3 py-2 md:hidden border-b border-border/20">
+          {socialLinks.map((link, index) => (
+            <a
+              key={index}
+              href={link.href}
+              target={link.href.startsWith('http') ? '_blank' : '_self'}
+              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-border/50"
+              title={link.label}
+            >
+              <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+            </a>
+          ))}
+        </div>
+      )}
 
       <div className="px-8 py-2">
         {/* Top Row: Logo + Menu Buttons (Search hidden on mobile) */}
@@ -312,7 +314,7 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Search Bar - Desktop Only (Home Page) */}
           {isHomePage && (
-            <div className={`relative items-center gap-3 hidden md:flex ${isScrolled ? 'flex-1 max-w-lg' : 'flex-1 max-w-2xl'}`}>
+            <div className={`relative items-center gap-3 hidden md:flex ${isScrolled ? 'flex-1 max-w-md lg:max-w-lg' : 'flex-1 max-w-xl lg:max-w-2xl'}`}>
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
@@ -338,22 +340,22 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Eye-catching Social Handles - Desktop (Non-Home Pages) */}
           {!isHomePage && (
-            <div className="hidden md:flex items-center gap-3 flex-1 justify-center">
-              <div className="flex items-center gap-4 px-6 py-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border-2 border-primary/20 shadow-lg animate-pulse-subtle">
-                <span className="text-sm font-semibold text-foreground whitespace-nowrap">
-                  🌟 Join Our Community
+            <div className="hidden md:flex items-center gap-2 lg:gap-3 flex-1 justify-center">
+              <div className="flex items-center gap-2 lg:gap-4 px-3 lg:px-6 py-1.5 lg:py-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border-2 border-primary/20 shadow-lg animate-pulse-subtle">
+                <span className="text-xs lg:text-sm font-semibold text-foreground whitespace-nowrap">
+                  🌟 Join Us
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 lg:gap-2">
                   {socialLinks.map((link, index) => (
                     <a
                       key={index}
                       href={link.href}
                       target={link.href.startsWith('http') ? '_blank' : '_self'}
                       rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="flex items-center justify-center w-9 h-9 rounded-full bg-card hover:bg-primary hover:scale-125 transition-all duration-300 group shadow-md border-2 border-primary/30"
+                      className="flex items-center justify-center w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-card hover:bg-primary hover:scale-125 transition-all duration-300 group shadow-md border-2 border-primary/30"
                       title={link.label}
                     >
-                      <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+                      <link.icon className={`w-3 h-3 lg:w-4 lg:h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
                     </a>
                   ))}
                 </div>
@@ -454,21 +456,21 @@ const Header: React.FC<HeaderProps> = ({
         {/* Eye-catching Social Handles - Mobile (Non-Home Pages) */}
         {!isHomePage && (
           <div className="flex md:hidden justify-center mb-3">
-            <div className="flex flex-col items-center gap-2 px-4 py-3 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl border-2 border-primary/20 shadow-lg w-full animate-pulse-subtle">
-              <span className="text-sm font-semibold text-foreground">
+            <div className="flex flex-col items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-xl border-2 border-primary/20 shadow-lg w-full max-w-sm animate-pulse-subtle">
+              <span className="text-xs font-semibold text-foreground">
                 🌟 Join Our Community
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {socialLinks.map((link, index) => (
                   <a
                     key={index}
                     href={link.href}
                     target={link.href.startsWith('http') ? '_blank' : '_self'}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-card hover:bg-primary hover:scale-125 transition-all duration-300 group shadow-md border-2 border-primary/30"
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-300 group shadow-md border-2 border-primary/30"
                     title={link.label}
                   >
-                    <link.icon className={`w-5 h-5 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+                    <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
                   </a>
                 ))}
               </div>

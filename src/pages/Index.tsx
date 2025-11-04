@@ -180,10 +180,10 @@ const Index = () => {
         />
         
         {/* Job Listings */}
-        <main className="px-8 py-8">
-          <div className="flex justify-center gap-8">
+        <main className="px-4 md:px-6 lg:px-8 py-8">
+          <div className="flex justify-center gap-4 lg:gap-8">
             {/* Left Sidebar Ad - Hidden on mobile/tablet */}
-            <div className="hidden xl:block w-[160px] flex-shrink-0">
+            <div className="hidden lg:block w-[160px] flex-shrink-0">
               <div className="sticky top-28">
                 <AdUnit size="sidebar" label="Left Sidebar Ad" />
               </div>
@@ -236,7 +236,7 @@ const Index = () => {
             </div>
             
             {/* Right Sidebar Ad - Hidden on mobile/tablet */}
-            <div className="hidden xl:block w-[160px] flex-shrink-0">
+            <div className="hidden lg:block w-[160px] flex-shrink-0">
               <div className="sticky top-28">
                 <AdUnit size="sidebar" label="Right Sidebar Ad" />
               </div>

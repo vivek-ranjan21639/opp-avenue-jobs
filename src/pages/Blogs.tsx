@@ -40,6 +40,40 @@ const Blogs = () => {
           Stay updated with the latest news, insights, and trends in the railway industry.
         </p>
 
+        {/* Tags - Mobile Horizontal Scroll (below header) */}
+        <div className="lg:hidden mb-6">
+          <div className="border rounded-lg p-4 bg-card">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Tag className="w-5 h-5 text-primary" />
+              Browse by Tags
+            </h3>
+            
+            {selectedTag && (
+              <div className="mb-3">
+                <button
+                  onClick={() => setSelectedTag(null)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  ← Clear filter
+                </button>
+              </div>
+            )}
+            
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+              {tags && tags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant={selectedTag === tag.name ? "default" : "secondary"}
+                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors whitespace-nowrap flex-shrink-0"
+                  onClick={() => setSelectedTag(tag.name === selectedTag ? null : tag.name)}
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-[1fr_300px] gap-8">
           {/* Blog Posts */}
           <div className="space-y-8">
@@ -106,8 +140,8 @@ const Blogs = () => {
             )}
           </div>
 
-          {/* Tags Sidebar */}
-          <aside className="lg:sticky lg:top-24 h-fit self-start">
+          {/* Tags Sidebar - Desktop Only */}
+          <aside className="hidden lg:block lg:sticky lg:top-24 h-fit self-start">
             <div className="border rounded-lg p-6 bg-card">
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Tag className="w-5 h-5 text-primary" />

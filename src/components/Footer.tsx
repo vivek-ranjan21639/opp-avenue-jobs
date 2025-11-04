@@ -10,7 +10,7 @@ const Footer = () => {
   
   return (
     <footer className="border-t border-border/50 bg-card/50 mt-16">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12 py-8 max-w-7xl">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Company */}
           <div>
