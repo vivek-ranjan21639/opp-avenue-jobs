@@ -15,7 +15,8 @@ const PrivacyPolicy = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
 

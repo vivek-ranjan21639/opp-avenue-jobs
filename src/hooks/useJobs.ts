@@ -25,6 +25,12 @@ export const useJobs = () => {
             skills (
               name
             )
+          ),
+          job_domains (
+            domains (
+              id,
+              name
+            )
           )
         `)
         .is('deleted_at', null)
@@ -49,7 +55,8 @@ export const useJobs = () => {
         description: job.description || '',
         remote: job.work_mode === 'Remote' || job.work_mode === 'Hybrid',
         companyLogo: job.companies?.logo_url,
-        sector: job.companies?.sector
+        sector: job.companies?.sector,
+        domains: job.job_domains?.map((jd: any) => jd.domains?.name).filter(Boolean) || []
       }));
     },
   });

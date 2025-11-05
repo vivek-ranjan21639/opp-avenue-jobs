@@ -20,7 +20,8 @@ const JobDetail = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
   

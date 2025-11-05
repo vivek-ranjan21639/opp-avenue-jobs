@@ -14,17 +14,27 @@ export interface Blog {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  read_time_minutes?: number;
   author: {
     id: string;
     name: string;
     bio: string | null;
     profile_pic_url: string | null;
+    profile_url: string | null;
   } | null;
   tags: {
     id: string;
     name: string;
   }[];
 }
+
+// Calculate read time based on content (average 200 words per minute)
+export const calculateReadTime = (content: string | null): number => {
+  if (!content) return 1;
+  const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
+  const wordCount = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(wordCount / 200));
+};
 
 export const useBlogs = (tagFilter?: string | null) => {
   return useQuery({
@@ -34,7 +44,7 @@ export const useBlogs = (tagFilter?: string | null) => {
         .from('blogs')
         .select(`
           *,
-          author:authors(id, name, bio, profile_pic_url),
+          author:authors(id, name, bio, profile_pic_url, profile_url),
           blog_tags(
             tag:tags(id, name)
           )
@@ -49,7 +59,8 @@ export const useBlogs = (tagFilter?: string | null) => {
       // Transform the data to match our Blog interface
       const blogs: Blog[] = (data || []).map((blog: any) => ({
         ...blog,
-        tags: blog.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || []
+        tags: blog.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || [],
+        read_time_minutes: blog.read_time_minutes || calculateReadTime(blog.content)
       }));
       
       // Filter by tag if provided
@@ -74,7 +85,7 @@ export const useBlog = (slug: string | undefined) => {
         .from('blogs')
         .select(`
           *,
-          author:authors(id, name, bio, profile_pic_url),
+          author:authors(id, name, bio, profile_pic_url, profile_url),
           blog_tags(
             tag:tags(id, name)
           )
@@ -88,7 +99,8 @@ export const useBlog = (slug: string | undefined) => {
       // Transform the data
       const blog: Blog = {
         ...data,
-        tags: data.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || []
+        tags: data.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || [],
+        read_time_minutes: data.read_time_minutes || calculateReadTime(data.content)
       };
       
       return blog;

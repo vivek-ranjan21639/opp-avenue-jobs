@@ -2,19 +2,44 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Calendar, User, Tag } from "lucide-react";
+import { Calendar, User, Tag, ArrowUp, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useBlogs, useBlogTags } from "@/hooks/useBlogs";
+import { useBlogAuthors } from "@/hooks/useBlogAuthors";
 import { format } from "date-fns";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const { data: blogs, isLoading } = useBlogs(selectedTag);
+  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const { data: allBlogs, isLoading } = useBlogs();
   const { data: tags } = useBlogTags();
+  const { data: authors } = useBlogAuthors();
+
+  // Filter blogs by tag and author
+  const blogs = allBlogs?.filter(blog => {
+    const matchesTag = !selectedTag || blog.tags.some(tag => tag.name === selectedTag);
+    const matchesAuthor = !selectedAuthor || blog.author?.name === selectedAuthor;
+    return matchesTag && matchesAuthor;
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Scroll-to-top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,7 +52,8 @@ const Blogs = () => {
           jobType: [],
           experience: [],
           salaryRange: [],
-          sector: [],
+          domain: [],
+          skills: [],
           companies: [],
         }}
         onFiltersChange={() => {}}
@@ -36,40 +62,63 @@ const Blogs = () => {
       <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
         <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
         
-        <p className="text-muted-foreground mb-8 text-lg">
+        <p className="text-muted-foreground mb-6 text-lg">
           Stay updated with the latest news, insights, and trends in the railway industry.
         </p>
 
-        {/* Tags - Mobile Horizontal Scroll (below header) */}
-        <div className="lg:hidden mb-6">
-          <div className="border rounded-lg p-4 bg-card">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <Tag className="w-5 h-5 text-primary" />
-              Browse by Tags
-            </h3>
-            
-            {selectedTag && (
-              <div className="mb-3">
+        {/* Filters - Mobile/Tablet (sticky below header) */}
+        <div className="lg:hidden mb-6 sticky top-16 z-40 bg-background pb-2">
+          <div className="border rounded-lg p-3 bg-card shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold flex items-center gap-1.5">
+                <Tag className="w-4 h-4 text-primary" />
+                Filter
+              </h3>
+              {(selectedTag || selectedAuthor) && (
                 <button
-                  onClick={() => setSelectedTag(null)}
-                  className="text-sm text-primary hover:underline"
+                  onClick={() => {
+                    setSelectedTag(null);
+                    setSelectedAuthor(null);
+                  }}
+                  className="text-xs text-primary hover:underline"
                 >
-                  ← Clear filter
+                  Clear all
                 </button>
-              </div>
-            )}
+              )}
+            </div>
             
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-              {tags && tags.map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant={selectedTag === tag.name ? "default" : "secondary"}
-                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors whitespace-nowrap flex-shrink-0"
-                  onClick={() => setSelectedTag(tag.name === selectedTag ? null : tag.name)}
-                >
-                  {tag.name}
-                </Badge>
-              ))}
+            {/* Tags Filter */}
+            <div className="mb-3">
+              <p className="text-xs text-muted-foreground mb-1.5">By Tag:</p>
+              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                {tags && tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant={selectedTag === tag.name ? "default" : "secondary"}
+                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors whitespace-nowrap flex-shrink-0 text-xs px-2 py-0.5"
+                    onClick={() => setSelectedTag(tag.name === selectedTag ? null : tag.name)}
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            {/* Authors Filter */}
+            <div>
+              <p className="text-xs text-muted-foreground mb-1.5">By Author:</p>
+              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                {authors && authors.map((author) => (
+                  <Badge
+                    key={author.id}
+                    variant={selectedAuthor === author.name ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors whitespace-nowrap flex-shrink-0 text-xs px-2 py-0.5"
+                    onClick={() => setSelectedAuthor(author.name === selectedAuthor ? null : author.name)}
+                  >
+                    {author.name}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -85,7 +134,7 @@ const Blogs = () => {
               blogs.map((blog) => (
                 <article 
                   key={blog.id} 
-                  className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
+                  className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card/50"
                 >
                   <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
                     <Link to={`/blog/${blog.slug}`}>{blog.title}</Link>
@@ -112,13 +161,30 @@ const Blogs = () => {
                     {blog.author && (
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
-                        <span>{blog.author.name}</span>
+                        {blog.author.profile_url ? (
+                          <a 
+                            href={blog.author.profile_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="hover:text-primary hover:underline transition-colors"
+                          >
+                            {blog.author.name}
+                          </a>
+                        ) : (
+                          <span>{blog.author.name}</span>
+                        )}
                       </div>
                     )}
                     {blog.published_at && (
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span>{format(new Date(blog.published_at), 'MMM dd, yyyy')}</span>
+                      </div>
+                    )}
+                    {blog.read_time_minutes && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        <span>{blog.read_time_minutes} min read</span>
                       </div>
                     )}
                   </div>
@@ -134,14 +200,15 @@ const Blogs = () => {
             ) : (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
-                  {selectedTag ? 'No blogs found for this tag.' : 'No blogs available yet.'}
+                  {selectedTag || selectedAuthor ? 'No blogs found matching your filters.' : 'No blogs available yet.'}
                 </p>
               </div>
             )}
           </div>
 
-          {/* Tags Sidebar - Desktop Only */}
-          <aside className="hidden lg:block lg:sticky lg:top-24 h-fit self-start">
+          {/* Filters Sidebar - Desktop Only */}
+          <aside className="hidden lg:block lg:sticky lg:top-24 h-fit self-start space-y-4">
+            {/* Tags Box */}
             <div className="border rounded-lg p-6 bg-card">
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Tag className="w-5 h-5 text-primary" />
@@ -171,16 +238,54 @@ const Blogs = () => {
                   </Badge>
                 ))}
               </div>
+            </div>
+
+            {/* Authors Box */}
+            <div className="border rounded-lg p-6 bg-card">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <User className="w-5 h-5 text-primary" />
+                Browse by Author
+              </h3>
               
-              <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-sm text-muted-foreground">
-                  Click on any tag to filter blog posts by topic.
-                </p>
+              {selectedAuthor && (
+                <div className="mb-4">
+                  <button
+                    onClick={() => setSelectedAuthor(null)}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    ← Clear filter
+                  </button>
+                </div>
+              )}
+              
+              <div className="flex flex-wrap gap-2">
+                {authors && authors.map((author) => (
+                  <Badge
+                    key={author.id}
+                    variant={selectedAuthor === author.name ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    onClick={() => setSelectedAuthor(author.name === selectedAuthor ? null : author.name)}
+                  >
+                    {author.name}
+                  </Badge>
+                ))}
               </div>
             </div>
           </aside>
         </div>
       </main>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <Button
+          onClick={scrollToTop}
+          size="sm"
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 h-10 w-10 rounded-full shadow-lg bg-primary hover:bg-primary-hover transition-all duration-300 ease-out animate-fade-in hover:scale-110"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="h-4 w-4" />
+        </Button>
+      )}
 
       <Footer />
     </div>

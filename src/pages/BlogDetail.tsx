@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Calendar, User, Tag, ArrowLeft } from "lucide-react";
+import { Calendar, User, Tag, ArrowLeft, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useBlog } from "@/hooks/useBlogs";
 import { format } from "date-fns";
@@ -28,7 +28,8 @@ const BlogDetail = () => {
             jobType: [],
             experience: [],
             salaryRange: [],
-            sector: [],
+            domain: [],
+            skills: [],
             companies: [],
           }}
           onFiltersChange={() => {}}
@@ -53,7 +54,8 @@ const BlogDetail = () => {
             jobType: [],
             experience: [],
             salaryRange: [],
-            sector: [],
+            domain: [],
+            skills: [],
             companies: [],
           }}
           onFiltersChange={() => {}}
@@ -77,7 +79,8 @@ const BlogDetail = () => {
           jobType: [],
           experience: [],
           salaryRange: [],
-          sector: [],
+          domain: [],
+          skills: [],
           companies: [],
         }}
         onFiltersChange={() => {}}
@@ -99,13 +102,30 @@ const BlogDetail = () => {
             {blog.author && (
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                <span>{blog.author.name}</span>
+                {blog.author.profile_url ? (
+                  <a 
+                    href={blog.author.profile_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:text-primary hover:underline transition-colors"
+                  >
+                    {blog.author.name}
+                  </a>
+                ) : (
+                  <span>{blog.author.name}</span>
+                )}
               </div>
             )}
             {blog.published_at && (
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <span>{format(new Date(blog.published_at), 'MMM dd, yyyy')}</span>
+              </div>
+            )}
+            {blog.read_time_minutes && (
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                <span>{blog.read_time_minutes} min read</span>
               </div>
             )}
           </div>

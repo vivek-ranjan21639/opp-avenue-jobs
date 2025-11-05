@@ -16,6 +16,7 @@ export interface Job {
   remote: boolean;
   companyLogo?: string;
   sector?: string;
+  domains?: string[];
 }
 
 interface JobCardProps {
@@ -65,6 +66,15 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           <Badge variant="outline" className="text-xs">{job.experience}</Badge>
         </div>
       </div>
+
+      {/* Domain */}
+      {job.domains && job.domains.length > 0 && (
+        <div className="mb-3">
+          <Badge variant="default" className="text-xs px-2 py-1">
+            {job.domains[0]}
+          </Badge>
+        </div>
+      )}
 
       {/* Skills */}
       <div className="flex flex-wrap gap-2">

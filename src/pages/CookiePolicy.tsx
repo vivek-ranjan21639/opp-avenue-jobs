@@ -15,7 +15,8 @@ const CookiePolicy = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
 

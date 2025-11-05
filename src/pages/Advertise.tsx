@@ -16,7 +16,8 @@ const Advertise = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
 

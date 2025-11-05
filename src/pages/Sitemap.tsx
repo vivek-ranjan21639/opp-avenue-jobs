@@ -16,7 +16,8 @@ const Sitemap = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
 

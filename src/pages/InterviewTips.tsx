@@ -25,7 +25,8 @@ const InterviewTips = () => {
           jobType: [],
           experience: [],
           salaryRange: [],
-          sector: [],
+          domain: [],
+          skills: [],
           companies: [],
         }}
         onFiltersChange={() => {}}

@@ -28,7 +28,8 @@ const IndustryReports = () => {
           jobType: [],
           experience: [],
           salaryRange: [],
-          sector: [],
+          domain: [],
+          skills: [],
           companies: [],
         }}
         onFiltersChange={() => {}}

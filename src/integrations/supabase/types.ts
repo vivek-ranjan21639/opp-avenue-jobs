@@ -21,6 +21,7 @@ export type Database = {
           id: string
           name: string
           profile_pic_url: string | null
+          profile_url: string | null
         }
         Insert: {
           bio?: string | null
@@ -28,6 +29,7 @@ export type Database = {
           id?: string
           name: string
           profile_pic_url?: string | null
+          profile_url?: string | null
         }
         Update: {
           bio?: string | null
@@ -35,6 +37,7 @@ export type Database = {
           id?: string
           name?: string
           profile_pic_url?: string | null
+          profile_url?: string | null
         }
         Relationships: []
       }
@@ -97,6 +100,7 @@ export type Database = {
           featured: boolean | null
           id: string
           published_at: string | null
+          read_time_minutes: number | null
           slug: string
           status: Database["public"]["Enums"]["blog_status"] | null
           summary: string | null
@@ -112,6 +116,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           published_at?: string | null
+          read_time_minutes?: number | null
           slug: string
           status?: Database["public"]["Enums"]["blog_status"] | null
           summary?: string | null
@@ -127,6 +132,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           published_at?: string | null
+          read_time_minutes?: number | null
           slug?: string
           status?: Database["public"]["Enums"]["blog_status"] | null
           summary?: string | null
@@ -222,6 +228,30 @@ export type Database = {
           },
         ]
       }
+      domains: {
+        Row: {
+          created_at: string
+          description: string | null
+          human_id: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          human_id?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          human_id?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       eligibility_criteria: {
         Row: {
           age_limit: number | null
@@ -283,6 +313,36 @@ export type Database = {
           },
           {
             foreignKeyName: "job_benefits_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_domains: {
+        Row: {
+          domain_id: string
+          job_id: string
+        }
+        Insert: {
+          domain_id: string
+          job_id: string
+        }
+        Update: {
+          domain_id?: string
+          job_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_domains_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "domains"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_domains_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "jobs"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu, Code, Layers } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,8 @@ export interface FilterState {
   jobType: string[];
   experience: string[];
   salaryRange: string[];
-  sector: string[];
+  domain: string[];
+  skills: string[];
   companies: string[];
 }
 
@@ -155,8 +156,10 @@ const Header: React.FC<HeaderProps> = ({
           });
         } else if (filterKey === 'companies') {
           filtered = filtered.filter(job => values.includes(job.company));
-        } else if (filterKey === 'sector') {
-          filtered = filtered.filter(job => job.sector && values.includes(job.sector));
+        } else if (filterKey === 'domain') {
+          filtered = filtered.filter(job => job.domains && job.domains.some(d => values.includes(d)));
+        } else if (filterKey === 'skills') {
+          filtered = filtered.filter(job => job.skills.some(s => values.includes(s)));
         }
       });
       
@@ -196,8 +199,11 @@ const Header: React.FC<HeaderProps> = ({
     const companyJobs = getFilteredJobsExcluding('companies');
     const companyOptions = Array.from(new Set(companyJobs.map(job => job.company))).sort();
 
-    const sectorJobs = getFilteredJobsExcluding('sector');
-    const sectorOptions = Array.from(new Set(sectorJobs.map(job => job.sector).filter(Boolean) as string[])).sort();
+    const domainJobs = getFilteredJobsExcluding('domain');
+    const domainOptions = Array.from(new Set(domainJobs.flatMap(job => job.domains || []))).sort();
+
+    const skillsJobs = getFilteredJobsExcluding('skills');
+    const skillsOptions = Array.from(new Set(skillsJobs.flatMap(job => job.skills))).sort();
 
     return [
       { 
@@ -225,10 +231,16 @@ const Header: React.FC<HeaderProps> = ({
         options: salaryOptions
       },
       { 
-        icon: Building, 
-        label: 'Sector', 
-        key: 'sector' as keyof FilterState,
-        options: sectorOptions
+        icon: Layers, 
+        label: 'Domain', 
+        key: 'domain' as keyof FilterState,
+        options: domainOptions
+      },
+      { 
+        icon: Code, 
+        label: 'Skills', 
+        key: 'skills' as keyof FilterState,
+        options: skillsOptions
       },
       { 
         icon: Users, 
@@ -247,7 +259,8 @@ const Header: React.FC<HeaderProps> = ({
     JSON.stringify(activeFilters.jobType),
     JSON.stringify(activeFilters.experience),
     JSON.stringify(activeFilters.salaryRange),
-    JSON.stringify(activeFilters.sector),
+    JSON.stringify(activeFilters.domain),
+    JSON.stringify(activeFilters.skills),
     JSON.stringify(activeFilters.companies)
   ]);
 
@@ -271,7 +284,8 @@ const Header: React.FC<HeaderProps> = ({
       jobType: [],
       experience: [],
       salaryRange: [],
-      sector: [],
+      domain: [],
+      skills: [],
       companies: []
     };
     onFiltersChange(emptyFilters);
@@ -341,8 +355,8 @@ const Header: React.FC<HeaderProps> = ({
           {/* Eye-catching Social Handles - Desktop (Non-Home Pages) */}
           {!isHomePage && (
             <div className="hidden md:flex items-center gap-2 lg:gap-3 flex-1 justify-center">
-              <div className="flex items-center gap-2 lg:gap-4 px-3 lg:px-6 py-1.5 lg:py-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border-2 border-primary/20 shadow-lg animate-pulse-subtle">
-                <span className="text-xs lg:text-sm font-semibold text-foreground whitespace-nowrap">
+              <div className="flex items-center gap-2 lg:gap-3 px-2 lg:px-4 py-1 lg:py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border-2 border-primary/20 shadow-lg animate-pulse-subtle">
+                <span className="text-xs font-semibold text-foreground whitespace-nowrap">
                   🌟 Join Us
                 </span>
                 <div className="flex items-center gap-1.5 lg:gap-2">
@@ -456,21 +470,21 @@ const Header: React.FC<HeaderProps> = ({
         {/* Eye-catching Social Handles - Mobile (Non-Home Pages) */}
         {!isHomePage && (
           <div className="flex md:hidden justify-center mb-3">
-            <div className="flex flex-col items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-xl border-2 border-primary/20 shadow-lg w-full max-w-sm animate-pulse-subtle">
-              <span className="text-xs font-semibold text-foreground">
-                🌟 Join Our Community
+            <div className="flex flex-col items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-lg border border-primary/20 shadow-sm w-full max-w-xs animate-pulse-subtle">
+              <span className="text-[10px] font-semibold text-foreground">
+                🌟 Join Us
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {socialLinks.map((link, index) => (
                   <a
                     key={index}
                     href={link.href}
                     target={link.href.startsWith('http') ? '_blank' : '_self'}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-300 group shadow-md border-2 border-primary/30"
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-primary/20"
                     title={link.label}
                   >
-                    <link.icon className={`w-4 h-4 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+                    <link.icon className={`w-3 h-3 ${link.color} group-hover:text-primary-foreground transition-colors`} />
                   </a>
                 ))}
               </div>

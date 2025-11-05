@@ -22,7 +22,8 @@ const Index = () => {
     jobType: [],
     experience: [],
     salaryRange: [],
-    sector: [],
+    domain: [],
+    skills: [],
     companies: []
   });
 
@@ -87,10 +88,17 @@ const Index = () => {
       );
     }
     
-    // Apply sector filter
-    if (activeFilters.sector.length > 0) {
+    // Apply domain filter
+    if (activeFilters.domain.length > 0) {
       filtered = filtered.filter(job => 
-        job.sector && activeFilters.sector.includes(job.sector)
+        job.domains && job.domains.some(d => activeFilters.domain.includes(d))
+      );
+    }
+    
+    // Apply skills filter
+    if (activeFilters.skills.length > 0) {
+      filtered = filtered.filter(job =>
+        job.skills.some(s => activeFilters.skills.includes(s))
       );
     }
     
@@ -154,8 +162,19 @@ const Index = () => {
   };
 
   const handleJobClick = (job: Job) => {
+    // Store scroll position before navigating
+    sessionStorage.setItem('jobListScrollPosition', window.scrollY.toString());
     navigate(`/job/${job.id}`);
   };
+
+  // Restore scroll position when returning from job detail
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem('jobListScrollPosition');
+    if (savedScrollPosition) {
+      window.scrollTo(0, parseInt(savedScrollPosition));
+      sessionStorage.removeItem('jobListScrollPosition');
+    }
+  }, []);
 
   const handleAdvertiseClick = () => {
     navigate('/advertise');
