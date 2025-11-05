@@ -496,6 +496,7 @@ export type Database = {
           description: string | null
           display_order: number | null
           external_url: string | null
+          featured: boolean | null
           file_url: string | null
           id: string
           parent_id: string | null
@@ -512,6 +513,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           external_url?: string | null
+          featured?: boolean | null
           file_url?: string | null
           id?: string
           parent_id?: string | null
@@ -528,6 +530,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           external_url?: string | null
+          featured?: boolean | null
           file_url?: string | null
           id?: string
           parent_id?: string | null

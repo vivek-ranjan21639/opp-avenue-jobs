@@ -17,6 +17,7 @@ export interface Resource {
   thumbnail_url: string | null;
   parent_id: string | null;
   display_order: number;
+  featured?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -58,5 +59,22 @@ export const useResource = (id: string | undefined) => {
       return data;
     },
     enabled: !!id,
+  });
+};
+
+export const useFeaturedResources = () => {
+  return useQuery({
+    queryKey: ['featured-resources'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('resources')
+        .select('*')
+        .eq('featured', true)
+        .order('display_order', { ascending: true })
+        .limit(6);
+
+      if (error) throw error;
+      return data as Resource[];
+    },
   });
 };

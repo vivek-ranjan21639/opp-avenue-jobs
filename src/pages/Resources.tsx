@@ -2,11 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { BookOpen, FileText, Video, Download } from "lucide-react";
+import { BookOpen, FileText, Video, Download, ExternalLink, Sparkles } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFeaturedResources } from "@/hooks/useResources";
+import { Badge } from "@/components/ui/badge";
 
 const Resources = () => {
   const navigate = useNavigate();
+  const { data: featuredResources, isLoading: loadingFeatured } = useFeaturedResources();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -67,6 +70,49 @@ const Resources = () => {
         <p className="text-muted-foreground mb-8 text-lg">
           Explore our collection of helpful resources to advance your career in the railway industry.
         </p>
+
+        {/* Featured Resources - "You might like" */}
+        {!loadingFeatured && featuredResources && featuredResources.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-6">
+              <Sparkles className="w-6 h-6 text-primary" />
+              <h2 className="text-2xl font-bold text-foreground">You might like</h2>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {featuredResources.map((resource) => (
+                <Card 
+                  key={resource.id}
+                  className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border hover:border-primary"
+                  onClick={() => {
+                    if (resource.external_url) {
+                      window.open(resource.external_url, '_blank');
+                    } else if (resource.file_url) {
+                      window.open(resource.file_url, '_blank');
+                    }
+                  }}
+                >
+                  <CardHeader className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base mb-1 line-clamp-2">{resource.title}</CardTitle>
+                        {resource.description && (
+                          <CardDescription className="text-xs line-clamp-2">{resource.description}</CardDescription>
+                        )}
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    </div>
+                    <div className="mt-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {resource.type === 'category' ? 'Guide' : resource.type}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-6">
           {resourceCategories.map((category) => {

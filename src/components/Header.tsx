@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu, Code, Layers } from 'lucide-react';
+import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu, Code, Layers, Building2, Award, DollarSign } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -469,22 +469,22 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Eye-catching Social Handles - Mobile (Non-Home Pages) */}
         {!isHomePage && (
-          <div className="flex md:hidden justify-center mb-3">
-            <div className="flex flex-col items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-lg border border-primary/20 shadow-sm w-full max-w-xs animate-pulse-subtle">
-              <span className="text-[10px] font-semibold text-foreground">
+          <div className="flex md:hidden items-center justify-center gap-2 mb-2">
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full border border-primary/20 shadow-sm">
+              <span className="text-[10px] font-semibold text-foreground whitespace-nowrap">
                 🌟 Join Us
               </span>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 {socialLinks.map((link, index) => (
                   <a
                     key={index}
                     href={link.href}
                     target={link.href.startsWith('http') ? '_blank' : '_self'}
                     rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-primary/20"
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-card hover:bg-primary hover:scale-110 transition-all duration-200 group shadow-sm border border-primary/30"
                     title={link.label}
                   >
-                    <link.icon className={`w-3 h-3 ${link.color} group-hover:text-primary-foreground transition-colors`} />
+                    <link.icon className={`w-2.5 h-2.5 ${link.color} group-hover:text-primary-foreground transition-colors`} />
                   </a>
                 ))}
               </div>
@@ -492,85 +492,243 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         )}
 
-
-        {/* Filter Buttons Row (Home Page Only) */}
-        {isHomePage && (!isScrolled || showFilters) && (
-          <div className="space-y-3">
-            {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-2 items-center justify-center">
-              {filterOptions.map((filter, index) => (
-                <DropdownMenu key={index}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={`h-8 px-3 rounded-full border-input-border hover:bg-secondary hover:border-primary text-xs ${
-                        activeFilters[filter.key].length > 0 
-                          ? 'bg-primary text-primary-foreground border-primary' 
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      <filter.icon className="w-3 h-3 mr-1" />
-                      {filter.label}
-                      {activeFilters[filter.key].length > 0 && (
-                        <Badge variant="secondary" className="ml-1 h-4 w-4 p-0 text-xs">
-                          {activeFilters[filter.key].length}
-                        </Badge>
+        {/* Filters Section for Home Page */}
+        {isHomePage && showFilters && (
+          <div className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -mx-8 px-2 py-2">
+            {/* Mobile Filters - 2 rows + additional row for last 3 */}
+            <div className="md:hidden space-y-1.5">
+              <div className="grid grid-cols-2 gap-1.5">
+                {filterOptions.slice(0, 4).map((filter) => (
+                  <DropdownMenu key={filter.key}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-7 px-2 text-[10px] ${
+                          activeFilters[filter.key].length > 0 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'border-input-border'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3 mr-1" />
+                        {filter.label}
+                        {activeFilters[filter.key].length > 0 && (
+                          <Badge variant="secondary" className="ml-1 h-3 w-3 p-0 text-[8px]">
+                            {activeFilters[filter.key].length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
+                      {filter.options.length > 0 ? (
+                        filter.options.map((option) => (
+                          <DropdownMenuCheckboxItem
+                            key={option}
+                            checked={activeFilters[filter.key].includes(option)}
+                            onCheckedChange={() => handleFilterChange(filter.key, option)}
+                            className="text-xs"
+                          >
+                            {option}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
                       )}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center">
-                    {filter.options.length > 0 ? (
-                      filter.options.map((option) => (
-                        <DropdownMenuCheckboxItem
-                          key={option}
-                          checked={activeFilters[filter.key].includes(option)}
-                          onCheckedChange={() => handleFilterChange(filter.key, option)}
-                          className="text-sm"
-                        >
-                          {option}
-                        </DropdownMenuCheckboxItem>
-                      ))
-                    ) : (
-                      <div className="px-2 py-2 text-sm text-muted-foreground">
-                        No options available
-                      </div>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ))}
-              
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {filterOptions.slice(4).map((filter) => (
+                  <DropdownMenu key={filter.key}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-7 px-1.5 text-[10px] ${
+                          activeFilters[filter.key].length > 0 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'border-input-border'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3 mr-0.5" />
+                        {filter.label}
+                        {activeFilters[filter.key].length > 0 && (
+                          <Badge variant="secondary" className="ml-0.5 h-3 w-3 p-0 text-[8px]">
+                            {activeFilters[filter.key].length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
+                      {filter.options.length > 0 ? (
+                        filter.options.map((option) => (
+                          <DropdownMenuCheckboxItem
+                            key={option}
+                            checked={activeFilters[filter.key].includes(option)}
+                            onCheckedChange={() => handleFilterChange(filter.key, option)}
+                            className="text-xs"
+                          >
+                            {option}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </div>
               {getActiveFilterCount() > 0 && (
-                <Button
-                  onClick={clearAllFilters}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-3 rounded-full border-input-border hover:bg-destructive hover:text-destructive-foreground text-xs"
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  Clear All
-                </Button>
+                <div className="flex justify-center">
+                  <Button
+                    onClick={clearAllFilters}
+                    variant="outline"
+                    size="sm"
+                    className="h-6 px-2 text-[10px] border-destructive/50 hover:bg-destructive hover:text-destructive-foreground"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Clear All
+                  </Button>
+                </div>
               )}
             </div>
-            
-            {/* Active Filter Tags */}
-            {getActiveFilterCount() > 0 && (
-              <div className="flex flex-wrap gap-1 items-center justify-center">
-                {Object.entries(activeFilters).map(([key, values]) =>
-                  values.map((value) => (
-                    <Badge
-                      key={`${key}-${value}`}
-                      variant="secondary"
-                      className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                      onClick={() => handleFilterChange(key as keyof FilterState, value)}
-                    >
-                      {value}
-                      <X className="w-3 h-3 ml-1" />
-                    </Badge>
-                  ))
+
+            {/* Tablet Filters - Single row */}
+            <div className="hidden md:block lg:hidden">
+              <div className="grid grid-cols-7 gap-1.5 px-2">
+                {filterOptions.map((filter) => (
+                  <DropdownMenu key={filter.key}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-8 px-1.5 text-xs ${
+                          activeFilters[filter.key].length > 0 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'border-input-border'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3 mr-1" />
+                        <span className="truncate">{filter.label}</span>
+                        {activeFilters[filter.key].length > 0 && (
+                          <Badge variant="secondary" className="ml-1 h-3 w-3 p-0 text-[8px]">
+                            {activeFilters[filter.key].length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-52 max-h-64 overflow-y-auto" align="center">
+                      {filter.options.length > 0 ? (
+                        filter.options.map((option) => (
+                          <DropdownMenuCheckboxItem
+                            key={option}
+                            checked={activeFilters[filter.key].includes(option)}
+                            onCheckedChange={() => handleFilterChange(filter.key, option)}
+                            className="text-sm"
+                          >
+                            {option}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-2 text-sm text-muted-foreground">No options</div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </div>
+              {getActiveFilterCount() > 0 && (
+                <div className="flex justify-center mt-2">
+                  <Button
+                    onClick={clearAllFilters}
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-3 text-xs border-destructive/50 hover:bg-destructive hover:text-destructive-foreground"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Clear All
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Filters */}
+            <div className="hidden lg:block max-w-7xl mx-auto px-4">
+              <div className="flex flex-wrap gap-2 items-center justify-center">
+                {filterOptions.map((filter, index) => (
+                  <DropdownMenu key={index}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-8 px-3 rounded-full border-input-border hover:bg-secondary hover:border-primary text-xs ${
+                          activeFilters[filter.key].length > 0 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3 mr-1" />
+                        {filter.label}
+                        {activeFilters[filter.key].length > 0 && (
+                          <Badge variant="secondary" className="ml-1 h-4 w-4 p-0 text-xs">
+                            {activeFilters[filter.key].length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center">
+                      {filter.options.length > 0 ? (
+                        filter.options.map((option) => (
+                          <DropdownMenuCheckboxItem
+                            key={option}
+                            checked={activeFilters[filter.key].includes(option)}
+                            onCheckedChange={() => handleFilterChange(filter.key, option)}
+                            className="text-sm"
+                          >
+                            {option}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-2 text-sm text-muted-foreground">
+                          No options available
+                        </div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+                
+                {getActiveFilterCount() > 0 && (
+                  <Button
+                    onClick={clearAllFilters}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 rounded-full border-input-border hover:bg-destructive hover:text-destructive-foreground text-xs"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Clear All
+                  </Button>
                 )}
               </div>
-            )}
+              
+              {/* Active Filter Tags */}
+              {getActiveFilterCount() > 0 && (
+                <div className="flex flex-wrap gap-1 items-center justify-center mt-2">
+                  {Object.entries(activeFilters).map(([key, values]) =>
+                    values.map((value) => (
+                      <Badge
+                        key={`${key}-${value}`}
+                        variant="secondary"
+                        className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => handleFilterChange(key as keyof FilterState, value)}
+                      >
+                        {value}
+                        <X className="w-3 h-3 ml-1" />
+                      </Badge>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

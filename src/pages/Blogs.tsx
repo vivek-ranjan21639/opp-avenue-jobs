@@ -134,7 +134,7 @@ const Blogs = () => {
               blogs.map((blog) => (
                 <article 
                   key={blog.id} 
-                  className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card/50"
+                  className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card/80"
                 >
                   <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
                     <Link to={`/blog/${blog.slug}`}>{blog.title}</Link>
