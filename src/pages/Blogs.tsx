@@ -60,14 +60,8 @@ const Blogs = () => {
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
-        <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
-        
-        <p className="text-muted-foreground mb-6 text-lg">
-          Stay updated with the latest news, insights, and trends in the railway industry.
-        </p>
-
-        {/* Filters - Mobile/Tablet (sticky below header) */}
-        <div className="lg:hidden mb-6 sticky top-[120px] z-30 bg-background pb-2">
+        {/* Filters - Mobile/Tablet (sticky above title) */}
+        <div className="lg:hidden mb-6 sticky top-[80px] z-30 bg-background pb-2">
           <div className="border rounded-lg p-3 bg-card shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold flex items-center gap-1.5">
@@ -122,6 +116,12 @@ const Blogs = () => {
             </div>
           </div>
         </div>
+
+        <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
+        
+        <p className="text-muted-foreground mb-6 text-lg">
+          Stay updated with the latest news, insights, and trends in the railway industry.
+        </p>
 
         <div className="grid lg:grid-cols-[1fr_300px] gap-8">
           {/* Blog Posts */}
