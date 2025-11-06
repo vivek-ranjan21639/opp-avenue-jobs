@@ -61,7 +61,7 @@ const Blogs = () => {
       
       <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
         {/* Filters - Mobile/Tablet (sticky above title) */}
-        <div className="lg:hidden mb-6 sticky top-[80px] z-30 bg-background pb-2">
+        <div className="lg:hidden mb-6 sticky top-[100px] md:top-[80px] z-20 bg-background pb-2">
           <div className="border rounded-lg p-3 bg-card shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold flex items-center gap-1.5">
