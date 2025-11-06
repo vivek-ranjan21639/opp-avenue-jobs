@@ -67,7 +67,7 @@ const Blogs = () => {
         </p>
 
         {/* Filters - Mobile/Tablet (sticky below header) */}
-        <div className="lg:hidden mb-6 sticky top-16 z-40 bg-background pb-2">
+        <div className="lg:hidden mb-6 sticky top-[120px] z-30 bg-background pb-2">
           <div className="border rounded-lg p-3 bg-card shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold flex items-center gap-1.5">
@@ -137,7 +137,7 @@ const Blogs = () => {
                   className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card/80"
                 >
                   <h2 className="text-2xl font-semibold mb-3 hover:text-primary transition-colors">
-                    <Link to={`/blog/${blog.slug}`}>{blog.title}</Link>
+                    <Link to={`/blog/${blog.slug}`} target="_blank">{blog.title}</Link>
                   </h2>
                   
                   <p className="text-muted-foreground mb-4">{blog.summary}</p>
@@ -158,7 +158,7 @@ const Blogs = () => {
                   </div>
                   
                   <div className="flex items-center gap-6 text-sm text-muted-foreground mb-4">
-                    {blog.author && (
+                     {blog.author && (
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
                         {blog.author.profile_url ? (
@@ -166,7 +166,7 @@ const Blogs = () => {
                             href={blog.author.profile_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="hover:text-primary hover:underline transition-colors"
+                            className="text-primary hover:underline transition-colors"
                           >
                             {blog.author.name}
                           </a>
@@ -191,6 +191,7 @@ const Blogs = () => {
                   
                   <Link 
                     to={`/blog/${blog.slug}`}
+                    target="_blank"
                     className="inline-block text-primary hover:underline font-medium"
                   >
                     Read More →

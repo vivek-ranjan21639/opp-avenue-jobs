@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { Video, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
@@ -53,40 +54,48 @@ const InterviewTips = () => {
           {isLoading ? (
             <p className="text-muted-foreground">Loading interview tips...</p>
           ) : tips && tips.length > 0 ? (
-            tips.map((tip) => (
-              <Card key={tip.id}>
-                <CardHeader>
-                  <CardTitle className="text-2xl">{tip.title}</CardTitle>
-                  {tip.description && <CardDescription>{tip.description}</CardDescription>}
-                </CardHeader>
-                <CardContent>
-                  {tip.content_text && (
-                    <p className="text-muted-foreground mb-4">{tip.content_text}</p>
-                  )}
-                  {tip.video_url && (
-                    <div className="mb-4">
-                      <video 
-                        controls 
-                        className="w-full rounded-lg"
-                        poster={tip.thumbnail_url || undefined}
+            tips.map((tip, index) => (
+              <>
+                <Card key={tip.id}>
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{tip.title}</CardTitle>
+                    {tip.description && <CardDescription>{tip.description}</CardDescription>}
+                  </CardHeader>
+                  <CardContent>
+                    {tip.content_text && (
+                      <p className="text-muted-foreground mb-4">{tip.content_text}</p>
+                    )}
+                    {tip.video_url && (
+                      <div className="mb-4">
+                        <video 
+                          controls 
+                          className="w-full rounded-lg"
+                          poster={tip.thumbnail_url || undefined}
+                        >
+                          <source src={tip.video_url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    )}
+                    {tip.external_url && (
+                      <a 
+                        href={tip.external_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium"
                       >
-                        <source src={tip.video_url} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  )}
-                  {tip.external_url && (
-                    <a 
-                      href={tip.external_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline font-medium"
-                    >
-                      Learn More →
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
+                        Learn More →
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+                {/* Ad after every 3rd tip */}
+                {(index + 1) % 3 === 0 && index < tips.length - 1 && (
+                  <div className="my-6">
+                    <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 3)}`} />
+                  </div>
+                )}
+              </>
             ))
           ) : (
             <p className="text-muted-foreground">No interview tips available yet.</p>

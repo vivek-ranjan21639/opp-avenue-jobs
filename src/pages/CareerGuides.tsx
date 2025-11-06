@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
@@ -53,28 +54,36 @@ const CareerGuides = () => {
           {isLoading ? (
             <p className="text-muted-foreground">Loading career guides...</p>
           ) : guides && guides.length > 0 ? (
-            guides.map((guide) => (
-              <Card key={guide.id}>
-                <CardHeader>
-                  <CardTitle className="text-2xl">{guide.title}</CardTitle>
-                  {guide.description && <CardDescription>{guide.description}</CardDescription>}
-                </CardHeader>
-                <CardContent>
-                  {guide.content_text && (
-                    <p className="text-muted-foreground mb-4">{guide.content_text}</p>
-                  )}
-                  {guide.external_url && (
-                    <a 
-                      href={guide.external_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline font-medium"
-                    >
-                      Read Full Guide →
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
+            guides.map((guide, index) => (
+              <>
+                <Card key={guide.id}>
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{guide.title}</CardTitle>
+                    {guide.description && <CardDescription>{guide.description}</CardDescription>}
+                  </CardHeader>
+                  <CardContent>
+                    {guide.content_text && (
+                      <p className="text-muted-foreground mb-4">{guide.content_text}</p>
+                    )}
+                    {guide.external_url && (
+                      <a 
+                        href={guide.external_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        Read Full Guide →
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+                {/* Ad after every 3rd guide */}
+                {(index + 1) % 3 === 0 && index < guides.length - 1 && (
+                  <div className="my-6">
+                    <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 3)}`} />
+                  </div>
+                )}
+              </>
             ))
           ) : (
             <p className="text-muted-foreground">No career guides available yet.</p>

@@ -74,41 +74,24 @@ const Resources = () => {
         {/* Featured Resources - "You might like" */}
         {!loadingFeatured && featuredResources && featuredResources.length > 0 && (
           <div className="mb-12">
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">You might like</h2>
+              <h2 className="text-2xl font-bold text-foreground">You should go through</h2>
             </div>
             
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-2">
               {featuredResources.map((resource) => (
-                <Card 
-                  key={resource.id}
-                  className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border hover:border-primary"
-                  onClick={() => {
-                    if (resource.external_url) {
-                      window.open(resource.external_url, '_blank');
-                    } else if (resource.file_url) {
-                      window.open(resource.file_url, '_blank');
-                    }
-                  }}
-                >
-                  <CardHeader className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <CardTitle className="text-base mb-1 line-clamp-2">{resource.title}</CardTitle>
-                        {resource.description && (
-                          <CardDescription className="text-xs line-clamp-2">{resource.description}</CardDescription>
-                        )}
-                      </div>
-                      <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    </div>
-                    <div className="mt-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {resource.type === 'category' ? 'Guide' : resource.type}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                </Card>
+                <div key={resource.id} className="flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4 text-primary flex-shrink-0" />
+                  <a
+                    href={resource.external_url || resource.file_url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-base font-medium"
+                  >
+                    {resource.title}
+                  </a>
+                </div>
               ))}
             </div>
           </div>
@@ -121,7 +104,7 @@ const Resources = () => {
               <Card 
                 key={category.id}
                 className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] border-2 hover:border-primary"
-                onClick={() => navigate(category.path)}
+                onClick={() => window.open(category.path, '_blank')}
               >
                 <CardHeader>
                   <div className="flex items-center gap-4">

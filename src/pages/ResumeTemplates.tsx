@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { FileText, ArrowLeft, Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,28 +55,36 @@ const ResumeTemplates = () => {
           {isLoading ? (
             <p className="text-muted-foreground">Loading resume templates...</p>
           ) : templates && templates.length > 0 ? (
-            templates.map((template) => (
-              <Card key={template.id}>
-                <CardHeader>
-                  <CardTitle className="text-2xl">{template.title}</CardTitle>
-                  {template.description && <CardDescription>{template.description}</CardDescription>}
-                </CardHeader>
-                <CardContent>
-                  {template.content_text && (
-                    <div className="mb-4">
-                      <p className="text-muted-foreground">{template.content_text}</p>
-                    </div>
-                  )}
-                  {template.file_url && (
-                    <Button className="gap-2" asChild>
-                      <a href={template.file_url} download>
-                        <Download className="w-4 h-4" />
-                        Download Template
-                      </a>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+            templates.map((template, index) => (
+              <>
+                <Card key={template.id}>
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{template.title}</CardTitle>
+                    {template.description && <CardDescription>{template.description}</CardDescription>}
+                  </CardHeader>
+                  <CardContent>
+                    {template.content_text && (
+                      <div className="mb-4">
+                        <p className="text-muted-foreground">{template.content_text}</p>
+                      </div>
+                    )}
+                    {template.file_url && (
+                      <Button className="gap-2" asChild>
+                        <a href={template.file_url} download>
+                          <Download className="w-4 h-4" />
+                          Download Template
+                        </a>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+                {/* Ad after every 3rd template */}
+                {(index + 1) % 3 === 0 && index < templates.length - 1 && (
+                  <div className="my-6">
+                    <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 3)}`} />
+                  </div>
+                )}
+              </>
             ))
           ) : (
             <p className="text-muted-foreground">No resume templates available yet.</p>

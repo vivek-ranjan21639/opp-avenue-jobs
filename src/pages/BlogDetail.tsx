@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { Calendar, User, Tag, ArrowLeft, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useBlog } from "@/hooks/useBlogs";
@@ -140,16 +141,37 @@ const BlogDetail = () => {
           </div>
 
           {blog.content && (
-            <div 
-              className="text-foreground leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
-              style={{
-                fontSize: '1.125rem',
-                lineHeight: '1.75rem'
-              }}
-            />
+            <>
+              <div 
+                className="text-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: blog.content.split('</p>').slice(0, 3).join('</p>') + '</p>' }}
+                style={{
+                  fontSize: '1.125rem',
+                  lineHeight: '1.75rem'
+                }}
+              />
+              
+              {/* First Ad - After 3 paragraphs */}
+              <div className="my-8">
+                <AdUnit size="rectangle" label="In-content Ad 1" />
+              </div>
+              
+              <div 
+                className="text-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: '<p>' + blog.content.split('</p>').slice(3).join('</p>') }}
+                style={{
+                  fontSize: '1.125rem',
+                  lineHeight: '1.75rem'
+                }}
+              />
+            </>
           )}
         </article>
+        
+        {/* Bottom Ad - Before Footer */}
+        <div className="mt-12">
+          <AdUnit size="rectangle" label="Bottom Ad" />
+        </div>
       </main>
 
       <Footer />
