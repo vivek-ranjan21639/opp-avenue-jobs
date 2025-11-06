@@ -162,18 +162,8 @@ const Index = () => {
   };
 
   const handleJobClick = (job: Job) => {
-    // For desktop: open in new tab
-    // For mobile/tablet: navigate with scroll retention
-    const isMobile = window.innerWidth < 1024;
-    
-    if (isMobile) {
-      // Store scroll position before navigating
-      sessionStorage.setItem('jobListScrollPosition', window.scrollY.toString());
-      navigate(`/job/${job.id}`);
-    } else {
-      // Open in new tab for desktop
-      window.open(`/job/${job.id}`, '_blank');
-    }
+    // Always open in new tab for all screen sizes
+    window.open(`/job/${job.id}`, '_blank');
   };
 
   // Restore scroll position when returning from job detail

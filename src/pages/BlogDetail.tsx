@@ -88,14 +88,6 @@ const BlogDetail = () => {
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Blogs
-        </button>
-
         <article className="prose prose-lg max-w-none">
           <h1 className="text-4xl font-bold mb-4 text-foreground">{blog.title}</h1>
 

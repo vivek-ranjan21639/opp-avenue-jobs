@@ -34,14 +34,6 @@ const InterviewTips = () => {
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Resources
-        </button>
-
         <div className="flex items-center gap-4 mb-6">
           <Video className="w-10 h-10 text-primary" />
           <div>

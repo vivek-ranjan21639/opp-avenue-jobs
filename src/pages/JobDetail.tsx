@@ -93,16 +93,6 @@ const JobDetail = () => {
         
         <main className="px-4 md:px-8 py-8">
           <div className="max-w-4xl mx-auto">
-            {/* Back Button */}
-            <Button 
-              onClick={() => navigate(-1)} 
-              variant="outline" 
-              className="mb-6 rounded-full"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Jobs
-            </Button>
-            
             {/* Top Job Detail Ad */}
             <div className="mb-6">
               <AdUnit size="banner" label="Job Detail Header Ad" />
