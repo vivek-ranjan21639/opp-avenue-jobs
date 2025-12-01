@@ -4,12 +4,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { BookOpen, FileText, Video, Download, ExternalLink, Sparkles } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFeaturedResources } from "@/hooks/useResources";
+import { useFeaturedResources, useNewResources } from "@/hooks/useResources";
 import { Badge } from "@/components/ui/badge";
 
 const Resources = () => {
   const navigate = useNavigate();
   const { data: featuredResources, isLoading: loadingFeatured } = useFeaturedResources();
+  const { data: newResources, isLoading: loadingNew } = useNewResources();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -71,7 +72,33 @@ const Resources = () => {
           Explore our collection of helpful resources to advance your career in the railway industry.
         </p>
 
-        {/* Featured Resources - "You might like" */}
+        {/* What's New Section */}
+        {!loadingNew && newResources && newResources.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-6 h-6 text-primary" />
+              <h2 className="text-2xl font-bold text-foreground">What's New</h2>
+            </div>
+            
+            <div className="space-y-2">
+              {newResources.map((resource) => (
+                <div key={resource.id} className="flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4 text-primary flex-shrink-0" />
+                  <a
+                    href={resource.external_url || resource.file_url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-base font-medium"
+                  >
+                    {resource.title}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Featured Resources - "You should go through" */}
         {!loadingFeatured && featuredResources && featuredResources.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">

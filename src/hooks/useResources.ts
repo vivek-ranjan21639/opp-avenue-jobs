@@ -4,6 +4,8 @@ import type { Database } from "@/integrations/supabase/types";
 
 export type ResourceType = Database['public']['Enums']['resource_type'];
 
+export type HighlightType = 'featured' | 'new' | 'general';
+
 export interface Resource {
   id: string;
   title: string;
@@ -17,7 +19,7 @@ export interface Resource {
   thumbnail_url: string | null;
   parent_id: string | null;
   display_order: number;
-  featured?: boolean;
+  highlight_type: HighlightType;
   created_at: string;
   updated_at: string;
 }
@@ -69,7 +71,24 @@ export const useFeaturedResources = () => {
       const { data, error } = await supabase
         .from('resources')
         .select('*')
-        .eq('featured', true)
+        .eq('highlight_type', 'featured')
+        .order('display_order', { ascending: true })
+        .limit(6);
+
+      if (error) throw error;
+      return data as Resource[];
+    },
+  });
+};
+
+export const useNewResources = () => {
+  return useQuery({
+    queryKey: ['new-resources'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('resources')
+        .select('*')
+        .eq('highlight_type', 'new')
         .order('display_order', { ascending: true })
         .limit(6);
 

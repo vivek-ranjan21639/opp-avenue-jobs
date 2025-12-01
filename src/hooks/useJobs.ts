@@ -2,6 +2,29 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/components/JobCard';
 
+// Utility function to format salary in LPA
+function formatSalaryLPA(min: number, max: number, currency: string = 'INR'): string {
+  const formatAmount = (amount: number) => {
+    if (amount >= 100000) {
+      return (amount / 100000).toFixed(1).replace(/\.0$/, '');
+    }
+    return (amount / 1000).toFixed(0) + 'K';
+  };
+  return `${formatAmount(min)}-${formatAmount(max)} LPA`;
+}
+
+// Utility function to format location display
+function formatLocationDisplay(locations: any[]): string {
+  if (!locations || locations.length === 0) return 'Location not specified';
+  const firstLocation = locations[0]?.locations;
+  if (!firstLocation) return 'Location not specified';
+  
+  if (locations.length === 1) {
+    return `${firstLocation.city}${firstLocation.state ? ', ' + firstLocation.state : ''}`;
+  }
+  return `${firstLocation.city}+${locations.length - 1}`;
+}
+
 export const useJobs = () => {
   return useQuery({
     queryKey: ['jobs'],
@@ -16,10 +39,12 @@ export const useJobs = () => {
             logo_url,
             sector
           ),
-          locations (
-            city,
-            state,
-            country
+          job_locations (
+            locations (
+              city,
+              state,
+              country
+            )
           ),
           job_skills (
             skills (
@@ -42,11 +67,9 @@ export const useJobs = () => {
         id: job.id,
         title: job.title,
         company: job.companies?.name || 'Unknown Company',
-        location: job.locations 
-          ? `${job.locations.city}${job.locations.state ? ', ' + job.locations.state : ''}${job.locations.country ? ', ' + job.locations.country : ''}`
-          : 'Location not specified',
+        location: formatLocationDisplay(job.job_locations || []),
         salary: job.salary_min && job.salary_max
-          ? `${job.currency || 'INR'} ${job.salary_min} - ${job.salary_max}`
+          ? formatSalaryLPA(job.salary_min, job.salary_max, job.currency || 'INR')
           : 'Not disclosed',
         type: job.job_type || 'Full-time',
         experience: 'Not specified',
@@ -56,7 +79,10 @@ export const useJobs = () => {
         remote: job.work_mode === 'Remote' || job.work_mode === 'Hybrid',
         companyLogo: job.companies?.logo_url,
         sector: job.companies?.sector,
-        domains: job.job_domains?.map((jd: any) => jd.domains?.name).filter(Boolean) || []
+        domains: job.job_domains?.map((jd: any) => jd.domains?.name).filter(Boolean) || [],
+        applicationEmail: job.application_email,
+        applicationLink: job.application_link,
+        locations: job.job_locations?.map((jl: any) => jl.locations) || []
       }));
     },
   });
@@ -86,10 +112,12 @@ export const useJob = (jobId: string | undefined) => {
               point
             )
           ),
-          locations (
-            city,
-            state,
-            country
+          job_locations (
+            locations (
+              city,
+              state,
+              country
+            )
           ),
           job_skills (
             skills (
@@ -119,14 +147,15 @@ export const useJob = (jobId: string | undefined) => {
 
       const eligibility = data.eligibility_criteria?.[0];
 
+      const locations = data.job_locations?.map((jl: any) => jl.locations) || [];
+      
       return {
         ...data,
         company_name: data.companies?.name || 'Unknown Company',
-        location: data.locations 
-          ? `${data.locations.city}${data.locations.state ? ', ' + data.locations.state : ''}${data.locations.country ? ', ' + data.locations.country : ''}`
-          : 'Location not specified',
+        location: formatLocationDisplay(data.job_locations || []),
+        locations: locations,
         salary: data.salary_min && data.salary_max
-          ? `${data.currency || 'INR'} ${data.salary_min} - ${data.salary_max}`
+          ? formatSalaryLPA(data.salary_min, data.salary_max, data.currency || 'INR')
           : 'Not disclosed',
         type: data.job_type || 'Full-time',
         experience: eligibility && (eligibility.min_experience || eligibility.max_experience)
@@ -144,7 +173,9 @@ export const useJob = (jobId: string | undefined) => {
         companyEmployeeCount: data.companies?.employee_count,
         companyFoundedYear: data.companies?.founded_year,
         companyOfficeLocations: data.companies?.office_locations || [],
-        companyHqLocation: data.companies?.hq_location
+        companyHqLocation: data.companies?.hq_location,
+        applicationEmail: data.application_email,
+        applicationLink: data.application_link
       };
     },
     enabled: !!jobId,
