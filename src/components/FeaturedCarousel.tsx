@@ -60,36 +60,36 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items, onJob
   return (
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">{title}</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h2>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="icon"
             onClick={() => scroll('left')}
-            className="h-9 w-9"
+            className="h-8 w-8 md:h-10 md:w-10 bg-background/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
           <Button
             variant="outline"
             size="icon"
             onClick={() => scroll('right')}
-            className="h-9 w-9"
+            className="h-8 w-8 md:h-10 md:w-10 bg-background/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
         </div>
       </div>
 
       <div
         ref={scrollContainerRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {items.map((item) => (
-          <div key={item.id} className="flex-shrink-0 w-[350px]">
+          <div key={item.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
             {item.content_type === 'job' && item.jobs ? (
-              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-1">
+              <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-xl p-1 shadow-md hover:shadow-lg transition-shadow border border-primary/20">
                 <JobCard
                   job={{
                     id: item.jobs.id,
