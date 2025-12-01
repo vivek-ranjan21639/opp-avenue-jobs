@@ -9,11 +9,17 @@ import AdUnit from '@/components/AdUnit';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import Footer from '@/components/Footer';
 import { useJob } from '@/hooks/useJobs';
+import { useFeaturedContent } from '@/hooks/useFeaturedContent';
+import { useTopBlogs } from '@/hooks/useTopBlogs';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
+import TopBlogsCarousel from '@/components/TopBlogsCarousel';
 
 const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
   const { data: job, isLoading } = useJob(jobId);
+  const { data: featuredContent = [] } = useFeaturedContent('job_detail');
+  const { data: topBlogs = [] } = useTopBlogs();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     location: [],
@@ -223,21 +229,33 @@ const JobDetail = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                {job.application_link ? (
+                {job.applicationLink ? (
                   <Button 
-                    onClick={() => window.open(job.application_link, '_blank')}
+                    onClick={() => window.open(job.applicationLink, '_blank')}
                     className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
                   >
                     <Send className="w-4 h-4" />
                     Apply Now
                   </Button>
+                ) : job.applicationEmail ? (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm text-muted-foreground">
+                      To apply, send your resume to:
+                    </p>
+                    <Button 
+                      onClick={() => window.open(`mailto:${job.applicationEmail}?subject=Application for ${job.title} Position`, '_blank')}
+                      className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                    >
+                      <Send className="w-4 h-4" />
+                      {job.applicationEmail}
+                    </Button>
+                  </div>
                 ) : (
                   <Button 
-                    onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
-                    className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                    disabled
+                    className="bg-muted text-muted-foreground px-6 sm:px-8 py-2 sm:py-3 rounded-full font-medium"
                   >
-                    <Send className="w-4 h-4" />
-                    Apply via Email
+                    Application information not available
                   </Button>
                 )}
                 {job.companyWebsite && (
@@ -357,21 +375,48 @@ const JobDetail = () => {
               </div>
             )}
 
+            {/* Featured Section */}
+            {featuredContent && featuredContent.length > 0 && (
+              <FeaturedCarousel 
+                title="Featured" 
+                items={featuredContent}
+              />
+            )}
+
+            {/* Top Blogs Section */}
+            {topBlogs && topBlogs.length > 0 && (
+              <TopBlogsCarousel blogs={topBlogs} />
+            )}
+
             {/* Apply Button */}
             <div className="flex justify-center mb-6">
-              {job.application_link ? (
+              {job.applicationLink ? (
                 <Button 
-                  onClick={() => window.open(job.application_link, '_blank')}
-                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
+                  onClick={() => window.open(job.applicationLink, '_blank')}
+                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium flex items-center justify-center gap-2"
                 >
+                  <Send className="w-4 h-4" />
                   Apply Now
                 </Button>
+              ) : job.applicationEmail ? (
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-sm text-muted-foreground">
+                    To apply, send your resume to:
+                  </p>
+                  <Button 
+                    onClick={() => window.open(`mailto:${job.applicationEmail}?subject=Application for ${job.title} Position`, '_blank')}
+                    className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    {job.applicationEmail}
+                  </Button>
+                </div>
               ) : (
                 <Button 
-                  onClick={() => window.open(`mailto:hr@${job.company_name.toLowerCase().replace(/\s+/g, '')}.com?subject=Application for ${job.title} Position&body=Dear Hiring Manager,%0D%0A%0D%0AI am interested in applying for the ${job.title} position at ${job.company_name}. Please find my details below and let me know the next steps.%0D%0A%0D%0AThank you for your consideration.`, '_blank')}
-                  className="bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent text-accent-foreground px-8 py-3 rounded-full font-medium"
+                  disabled
+                  className="bg-muted text-muted-foreground px-8 py-3 rounded-full font-medium"
                 >
-                  Apply via Email
+                  Application information not available
                 </Button>
               )}
             </div>

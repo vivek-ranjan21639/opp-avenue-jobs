@@ -9,10 +9,13 @@ import JobCard, { Job } from '@/components/JobCard';
 import AdUnit from '@/components/AdUnit';
 import { Button } from '@/components/ui/button';
 import { useJobs } from '@/hooks/useJobs';
+import { useFeaturedContent } from '@/hooks/useFeaturedContent';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
 
 const Index = () => {
   const navigate = useNavigate();
   const { data: allJobs = [], isLoading } = useJobs();
+  const { data: featuredContent = [] } = useFeaturedContent('home');
   const [visibleJobs, setVisibleJobs] = useState<Job[]>([]);
   const [displayCount, setDisplayCount] = useState(15);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -42,15 +45,22 @@ const Index = () => {
       );
     }
     
-    // Apply location filter
+    // Apply location filter (works with multiple locations per job)
     if (activeFilters.location.length > 0) {
       filtered = filtered.filter(job => {
         if (activeFilters.location.includes('Remote') && job.remote) {
           return true;
         }
-        return activeFilters.location.some(location => 
-          job.location.toLowerCase().includes(location.toLowerCase())
-        );
+        // Check if any of the job's locations match any of the filter locations
+        return activeFilters.location.some(filterLocation => {
+          if (job.locations && Array.isArray(job.locations)) {
+            return job.locations.some((loc: any) => 
+              loc.city?.toLowerCase().includes(filterLocation.toLowerCase()) ||
+              loc.state?.toLowerCase().includes(filterLocation.toLowerCase())
+            );
+          }
+          return job.location.toLowerCase().includes(filterLocation.toLowerCase());
+        });
       });
     }
     
@@ -209,6 +219,16 @@ const Index = () => {
             
             {/* Main Content */}
             <div className="w-full max-w-[1008px] flex-1">
+            
+            {/* Featured Section */}
+            {featuredContent && featuredContent.length > 0 && (
+              <FeaturedCarousel 
+                title="Featured" 
+                items={featuredContent}
+                onJobClick={handleJobClick}
+              />
+            )}
+            
             {/* Job Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
               {isLoading ? (

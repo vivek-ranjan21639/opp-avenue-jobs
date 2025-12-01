@@ -106,6 +106,7 @@ export type Database = {
           summary: string | null
           thumbnail_url: string | null
           title: string
+          top_blog: boolean | null
           updated_at: string | null
           view_count: number | null
         }
@@ -122,6 +123,7 @@ export type Database = {
           summary?: string | null
           thumbnail_url?: string | null
           title: string
+          top_blog?: boolean | null
           updated_at?: string | null
           view_count?: number | null
         }
@@ -138,6 +140,7 @@ export type Database = {
           summary?: string | null
           thumbnail_url?: string | null
           title?: string
+          top_blog?: boolean | null
           updated_at?: string | null
           view_count?: number | null
         }
@@ -290,6 +293,53 @@ export type Database = {
           },
         ]
       }
+      featured_content: {
+        Row: {
+          content_type: string
+          created_at: string | null
+          display_location: string
+          display_order: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          job_id: string | null
+          link_url: string | null
+          title: string | null
+        }
+        Insert: {
+          content_type: string
+          created_at?: string | null
+          display_location: string
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          job_id?: string | null
+          link_url?: string | null
+          title?: string | null
+        }
+        Update: {
+          content_type?: string
+          created_at?: string | null
+          display_location?: string
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          job_id?: string | null
+          link_url?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_content_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_benefits: {
         Row: {
           benefit_id: string
@@ -350,6 +400,36 @@ export type Database = {
           },
         ]
       }
+      job_locations: {
+        Row: {
+          job_id: string
+          location_id: string
+        }
+        Insert: {
+          job_id: string
+          location_id: string
+        }
+        Update: {
+          job_id?: string
+          location_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_locations_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_skills: {
         Row: {
           job_id: string
@@ -382,6 +462,7 @@ export type Database = {
       }
       jobs: {
         Row: {
+          application_email: string | null
           application_link: string | null
           company_id: string
           created_at: string
@@ -392,7 +473,6 @@ export type Database = {
           human_id: string | null
           id: string
           job_type: Database["public"]["Enums"]["job_type_enum"] | null
-          location_id: string | null
           qualifications: string[] | null
           responsibilities: string[] | null
           salary_max: number | null
@@ -404,6 +484,7 @@ export type Database = {
           work_mode: Database["public"]["Enums"]["work_mode_enum"] | null
         }
         Insert: {
+          application_email?: string | null
           application_link?: string | null
           company_id: string
           created_at?: string
@@ -414,7 +495,6 @@ export type Database = {
           human_id?: string | null
           id?: string
           job_type?: Database["public"]["Enums"]["job_type_enum"] | null
-          location_id?: string | null
           qualifications?: string[] | null
           responsibilities?: string[] | null
           salary_max?: number | null
@@ -426,6 +506,7 @@ export type Database = {
           work_mode?: Database["public"]["Enums"]["work_mode_enum"] | null
         }
         Update: {
+          application_email?: string | null
           application_link?: string | null
           company_id?: string
           created_at?: string
@@ -436,7 +517,6 @@ export type Database = {
           human_id?: string | null
           id?: string
           job_type?: Database["public"]["Enums"]["job_type_enum"] | null
-          location_id?: string | null
           qualifications?: string[] | null
           responsibilities?: string[] | null
           salary_max?: number | null
@@ -453,13 +533,6 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobs_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]
@@ -496,8 +569,10 @@ export type Database = {
           description: string | null
           display_order: number | null
           external_url: string | null
-          featured: boolean | null
           file_url: string | null
+          highlight_type:
+            | Database["public"]["Enums"]["resource_highlight_type"]
+            | null
           id: string
           parent_id: string | null
           thumbnail_url: string | null
@@ -513,8 +588,10 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           external_url?: string | null
-          featured?: boolean | null
           file_url?: string | null
+          highlight_type?:
+            | Database["public"]["Enums"]["resource_highlight_type"]
+            | null
           id?: string
           parent_id?: string | null
           thumbnail_url?: string | null
@@ -530,8 +607,10 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           external_url?: string | null
-          featured?: boolean | null
           file_url?: string | null
+          highlight_type?:
+            | Database["public"]["Enums"]["resource_highlight_type"]
+            | null
           id?: string
           parent_id?: string | null
           thumbnail_url?: string | null
@@ -604,6 +683,7 @@ export type Database = {
       content_type_enum: "text" | "file" | "external" | "video" | "none"
       currency_enum: "INR" | "USD" | "EUR" | "GBP" | "Other"
       job_type_enum: "Full-time" | "Part-time" | "Internship" | "Contract"
+      resource_highlight_type: "featured" | "new" | "general"
       resource_type: "category" | "resource" | "content"
       work_mode_enum: "Remote" | "On-site" | "Hybrid"
     }
@@ -737,6 +817,7 @@ export const Constants = {
       content_type_enum: ["text", "file", "external", "video", "none"],
       currency_enum: ["INR", "USD", "EUR", "GBP", "Other"],
       job_type_enum: ["Full-time", "Part-time", "Internship", "Contract"],
+      resource_highlight_type: ["featured", "new", "general"],
       resource_type: ["category", "resource", "content"],
       work_mode_enum: ["Remote", "On-site", "Hybrid"],
     },

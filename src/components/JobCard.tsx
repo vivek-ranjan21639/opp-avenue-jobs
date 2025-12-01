@@ -17,6 +17,15 @@ export interface Job {
   companyLogo?: string;
   sector?: string;
   domains?: string[];
+  applicationEmail?: string;
+  applicationLink?: string;
+  locations?: any[];
+}
+
+interface LocationData {
+  city: string;
+  state?: string;
+  country?: string;
 }
 
 interface JobCardProps {
