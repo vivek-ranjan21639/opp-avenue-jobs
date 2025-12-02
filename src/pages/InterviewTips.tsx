@@ -29,6 +29,7 @@ const InterviewTips = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

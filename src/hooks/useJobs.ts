@@ -82,7 +82,8 @@ export const useJobs = () => {
         domains: job.job_domains?.map((jd: any) => jd.domains?.name).filter(Boolean) || [],
         applicationEmail: job.application_email,
         applicationLink: job.application_link,
-        locations: job.job_locations?.map((jl: any) => jl.locations) || []
+        locations: job.job_locations?.map((jl: any) => jl.locations).filter(Boolean) || [],
+        work_mode: job.work_mode
       }));
     },
   });
@@ -175,7 +176,8 @@ export const useJob = (jobId: string | undefined) => {
         companyOfficeLocations: data.companies?.office_locations || [],
         companyHqLocation: data.companies?.hq_location,
         applicationEmail: data.application_email,
-        applicationLink: data.application_link
+        applicationLink: data.application_link,
+        work_mode: data.work_mode
       };
     },
     enabled: !!jobId,

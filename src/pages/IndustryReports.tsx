@@ -32,6 +32,7 @@ const IndustryReports = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

@@ -20,7 +20,8 @@ const Contact = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   useEffect(() => {

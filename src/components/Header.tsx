@@ -29,6 +29,7 @@ export interface FilterState {
   domain: string[];
   skills: string[];
   companies: string[];
+  workMode: string[];
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -137,9 +138,19 @@ const Header: React.FC<HeaderProps> = ({
         
         if (filterKey === 'location') {
           filtered = filtered.filter(job => {
-            if (values.includes('Remote') && job.remote) return true;
-            return values.some(location => job.location.toLowerCase().includes(location.toLowerCase()));
+            // Check if any of the job's locations match any of the filter locations
+            return values.some(filterLocation => {
+              if (job.locations && Array.isArray(job.locations)) {
+                return job.locations.some((loc: any) => 
+                  loc.city?.toLowerCase().includes(filterLocation.toLowerCase()) ||
+                  loc.state?.toLowerCase().includes(filterLocation.toLowerCase())
+                );
+              }
+              return job.location.toLowerCase().includes(filterLocation.toLowerCase());
+            });
           });
+        } else if (filterKey === 'workMode') {
+          filtered = filtered.filter(job => values.includes(job.work_mode || ''));
         } else if (filterKey === 'jobType') {
           filtered = filtered.filter(job => values.includes(job.type));
         } else if (filterKey === 'experience') {
@@ -168,15 +179,16 @@ const Header: React.FC<HeaderProps> = ({
 
     // Calculate dynamic options for each filter
     const locationJobs = getFilteredJobsExcluding('location');
-    const locationOptions = Array.from(new Set([
-      'Remote',
-      ...locationJobs.map(job => job.location)
-    ])).filter(location => {
-      if (location === 'Remote') {
-        return locationJobs.some(job => job.remote);
+    // Extract individual cities from all job locations
+    const allCities = new Set<string>();
+    locationJobs.forEach(job => {
+      if (job.locations && Array.isArray(job.locations)) {
+        job.locations.forEach((loc: any) => {
+          if (loc.city) allCities.add(loc.city);
+        });
       }
-      return locationJobs.some(job => job.location === location);
-    }).sort();
+    });
+    const locationOptions = Array.from(allCities).sort();
 
     const jobTypeJobs = getFilteredJobsExcluding('jobType');
     const jobTypeOptions = Array.from(new Set(jobTypeJobs.map(job => job.type))).sort();
@@ -205,6 +217,13 @@ const Header: React.FC<HeaderProps> = ({
     const skillsJobs = getFilteredJobsExcluding('skills');
     const skillsOptions = Array.from(new Set(skillsJobs.flatMap(job => job.skills))).sort();
 
+    const workModeJobs = getFilteredJobsExcluding('workMode');
+    const workModeOptions = Array.from(new Set(
+      workModeJobs
+        .map(job => job.work_mode)
+        .filter(Boolean)
+    )).sort();
+
     return [
       { 
         icon: MapPin, 
@@ -217,6 +236,12 @@ const Header: React.FC<HeaderProps> = ({
         label: 'Job Type', 
         key: 'jobType' as keyof FilterState,
         options: jobTypeOptions
+      },
+      { 
+        icon: Building2, 
+        label: 'Work Mode', 
+        key: 'workMode' as keyof FilterState,
+        options: workModeOptions
       },
       { 
         icon: GraduationCap, 
@@ -261,7 +286,8 @@ const Header: React.FC<HeaderProps> = ({
     JSON.stringify(activeFilters.salaryRange),
     JSON.stringify(activeFilters.domain),
     JSON.stringify(activeFilters.skills),
-    JSON.stringify(activeFilters.companies)
+    JSON.stringify(activeFilters.companies),
+    JSON.stringify(activeFilters.workMode)
   ]);
 
   const handleFilterChange = (filterKey: keyof FilterState, option: string) => {
@@ -286,7 +312,8 @@ const Header: React.FC<HeaderProps> = ({
       salaryRange: [],
       domain: [],
       skills: [],
-      companies: []
+      companies: [],
+      workMode: []
     };
     onFiltersChange(emptyFilters);
   };

@@ -27,7 +27,8 @@ const Index = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   // Filter jobs based on search and filters
@@ -48,9 +49,6 @@ const Index = () => {
     // Apply location filter (works with multiple locations per job)
     if (activeFilters.location.length > 0) {
       filtered = filtered.filter(job => {
-        if (activeFilters.location.includes('Remote') && job.remote) {
-          return true;
-        }
         // Check if any of the job's locations match any of the filter locations
         return activeFilters.location.some(filterLocation => {
           if (job.locations && Array.isArray(job.locations)) {
@@ -62,6 +60,13 @@ const Index = () => {
           return job.location.toLowerCase().includes(filterLocation.toLowerCase());
         });
       });
+    }
+    
+    // Apply work mode filter
+    if (activeFilters.workMode.length > 0) {
+      filtered = filtered.filter(job =>
+        activeFilters.workMode.includes(job.work_mode || '')
+      );
     }
     
     // Apply job type filter
