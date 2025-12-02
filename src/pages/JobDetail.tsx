@@ -72,7 +72,7 @@ const JobDetail = () => {
           />
           <main className="px-4 md:px-8 py-8">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-2xl font-bold mb-4">Job Not Found</h1>
+              <h1 className="text-xl md:text-2xl font-bold mb-4">Job Not Found</h1>
               <Button onClick={() => navigate('/')} className="rounded-full">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Jobs
@@ -122,7 +122,7 @@ const JobDetail = () => {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-card-foreground mb-2">{job.title}</h1>
+                  <h1 className="text-xl md:text-3xl font-bold text-card-foreground mb-2">{job.title}</h1>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Building className="w-5 h-5" />
                     <span className="text-lg">{job.company_name}</span>

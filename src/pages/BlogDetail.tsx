@@ -92,7 +92,7 @@ const BlogDetail = () => {
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
         <article className="prose prose-lg max-w-none">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">{blog.title}</h1>
+          <h1 className="text-2xl md:text-4xl font-bold mb-4 text-foreground">{blog.title}</h1>
 
           <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
             {blog.author && (

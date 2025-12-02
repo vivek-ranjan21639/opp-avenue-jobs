@@ -118,7 +118,7 @@ const Blogs = () => {
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
+        <h1 className="text-2xl md:text-4xl font-bold mb-4 text-foreground">Blog</h1>
         
         <p className="text-muted-foreground mb-6 text-lg">
           Stay updated with the latest news, insights, and trends in the railway industry.

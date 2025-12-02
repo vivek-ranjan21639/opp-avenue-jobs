@@ -32,7 +32,7 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
   return (
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">Top Blogs</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-foreground">Top Blogs</h2>
         <div className="flex gap-2">
           <Button
             variant="outline"

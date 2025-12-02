@@ -350,7 +350,7 @@ const Header: React.FC<HeaderProps> = ({
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">O</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">Opp Avenue</h1>
+            <h1 className="text-base sm:text-xl font-bold text-foreground truncate">Opp Avenue</h1>
           </div>
 
           {/* Search Bar - Desktop Only (Home Page) */}
@@ -522,25 +522,25 @@ const Header: React.FC<HeaderProps> = ({
         {/* Filters Section for Home Page */}
         {isHomePage && showFilters && (
           <div className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -mx-8 px-2 py-2">
-            {/* Mobile Filters - 2 rows + additional row for last 3 */}
+            {/* Mobile Filters - 3 rows */}
             <div className="md:hidden space-y-1.5">
-              <div className="grid grid-cols-2 gap-1.5">
-                {filterOptions.slice(0, 4).map((filter) => (
+              <div className="grid grid-cols-3 gap-1.5">
+                {filterOptions.slice(0, 3).map((filter) => (
                   <DropdownMenu key={filter.key}>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
                         size="sm"
-                        className={`h-7 px-2 text-[10px] ${
+                        className={`h-7 px-1.5 text-[10px] ${
                           activeFilters[filter.key].length > 0 
                             ? 'bg-primary text-primary-foreground border-primary' 
                             : 'border-input-border'
                         }`}
                       >
-                        <filter.icon className="w-3 h-3 mr-1" />
-                        {filter.label}
+                        <filter.icon className="w-3 h-3 mr-0.5" />
+                        <span className="truncate">{filter.label}</span>
                         {activeFilters[filter.key].length > 0 && (
-                          <Badge variant="secondary" className="ml-1 h-3 w-3 p-0 text-[8px]">
+                          <Badge variant="secondary" className="ml-0.5 h-3 w-3 p-0 text-[8px]">
                             {activeFilters[filter.key].length}
                           </Badge>
                         )}
@@ -566,7 +566,7 @@ const Header: React.FC<HeaderProps> = ({
                 ))}
               </div>
               <div className="grid grid-cols-3 gap-1.5">
-                {filterOptions.slice(4).map((filter) => (
+                {filterOptions.slice(3, 6).map((filter) => (
                   <DropdownMenu key={filter.key}>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -579,9 +579,50 @@ const Header: React.FC<HeaderProps> = ({
                         }`}
                       >
                         <filter.icon className="w-3 h-3 mr-0.5" />
-                        {filter.label}
+                        <span className="truncate">{filter.label}</span>
                         {activeFilters[filter.key].length > 0 && (
                           <Badge variant="secondary" className="ml-0.5 h-3 w-3 p-0 text-[8px]">
+                            {activeFilters[filter.key].length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
+                      {filter.options.length > 0 ? (
+                        filter.options.map((option) => (
+                          <DropdownMenuCheckboxItem
+                            key={option}
+                            checked={activeFilters[filter.key].includes(option)}
+                            onCheckedChange={() => handleFilterChange(filter.key, option)}
+                            className="text-xs"
+                          >
+                            {option}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {filterOptions.slice(6).map((filter) => (
+                  <DropdownMenu key={filter.key}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-7 px-2 text-[10px] ${
+                          activeFilters[filter.key].length > 0 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'border-input-border'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3 mr-1" />
+                        <span className="truncate">{filter.label}</span>
+                        {activeFilters[filter.key].length > 0 && (
+                          <Badge variant="secondary" className="ml-1 h-3 w-3 p-0 text-[8px]">
                             {activeFilters[filter.key].length}
                           </Badge>
                         )}
@@ -623,23 +664,23 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* Tablet Filters - Single row */}
             <div className="hidden md:block lg:hidden">
-              <div className="grid grid-cols-7 gap-1.5 px-2">
+              <div className="grid grid-cols-8 gap-1 px-2">
                 {filterOptions.map((filter) => (
                   <DropdownMenu key={filter.key}>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
                         size="sm"
-                        className={`h-8 px-1.5 text-xs ${
+                        className={`h-8 px-1 text-[10px] ${
                           activeFilters[filter.key].length > 0 
                             ? 'bg-primary text-primary-foreground border-primary' 
                             : 'border-input-border'
                         }`}
                       >
-                        <filter.icon className="w-3 h-3 mr-1" />
+                        <filter.icon className="w-3 h-3 mr-0.5" />
                         <span className="truncate">{filter.label}</span>
                         {activeFilters[filter.key].length > 0 && (
-                          <Badge variant="secondary" className="ml-1 h-3 w-3 p-0 text-[8px]">
+                          <Badge variant="secondary" className="ml-0.5 h-3 w-3 p-0 text-[8px]">
                             {activeFilters[filter.key].length}
                           </Badge>
                         )}

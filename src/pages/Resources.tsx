@@ -67,7 +67,7 @@ const Resources = () => {
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
-        <h1 className="text-4xl font-bold mb-6 text-foreground">Resources</h1>
+        <h1 className="text-2xl md:text-4xl font-bold mb-6 text-foreground">Resources</h1>
         
         <p className="text-muted-foreground mb-8 text-lg">
           Explore our collection of helpful resources to advance your career in the railway industry.
@@ -78,7 +78,7 @@ const Resources = () => {
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">What's New</h2>
+              <h2 className="text-lg md:text-2xl font-bold text-foreground">What's New</h2>
             </div>
             
             <div className="space-y-2">
@@ -104,7 +104,7 @@ const Resources = () => {
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">You should go through</h2>
+              <h2 className="text-lg md:text-2xl font-bold text-foreground">You should go through</h2>
             </div>
             
             <div className="space-y-2">
