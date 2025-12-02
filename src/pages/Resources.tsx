@@ -61,6 +61,7 @@ const Resources = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

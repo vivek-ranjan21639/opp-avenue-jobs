@@ -17,7 +17,8 @@ const CookiePolicy = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   useEffect(() => {

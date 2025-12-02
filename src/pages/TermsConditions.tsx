@@ -17,7 +17,8 @@ const TermsConditions = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   useEffect(() => {

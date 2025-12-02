@@ -17,7 +17,8 @@ const Disclaimer = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   useEffect(() => {

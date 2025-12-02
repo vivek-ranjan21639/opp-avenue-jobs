@@ -20,6 +20,7 @@ export interface Job {
   applicationEmail?: string;
   applicationLink?: string;
   locations?: any[];
+  work_mode?: string;
 }
 
 interface LocationData {
@@ -58,7 +59,6 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           <div className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
             <span>{job.location}</span>
-            {job.remote && <Badge variant="secondary" className="ml-2 text-xs">Remote</Badge>}
           </div>
           <div className="flex items-center gap-1">
             <IndianRupee className="w-4 h-4" />
@@ -73,6 +73,9 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           </div>
           <Badge variant="outline" className="text-xs">{job.type}</Badge>
           <Badge variant="outline" className="text-xs">{job.experience}</Badge>
+          {job.work_mode && (
+            <Badge variant="secondary" className="text-xs">{job.work_mode}</Badge>
+          )}
         </div>
       </div>
 

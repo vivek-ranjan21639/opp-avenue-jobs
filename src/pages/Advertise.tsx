@@ -18,7 +18,8 @@ const Advertise = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   const platformStats = [

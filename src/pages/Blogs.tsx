@@ -55,6 +55,7 @@ const Blogs = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

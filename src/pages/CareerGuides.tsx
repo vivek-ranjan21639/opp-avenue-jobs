@@ -29,6 +29,7 @@ const CareerGuides = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

@@ -28,7 +28,8 @@ const JobDetail = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
   
   if (isLoading) {
@@ -135,8 +136,20 @@ const JobDetail = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-sm text-muted-foreground">Location</p>
-                    <p className="font-medium">{job.location}</p>
-                    {job.remote && <Badge variant="secondary" className="mt-1 text-xs">Remote</Badge>}
+                    {job.locations && job.locations.length > 0 ? (
+                      <div className="font-medium space-y-1">
+                        {job.locations.map((loc: any, idx: number) => (
+                          <p key={idx}>{loc.city}{loc.state ? `, ${loc.state}` : ''}</p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="font-medium">{job.location}</p>
+                    )}
+                    {job.work_mode && (
+                      <Badge variant="secondary" className="mt-1 text-xs">
+                        {job.work_mode}
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 
@@ -375,19 +388,6 @@ const JobDetail = () => {
               </div>
             )}
 
-            {/* Featured Section */}
-            {featuredContent && featuredContent.length > 0 && (
-              <FeaturedCarousel 
-                title="Featured" 
-                items={featuredContent}
-              />
-            )}
-
-            {/* Top Blogs Section */}
-            {topBlogs && topBlogs.length > 0 && (
-              <TopBlogsCarousel blogs={topBlogs} />
-            )}
-
             {/* Apply Button */}
             <div className="flex justify-center mb-6">
               {job.applicationLink ? (
@@ -421,6 +421,19 @@ const JobDetail = () => {
               )}
             </div>
             
+            {/* Featured Section */}
+            {featuredContent && featuredContent.length > 0 && (
+              <FeaturedCarousel 
+                title="Featured" 
+                items={featuredContent}
+              />
+            )}
+
+            {/* Top Blogs Section */}
+            {topBlogs && topBlogs.length > 0 && (
+              <TopBlogsCarousel blogs={topBlogs} />
+            )}
+
             {/* Bottom Ad */}
             <div className="mb-6">
               <AdUnit size="banner" label="Bottom Banner Ad" />

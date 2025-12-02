@@ -18,7 +18,8 @@ const Sitemap = () => {
     salaryRange: [],
     domain: [],
     skills: [],
-    companies: []
+    companies: [],
+    workMode: []
   });
 
   useEffect(() => {

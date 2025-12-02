@@ -24,15 +24,16 @@ const BlogDetail = () => {
           onAdvertiseClick={() => {}}
           searchQuery=""
           onSearchChange={() => {}}
-          activeFilters={{
-            location: [],
-            jobType: [],
-            experience: [],
-            salaryRange: [],
-            domain: [],
-            skills: [],
-            companies: [],
-          }}
+        activeFilters={{
+          location: [],
+          jobType: [],
+          experience: [],
+          salaryRange: [],
+          domain: [],
+          skills: [],
+          companies: [],
+          workMode: []
+        }}
           onFiltersChange={() => {}}
         />
         <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
@@ -50,15 +51,16 @@ const BlogDetail = () => {
           onAdvertiseClick={() => {}}
           searchQuery=""
           onSearchChange={() => {}}
-          activeFilters={{
-            location: [],
-            jobType: [],
-            experience: [],
-            salaryRange: [],
-            domain: [],
-            skills: [],
-            companies: [],
-          }}
+        activeFilters={{
+          location: [],
+          jobType: [],
+          experience: [],
+          salaryRange: [],
+          domain: [],
+          skills: [],
+          companies: [],
+          workMode: []
+        }}
           onFiltersChange={() => {}}
         />
         <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
@@ -83,6 +85,7 @@ const BlogDetail = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />

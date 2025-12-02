@@ -30,6 +30,7 @@ const ResumeTemplates = () => {
           domain: [],
           skills: [],
           companies: [],
+          workMode: []
         }}
         onFiltersChange={() => {}}
       />
