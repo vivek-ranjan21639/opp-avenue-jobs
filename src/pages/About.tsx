@@ -36,7 +36,7 @@ const About = () => {
         <div className="space-y-12">
           {/* Hero Section */}
           <section className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
               About Opp Avenue
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -83,7 +83,7 @@ const About = () => {
 
           {/* Values Section */}
           <section>
-            <h2 className="text-3xl font-bold text-center mb-8">Our Values</h2>
+            <h2 className="text-xl md:text-3xl font-bold text-center mb-8">Our Values</h2>
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border-border/50 shadow-lg">
                 <CardHeader>
@@ -131,7 +131,7 @@ const About = () => {
 
           {/* Stats Section */}
           <section className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-center mb-8">Platform Highlights</h2>
+            <h2 className="text-xl md:text-3xl font-bold text-center mb-8">Platform Highlights</h2>
             <div className="grid md:grid-cols-3 gap-8 text-center">
               <div>
                 <div className="text-4xl font-bold text-primary mb-2">500+</div>

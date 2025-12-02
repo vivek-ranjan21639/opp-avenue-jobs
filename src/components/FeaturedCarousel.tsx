@@ -60,7 +60,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items, onJob
   return (
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h2>
+        <h2 className="text-xl md:text-3xl font-bold text-foreground">{title}</h2>
         <div className="flex gap-2">
           <Button
             variant="outline"

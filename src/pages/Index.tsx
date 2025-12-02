@@ -251,10 +251,16 @@ const Index = () => {
                     job={job} 
                     onClick={handleJobClick}
                   />
-                  {/* Ad after every 15 jobs (5 rows) */}
+                  {/* Desktop: Ad after every 15 jobs (5 rows of 3) */}
                   {(index + 1) % 15 === 0 && (
-                    <div className="md:col-span-2 lg:col-span-3">
+                    <div className="hidden lg:block lg:col-span-3">
                       <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 15)}`} />
+                    </div>
+                  )}
+                  {/* Tablet & Mobile: Ad after every 10 jobs (5 rows of 2 on tablet, 10 rows of 1 on mobile) */}
+                  {(index + 1) % 10 === 0 && (
+                    <div className="lg:hidden md:col-span-2">
+                      <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 10)}`} />
                     </div>
                   )}
                 </React.Fragment>
