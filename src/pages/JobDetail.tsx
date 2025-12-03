@@ -9,7 +9,7 @@ import AdUnit from '@/components/AdUnit';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import Footer from '@/components/Footer';
 import { useJob } from '@/hooks/useJobs';
-import { useFeaturedContent } from '@/hooks/useFeaturedContent';
+import { useRecommendedJobs } from '@/hooks/useRecommendedJobs';
 import { useTopBlogs } from '@/hooks/useTopBlogs';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import TopBlogsCarousel from '@/components/TopBlogsCarousel';
@@ -18,7 +18,7 @@ const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
   const { data: job, isLoading } = useJob(jobId);
-  const { data: featuredContent = [] } = useFeaturedContent('job_detail');
+  const { data: recommendedJobs = [] } = useRecommendedJobs(jobId);
   const { data: topBlogs = [] } = useTopBlogs();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
@@ -421,11 +421,12 @@ const JobDetail = () => {
               )}
             </div>
             
-            {/* Featured Section */}
-            {featuredContent && featuredContent.length > 0 && (
+            {/* You May Also Like Section */}
+            {recommendedJobs && recommendedJobs.length > 0 && (
               <FeaturedCarousel 
-                title="Featured" 
-                items={featuredContent}
+                title="You May Also Like" 
+                jobs={recommendedJobs}
+                jobsOnly={true}
               />
             )}
 
