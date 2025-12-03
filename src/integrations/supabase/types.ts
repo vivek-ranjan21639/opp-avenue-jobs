@@ -677,6 +677,24 @@ export type Database = {
     }
     Functions: {
       delete_expired_jobs: { Args: never; Returns: undefined }
+      get_recommended_jobs: {
+        Args: { p_job_id: string; p_limit?: number }
+        Returns: {
+          company_id: string
+          company_logo: string
+          company_name: string
+          company_sector: string
+          created_at: string
+          currency: string
+          job_id: string
+          job_type: string
+          relevance_score: number
+          salary_max: number
+          salary_min: number
+          title: string
+          work_mode: string
+        }[]
+      }
     }
     Enums: {
       blog_status: "draft" | "published" | "archived"
