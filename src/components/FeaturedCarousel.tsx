@@ -62,7 +62,8 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl md:text-3xl font-bold text-foreground">{title}</h2>
-        <div className="flex gap-2">
+        {/* Mobile/Tablet navigation buttons - hidden on desktop */}
+        <div className="flex gap-2 lg:hidden">
           <Button
             variant="outline"
             size="icon"
@@ -82,47 +83,70 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
         </div>
       </div>
 
-      <div
-        ref={scrollContainerRef}
-        className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {jobsOnly ? (
-          // Render jobs directly for "You May Also Like" section
-          jobs.map((job) => (
-            <div key={job.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
-              <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-xl p-1 shadow-md hover:shadow-lg transition-shadow border border-primary/20">
-                <JobCard
-                  job={job}
-                  onClick={() => handleJobClick(job)}
-                />
+      {/* Carousel container with side arrows on desktop */}
+      <div className="relative">
+        {/* Desktop left arrow */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => scroll('left')}
+          className="hidden lg:flex absolute -left-12 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {jobsOnly ? (
+            // Render jobs directly for "You May Also Like" section
+            jobs.map((job) => (
+              <div key={job.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
+                <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-xl p-1 shadow-md hover:shadow-lg transition-shadow border border-primary/20">
+                  <JobCard
+                    job={job}
+                    onClick={() => handleJobClick(job)}
+                  />
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          // Render featured content items (images only - no jobs)
-          items.map((item) => (
-            <div key={item.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
-              <div
-                className={`relative h-[300px] rounded-lg overflow-hidden ${
-                  item.content_type !== 'poster_static' ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''
-                }`}
-                onClick={() => handleItemClick(item)}
-              >
-                <img
-                  src={item.image_url || '/placeholder.svg'}
-                  alt={item.title || 'Featured content'}
-                  className="w-full h-full object-cover"
-                />
-                {item.title && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                    <h3 className="text-white font-semibold">{item.title}</h3>
-                  </div>
-                )}
+            ))
+          ) : (
+            // Render featured content items (images only - no jobs)
+            items.map((item) => (
+              <div key={item.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
+                <div
+                  className={`relative h-[300px] rounded-lg overflow-hidden ${
+                    item.content_type !== 'poster_static' ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''
+                  }`}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <img
+                    src={item.image_url || '/placeholder.svg'}
+                    alt={item.title || 'Featured content'}
+                    className="w-full h-full object-cover"
+                  />
+                  {item.title && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <h3 className="text-white font-semibold">{item.title}</h3>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
+
+        {/* Desktop right arrow */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => scroll('right')}
+          className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </Button>
       </div>
     </div>
   );
