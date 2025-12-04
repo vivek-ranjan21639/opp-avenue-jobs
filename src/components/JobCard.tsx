@@ -55,6 +55,14 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
 
       {/* Job Details */}
       <div className="space-y-3 mb-4">
+        {/* Row 1: Work Mode */}
+        {job.work_mode && (
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-xs">{job.work_mode}</Badge>
+          </div>
+        )}
+
+        {/* Row 2: Location and Salary */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
@@ -66,6 +74,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           </div>
         </div>
 
+        {/* Row 3: Posted Time, Job Type, Experience */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
@@ -73,9 +82,6 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           </div>
           <Badge variant="outline" className="text-xs">{job.type}</Badge>
           <Badge variant="outline" className="text-xs">{job.experience}</Badge>
-          {job.work_mode && (
-            <Badge variant="secondary" className="text-xs">{job.work_mode}</Badge>
-          )}
         </div>
       </div>
 

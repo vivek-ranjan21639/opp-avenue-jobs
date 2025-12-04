@@ -13,14 +13,14 @@ function formatSalaryLPA(min: number, max: number, currency: string = 'INR'): st
   return `${formatAmount(min)}-${formatAmount(max)} LPA`;
 }
 
-// Utility function to format location display
+// Utility function to format location display (city only)
 function formatLocationDisplay(locations: any[]): string {
   if (!locations || locations.length === 0) return 'Location not specified';
   const firstLocation = locations[0]?.locations;
   if (!firstLocation) return 'Location not specified';
   
   if (locations.length === 1) {
-    return `${firstLocation.city}${firstLocation.state ? ', ' + firstLocation.state : ''}`;
+    return firstLocation.city || 'Location not specified';
   }
   return `${firstLocation.city}+${locations.length - 1}`;
 }

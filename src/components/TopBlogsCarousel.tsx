@@ -24,7 +24,7 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
   };
 
   const handleBlogClick = (slug: string) => {
-    navigate(`/blog/${slug}`);
+    window.open(`/blog/${slug}`, '_blank');
   };
 
   if (!blogs || blogs.length === 0) return null;
@@ -61,30 +61,33 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
         {blogs.map((blog) => (
           <Card
             key={blog.id}
-            className="flex-shrink-0 w-[320px] cursor-pointer hover:shadow-lg transition-shadow overflow-hidden"
+            className="flex-shrink-0 w-[320px] cursor-pointer hover:shadow-lg transition-shadow overflow-hidden relative"
             onClick={() => handleBlogClick(blog.slug)}
           >
-            {blog.thumbnail_url && (
-              <div className="h-40 overflow-hidden">
-                <img
-                  src={blog.thumbnail_url}
-                  alt={blog.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            <div className="p-4">
-              <h3 className="font-semibold text-lg mb-2 line-clamp-2">{blog.title}</h3>
+            {/* Background Image - always show, use thumbnail or placeholder */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ 
+                backgroundImage: `url(${blog.thumbnail_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop'})` 
+              }}
+            >
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 p-4 h-[200px] flex flex-col justify-end">
+              <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-white">{blog.title}</h3>
               {blog.authors && (
                 <div className="flex items-center gap-2">
                   {blog.authors.profile_pic_url && (
                     <img
                       src={blog.authors.profile_pic_url}
                       alt={blog.authors.name}
-                      className="w-6 h-6 rounded-full"
+                      className="w-6 h-6 rounded-full border border-white/30"
                     />
                   )}
-                  <span className="text-sm text-muted-foreground">{blog.authors.name}</span>
+                  <span className="text-sm text-white/80">{blog.authors.name}</span>
                 </div>
               )}
             </div>

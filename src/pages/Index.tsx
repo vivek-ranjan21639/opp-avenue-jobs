@@ -225,12 +225,11 @@ const Index = () => {
             {/* Main Content */}
             <div className="w-full max-w-[1008px] flex-1">
             
-            {/* Featured Section */}
+            {/* Featured Section - Images only */}
             {featuredContent && featuredContent.length > 0 && (
               <FeaturedCarousel 
                 title="Featured" 
                 items={featuredContent}
-                onJobClick={handleJobClick}
               />
             )}
             
