@@ -61,7 +61,7 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
           variant="outline"
           size="icon"
           onClick={() => scroll('left')}
-          className="hidden lg:flex absolute -left-12 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+          className="hidden lg:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-muted/90 border-border/50 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
@@ -113,7 +113,7 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
           variant="outline"
           size="icon"
           onClick={() => scroll('right')}
-          className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+          className="hidden lg:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 bg-muted/90 border-border/50 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
         >
           <ChevronRight className="h-5 w-5" />
         </Button>
