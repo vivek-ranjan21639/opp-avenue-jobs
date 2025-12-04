@@ -95,14 +95,14 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
       )}
 
       {/* Skills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-nowrap gap-2 overflow-hidden">
         {job.skills.slice(0, 3).map((skill, index) => (
-          <Badge key={index} variant="secondary" className="text-xs px-2 py-1 rounded-full">
+          <Badge key={index} variant="secondary" className="text-xs px-2 py-1 rounded-full whitespace-nowrap shrink-0">
             {skill}
           </Badge>
         ))}
         {job.skills.length > 3 && (
-          <Badge variant="secondary" className="text-xs px-2 py-1 rounded-full">
+          <Badge variant="secondary" className="text-xs px-2 py-1 rounded-full whitespace-nowrap shrink-0">
             +{job.skills.length - 3}
           </Badge>
         )}
