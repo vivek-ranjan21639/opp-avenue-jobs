@@ -2,27 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Job } from "@/components/JobCard";
 
-interface RecommendedJobRow {
-  job_id: string;
-  title: string;
-  company_id: string;
-  company_name: string;
-  company_logo: string | null;
-  company_sector: string | null;
-  salary_min: number | null;
-  salary_max: number | null;
-  currency: string | null;
-  job_type: string | null;
-  work_mode: string | null;
-  created_at: string;
-  relevance_score: number;
-}
-
-const formatSalaryLPA = (min: number | null, max: number | null, currency: string | null): string => {
+const formatSalaryLPA = (min: number | null, max: number | null): string => {
   if (!min && !max) return 'Not disclosed';
-  const minLPA = min ? (min / 100000).toFixed(1) : '0';
-  const maxLPA = max ? (max / 100000).toFixed(1) : '0';
-  return `${minLPA}-${maxLPA} LPA`;
+  const formatAmount = (amount: number) => {
+    if (amount >= 100000) {
+      return (amount / 100000).toFixed(1).replace(/\.0$/, '');
+    }
+    return (amount / 1000).toFixed(0) + 'K';
+  };
+  const minStr = min ? formatAmount(min) : '0';
+  const maxStr = max ? formatAmount(max) : '0';
+  return `${minStr}-${maxStr} LPA`;
 };
 
 const formatPostedTime = (createdAt: string): string => {
@@ -36,7 +26,19 @@ const formatPostedTime = (createdAt: string): string => {
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 14) return '1 week ago';
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return `${Math.floor(diffDays / 30)} month(s) ago`;
+  if (diffDays < 60) return '1 month ago';
+  return `${Math.floor(diffDays / 30)} months ago`;
+};
+
+const formatLocationDisplay = (locations: any[]): string => {
+  if (!locations || locations.length === 0) return 'Location not specified';
+  const firstLocation = locations[0]?.locations;
+  if (!firstLocation) return 'Location not specified';
+  
+  if (locations.length === 1) {
+    return firstLocation.city || 'Location not specified';
+  }
+  return `${firstLocation.city}+${locations.length - 1}`;
 };
 
 export const useRecommendedJobs = (jobId: string | undefined) => {
@@ -45,75 +47,121 @@ export const useRecommendedJobs = (jobId: string | undefined) => {
     queryFn: async () => {
       if (!jobId) return [];
 
-      const { data, error } = await supabase.rpc('get_recommended_jobs', {
-        p_job_id: jobId,
-        p_limit: 15
-      });
+      // Get current job's domains and skills for matching
+      const { data: currentJob } = await supabase
+        .from('jobs')
+        .select(`
+          title,
+          job_domains(domain_id),
+          job_skills(skill_id)
+        `)
+        .eq('id', jobId)
+        .single();
+
+      if (!currentJob) return [];
+
+      const currentDomainIds = currentJob.job_domains?.map((d: any) => d.domain_id) || [];
+      const currentSkillIds = currentJob.job_skills?.map((s: any) => s.skill_id) || [];
+
+      // Fetch jobs excluding current one
+      const { data: jobs, error } = await supabase
+        .from('jobs')
+        .select(`
+          id,
+          title,
+          created_at,
+          salary_min,
+          salary_max,
+          currency,
+          job_type,
+          work_mode,
+          companies (
+            name,
+            logo_url,
+            sector
+          ),
+          job_locations (
+            locations (
+              city
+            )
+          ),
+          job_skills (
+            skill_id,
+            skills (name)
+          ),
+          job_domains (
+            domain_id,
+            domains (name)
+          ),
+          eligibility_criteria (
+            min_experience,
+            max_experience
+          )
+        `)
+        .neq('id', jobId)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+        .limit(50);
 
       if (error) {
-        console.error('Error fetching recommended jobs:', error);
-        throw error;
+        console.error('Error fetching jobs for recommendations:', error);
+        return [];
       }
 
-      // Fetch additional data for each job (locations, skills, domains)
-      const jobIds = (data as RecommendedJobRow[]).map(job => job.job_id);
-      
-      // Fetch locations
-      const { data: locationsData } = await supabase
-        .from('job_locations')
-        .select(`
-          job_id,
-          locations (city, state)
-        `)
-        .in('job_id', jobIds);
+      // Score and sort jobs by relevance
+      const scoredJobs = jobs.map(job => {
+        let score = 0;
+        
+        // Domain match score (40%)
+        const jobDomainIds = job.job_domains?.map((d: any) => d.domain_id) || [];
+        const domainMatches = jobDomainIds.filter((id: string) => currentDomainIds.includes(id)).length;
+        if (currentDomainIds.length > 0) {
+          score += (domainMatches / currentDomainIds.length) * 40;
+        }
 
-      // Fetch skills
-      const { data: skillsData } = await supabase
-        .from('job_skills')
-        .select(`
-          job_id,
-          skills (name)
-        `)
-        .in('job_id', jobIds);
+        // Skills match score (40%)
+        const jobSkillIds = job.job_skills?.map((s: any) => s.skill_id) || [];
+        const skillMatches = jobSkillIds.filter((id: string) => currentSkillIds.includes(id)).length;
+        if (currentSkillIds.length > 0) {
+          score += (skillMatches / currentSkillIds.length) * 40;
+        }
 
-      // Fetch domains
-      const { data: domainsData } = await supabase
-        .from('job_domains')
-        .select(`
-          job_id,
-          domains (name)
-        `)
-        .in('job_id', jobIds);
+        // Recency boost (20%)
+        const daysSincePosted = Math.floor((Date.now() - new Date(job.created_at).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSincePosted < 7) score += 20;
+        else if (daysSincePosted < 14) score += 15;
+        else if (daysSincePosted < 30) score += 10;
 
-      // Map the data to Job interface
-      const recommendedJobs: Job[] = (data as RecommendedJobRow[]).map(row => {
-        const jobLocations = locationsData?.filter(l => l.job_id === row.job_id) || [];
-        const jobSkills = skillsData?.filter(s => s.job_id === row.job_id) || [];
-        const jobDomains = domainsData?.filter(d => d.job_id === row.job_id) || [];
+        return { ...job, relevanceScore: score };
+      });
 
-        const locationDisplay = jobLocations.length > 0
-          ? jobLocations.length > 1
-            ? `${(jobLocations[0] as any).locations?.city}+${jobLocations.length - 1}`
-            : (jobLocations[0] as any).locations?.city || 'Location not specified'
-          : 'Location not specified';
+      // Sort by score and take top 15
+      const topJobs = scoredJobs
+        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        .slice(0, 15);
 
+      // Map to Job interface
+      const recommendedJobs: Job[] = topJobs.map(job => {
+        const eligibility = job.eligibility_criteria?.[0];
         return {
-          id: row.job_id,
-          title: row.title,
-          company: row.company_name,
-          companyLogo: row.company_logo || undefined,
-          location: locationDisplay,
-          locations: jobLocations.map((l: any) => l.locations),
-          salary: formatSalaryLPA(row.salary_min, row.salary_max, row.currency),
-          type: row.job_type || 'Full-time',
-          experience: 'Not specified',
-          skills: jobSkills.map((s: any) => s.skills?.name).filter(Boolean),
-          postedTime: formatPostedTime(row.created_at),
+          id: job.id,
+          title: job.title,
+          company: job.companies?.name || 'Unknown Company',
+          companyLogo: job.companies?.logo_url || undefined,
+          location: formatLocationDisplay(job.job_locations || []),
+          locations: job.job_locations?.map((jl: any) => jl.locations).filter(Boolean) || [],
+          salary: formatSalaryLPA(job.salary_min, job.salary_max),
+          type: job.job_type || 'Full-time',
+          experience: eligibility && (eligibility.min_experience || eligibility.max_experience)
+            ? `${eligibility.min_experience || 0}-${eligibility.max_experience || '+'} yrs`
+            : 'Not specified',
+          skills: job.job_skills?.map((s: any) => s.skills?.name).filter(Boolean) || [],
+          postedTime: formatPostedTime(job.created_at),
           description: '',
-          remote: row.work_mode === 'Remote' || row.work_mode === 'Hybrid',
-          sector: row.company_sector || undefined,
-          domains: jobDomains.map((d: any) => d.domains?.name).filter(Boolean),
-          work_mode: row.work_mode || undefined
+          remote: job.work_mode === 'Remote' || job.work_mode === 'Hybrid',
+          sector: job.companies?.sector || undefined,
+          domains: job.job_domains?.map((d: any) => d.domains?.name).filter(Boolean) || [],
+          work_mode: job.work_mode || undefined
         };
       });
 

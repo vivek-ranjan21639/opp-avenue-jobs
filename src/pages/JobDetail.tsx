@@ -139,7 +139,7 @@ const JobDetail = () => {
                     {job.locations && job.locations.length > 0 ? (
                       <div className="font-medium space-y-1">
                         {job.locations.map((loc: any, idx: number) => (
-                          <p key={idx}>{loc.city}{loc.state ? `, ${loc.state}` : ''}</p>
+                          <p key={idx}>{loc.city}</p>
                         ))}
                       </div>
                     ) : (
