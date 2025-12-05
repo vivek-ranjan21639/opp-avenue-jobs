@@ -23,16 +23,47 @@ interface FeaturedCarouselProps {
 
 const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], jobs = [], jobsOnly = false, onJobClick }) => {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const autoScrollRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: 'left' | 'right', smooth = true) => {
     if (scrollContainerRef.current) {
       const scrollAmount = 400;
       scrollContainerRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
+        behavior: smooth ? 'smooth' : 'instant'
       });
     }
   };
+
+  // Auto-scroll effect for non-jobsOnly carousels (featured content)
+  React.useEffect(() => {
+    if (jobsOnly || items.length === 0) return;
+
+    const startAutoScroll = () => {
+      autoScrollRef.current = setInterval(() => {
+        if (scrollContainerRef.current) {
+          const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+          const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+          
+          if (isAtEnd) {
+            // Reset to beginning instantly
+            scrollContainerRef.current.scrollTo({ left: 0, behavior: 'instant' });
+          } else {
+            // Scroll right instantly
+            scroll('right', false);
+          }
+        }
+      }, 3000);
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (autoScrollRef.current) {
+        clearInterval(autoScrollRef.current);
+      }
+    };
+  }, [jobsOnly, items.length]);
 
   const handleItemClick = (item: FeaturedItem) => {
     if (item.content_type === 'poster_clickable' && item.link_url) {
