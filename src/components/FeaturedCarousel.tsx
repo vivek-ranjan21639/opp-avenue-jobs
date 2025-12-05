@@ -24,15 +24,30 @@ interface FeaturedCarouselProps {
 const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], jobs = [], jobsOnly = false, onJobClick }) => {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const autoScrollRef = React.useRef<NodeJS.Timeout | null>(null);
+  const currentIndexRef = React.useRef<number>(0);
 
-  const scroll = (direction: 'left' | 'right', smooth = true) => {
+  const scrollToIndex = (index: number) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 400;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: smooth ? 'smooth' : 'instant'
-      });
+      const container = scrollContainerRef.current;
+      const cards = container.children;
+      if (cards[index]) {
+        const card = cards[index] as HTMLElement;
+        const containerWidth = container.clientWidth;
+        const cardWidth = card.offsetWidth;
+        const scrollPosition = card.offsetLeft - (containerWidth - cardWidth) / 2;
+        container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+      }
     }
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    const totalItems = items.length;
+    if (direction === 'right') {
+      currentIndexRef.current = (currentIndexRef.current + 1) % totalItems;
+    } else {
+      currentIndexRef.current = (currentIndexRef.current - 1 + totalItems) % totalItems;
+    }
+    scrollToIndex(currentIndexRef.current);
   };
 
   // Auto-scroll effect for non-jobsOnly carousels (featured content)
@@ -41,18 +56,8 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
 
     const startAutoScroll = () => {
       autoScrollRef.current = setInterval(() => {
-        if (scrollContainerRef.current) {
-          const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-          const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
-          
-          if (isAtEnd) {
-            // Reset to beginning instantly
-            scrollContainerRef.current.scrollTo({ left: 0, behavior: 'instant' });
-          } else {
-            // Scroll right instantly
-            scroll('right', false);
-          }
-        }
+        currentIndexRef.current = (currentIndexRef.current + 1) % items.length;
+        scrollToIndex(currentIndexRef.current);
       }, 3000);
     };
 
@@ -128,7 +133,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
 
         <div
           ref={scrollContainerRef}
-          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory sm:snap-none"
+          className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 scroll-smooth snap-x snap-mandatory"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {jobsOnly ? (
@@ -146,7 +151,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
           ) : (
             // Render featured content items (images only - no jobs)
             items.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-[calc(100vw-3rem)] sm:w-[320px] md:w-[350px] snap-center">
+              <div key={item.id} className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-[50vw] lg:w-[400px] snap-center">
                 <div
                   className={`relative h-[300px] rounded-lg overflow-hidden ${
                     item.content_type !== 'poster_static' ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''
