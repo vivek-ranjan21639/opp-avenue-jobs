@@ -128,7 +128,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
 
         <div
           ref={scrollContainerRef}
-          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+          className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory sm:snap-none"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {jobsOnly ? (
@@ -146,7 +146,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
           ) : (
             // Render featured content items (images only - no jobs)
             items.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
+              <div key={item.id} className="flex-shrink-0 w-[calc(100vw-3rem)] sm:w-[320px] md:w-[350px] snap-center">
                 <div
                   className={`relative h-[300px] rounded-lg overflow-hidden ${
                     item.content_type !== 'poster_static' ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''
