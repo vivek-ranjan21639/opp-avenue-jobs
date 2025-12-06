@@ -24,7 +24,9 @@ interface FeaturedCarouselProps {
 const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], jobs = [], jobsOnly = false, onJobClick }) => {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const autoScrollRef = React.useRef<NodeJS.Timeout | null>(null);
+  const pauseTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const currentIndexRef = React.useRef<number>(0);
+  const isAutoScrollPausedRef = React.useRef<boolean>(false);
 
   const scrollToIndex = (index: number) => {
     if (scrollContainerRef.current) {
@@ -48,7 +50,28 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
       currentIndexRef.current = (currentIndexRef.current - 1 + totalItems) % totalItems;
     }
     scrollToIndex(currentIndexRef.current);
+    pauseAutoScroll();
   };
+
+  // Pause auto-scroll for 10 seconds on manual interaction
+  const pauseAutoScroll = React.useCallback(() => {
+    isAutoScrollPausedRef.current = true;
+    
+    // Clear any existing pause timeout
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+    }
+    
+    // Resume auto-scroll after 10 seconds
+    pauseTimeoutRef.current = setTimeout(() => {
+      isAutoScrollPausedRef.current = false;
+    }, 10000);
+  }, []);
+
+  // Handle manual scroll (trackpad, touch, mouse wheel)
+  const handleManualScroll = React.useCallback(() => {
+    pauseAutoScroll();
+  }, [pauseAutoScroll]);
 
   // Auto-scroll effect for non-jobsOnly carousels (featured content)
   React.useEffect(() => {
@@ -56,8 +79,11 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
 
     const startAutoScroll = () => {
       autoScrollRef.current = setInterval(() => {
-        currentIndexRef.current = (currentIndexRef.current + 1) % items.length;
-        scrollToIndex(currentIndexRef.current);
+        // Only auto-scroll if not paused
+        if (!isAutoScrollPausedRef.current) {
+          currentIndexRef.current = (currentIndexRef.current + 1) % items.length;
+          scrollToIndex(currentIndexRef.current);
+        }
       }, 3000);
     };
 
@@ -67,8 +93,35 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
       if (autoScrollRef.current) {
         clearInterval(autoScrollRef.current);
       }
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
     };
   }, [jobsOnly, items.length]);
+
+  // Add scroll event listener for manual scroll detection
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || jobsOnly) return;
+
+    // Use wheel event for trackpad/mouse wheel scrolling
+    const handleWheel = () => {
+      handleManualScroll();
+    };
+
+    // Use touchstart for touch devices
+    const handleTouchStart = () => {
+      handleManualScroll();
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: true });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [jobsOnly, handleManualScroll]);
 
   const handleItemClick = (item: FeaturedItem) => {
     if (item.content_type === 'poster_clickable' && item.link_url) {
