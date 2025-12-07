@@ -60,7 +60,7 @@ export const useBlogs = (tagFilter?: string | null) => {
       const blogs: Blog[] = (data || []).map((blog: any) => ({
         ...blog,
         tags: blog.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || [],
-        read_time_minutes: blog.read_time_minutes || calculateReadTime(blog.content)
+        read_time_minutes: blog.read_time_minutes || 1 // Use backend value, fallback to 1
       }));
       
       // Filter by tag if provided
@@ -100,7 +100,7 @@ export const useBlog = (slug: string | undefined) => {
       const blog: Blog = {
         ...data,
         tags: data.blog_tags?.map((bt: any) => bt.tag).filter(Boolean) || [],
-        read_time_minutes: data.read_time_minutes || calculateReadTime(data.content)
+        read_time_minutes: data.read_time_minutes || 1 // Use backend value, fallback to 1
       };
       
       return blog;

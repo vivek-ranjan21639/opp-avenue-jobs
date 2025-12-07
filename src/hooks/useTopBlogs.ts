@@ -7,6 +7,7 @@ export interface TopBlog {
   slug: string;
   author_id: string;
   thumbnail_url?: string;
+  read_time_minutes?: number;
   authors?: {
     name: string;
     profile_pic_url?: string;
@@ -25,6 +26,7 @@ export const useTopBlogs = () => {
           slug,
           author_id,
           thumbnail_url,
+          read_time_minutes,
           authors (
             name,
             profile_pic_url
