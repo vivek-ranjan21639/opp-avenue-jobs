@@ -676,6 +676,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_read_time: { Args: { content: string }; Returns: number }
       delete_expired_jobs: { Args: never; Returns: undefined }
       get_recommended_jobs: {
         Args: { p_job_id: string; p_limit?: number }

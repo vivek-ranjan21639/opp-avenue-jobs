@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
@@ -91,18 +91,26 @@ const TopBlogsCarousel: React.FC<TopBlogsCarouselProps> = ({ blogs }) => {
               {/* Content */}
               <div className="relative z-10 p-4 h-[200px] flex flex-col justify-end">
                 <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-white">{blog.title}</h3>
-                {blog.authors && (
-                  <div className="flex items-center gap-2">
-                    {blog.authors.profile_pic_url && (
-                      <img
-                        src={blog.authors.profile_pic_url}
-                        alt={blog.authors.name}
-                        className="w-6 h-6 rounded-full border border-white/30"
-                      />
-                    )}
-                    <span className="text-sm text-white/80">{blog.authors.name}</span>
-                  </div>
-                )}
+                <div className="flex items-center justify-between">
+                  {blog.authors && (
+                    <div className="flex items-center gap-2">
+                      {blog.authors.profile_pic_url && (
+                        <img
+                          src={blog.authors.profile_pic_url}
+                          alt={blog.authors.name}
+                          className="w-6 h-6 rounded-full border border-white/30"
+                        />
+                      )}
+                      <span className="text-sm text-white/80">{blog.authors.name}</span>
+                    </div>
+                  )}
+                  {blog.read_time_minutes && (
+                    <div className="flex items-center gap-1 text-white/70 text-xs">
+                      <Clock className="w-3 h-3" />
+                      <span>{blog.read_time_minutes} min read</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </Card>
           ))}

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Job } from "@/components/JobCard";
+import { getViewedJobs, AggregatedProfile } from "./useSessionJobHistory";
 
 const formatSalaryLPA = (min: number | null, max: number | null): string => {
   if (!min && !max) return 'Not disclosed';
@@ -41,29 +42,101 @@ const formatLocationDisplay = (locations: any[]): string => {
   return `${firstLocation.city}+${locations.length - 1}`;
 };
 
-export const useRecommendedJobs = (jobId: string | undefined) => {
+// Build aggregated profile from all viewed jobs
+const buildAggregatedProfile = async (viewedJobIds: string[]): Promise<AggregatedProfile | null> => {
+  if (viewedJobIds.length === 0) return null;
+
+  const { data: jobs, error } = await supabase
+    .from('jobs')
+    .select(`
+      id,
+      job_type,
+      work_mode,
+      salary_min,
+      salary_max,
+      companies (
+        sector
+      ),
+      job_domains (
+        domain_id
+      ),
+      job_skills (
+        skill_id
+      )
+    `)
+    .in('id', viewedJobIds)
+    .is('deleted_at', null);
+
+  if (error || !jobs || jobs.length === 0) return null;
+
+  const domains: Record<string, number> = {};
+  const skills: Record<string, number> = {};
+  const jobTypes: Record<string, number> = {};
+  const sectors: Record<string, number> = {};
+  const workModes: Record<string, number> = {};
+  let totalSalaryMin = 0;
+  let totalSalaryMax = 0;
+  let salaryCount = 0;
+
+  for (const job of jobs) {
+    for (const jd of job.job_domains || []) {
+      domains[jd.domain_id] = (domains[jd.domain_id] || 0) + 1;
+    }
+    for (const js of job.job_skills || []) {
+      skills[js.skill_id] = (skills[js.skill_id] || 0) + 1;
+    }
+    if (job.job_type) {
+      jobTypes[job.job_type] = (jobTypes[job.job_type] || 0) + 1;
+    }
+    const sector = job.companies?.sector;
+    if (sector) {
+      sectors[sector] = (sectors[sector] || 0) + 1;
+    }
+    if (job.work_mode) {
+      workModes[job.work_mode] = (workModes[job.work_mode] || 0) + 1;
+    }
+    if (job.salary_min || job.salary_max) {
+      totalSalaryMin += job.salary_min || 0;
+      totalSalaryMax += job.salary_max || 0;
+      salaryCount++;
+    }
+  }
+
+  return {
+    jobIds: viewedJobIds,
+    domains,
+    skills,
+    jobTypes,
+    sectors,
+    avgSalaryMin: salaryCount > 0 ? totalSalaryMin / salaryCount : 0,
+    avgSalaryMax: salaryCount > 0 ? totalSalaryMax / salaryCount : 0,
+    workModes,
+  };
+};
+
+export const useRecommendedJobs = (currentJobId: string | undefined) => {
   return useQuery({
-    queryKey: ['recommended-jobs', jobId],
+    queryKey: ['recommended-jobs', currentJobId, getViewedJobs()],
     queryFn: async () => {
-      if (!jobId) return [];
+      if (!currentJobId) return [];
 
-      // Get current job's domains and skills for matching
-      const { data: currentJob } = await supabase
-        .from('jobs')
-        .select(`
-          title,
-          job_domains(domain_id),
-          job_skills(skill_id)
-        `)
-        .eq('id', jobId)
-        .single();
+      // Get all viewed jobs from session (includes current job)
+      const viewedJobIds = getViewedJobs();
+      
+      // Build aggregated profile from session history
+      // If no history yet, fall back to just the current job
+      const jobIdsForProfile = viewedJobIds.length > 0 ? viewedJobIds : [currentJobId];
+      const profile = await buildAggregatedProfile(jobIdsForProfile);
 
-      if (!currentJob) return [];
+      // Get all unique domain and skill IDs from the profile
+      const profileDomainIds = profile ? Object.keys(profile.domains) : [];
+      const profileSkillIds = profile ? Object.keys(profile.skills) : [];
+      const totalUniqueDomains = profileDomainIds.length;
+      const totalUniqueSkills = profileSkillIds.length;
 
-      const currentDomainIds = currentJob.job_domains?.map((d: any) => d.domain_id) || [];
-      const currentSkillIds = currentJob.job_skills?.map((s: any) => s.skill_id) || [];
-
-      // Fetch jobs excluding current one
+      // Fetch candidate jobs excluding all viewed jobs
+      const excludeIds = viewedJobIds.length > 0 ? viewedJobIds : [currentJobId];
+      
       const { data: jobs, error } = await supabase
         .from('jobs')
         .select(`
@@ -98,7 +171,7 @@ export const useRecommendedJobs = (jobId: string | undefined) => {
             max_experience
           )
         `)
-        .neq('id', jobId)
+        .not('id', 'in', `(${excludeIds.join(',')})`)
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -108,29 +181,38 @@ export const useRecommendedJobs = (jobId: string | undefined) => {
         return [];
       }
 
-      // Score and sort jobs by relevance
+      // Score and sort jobs by relevance using aggregated profile
       const scoredJobs = jobs.map(job => {
         let score = 0;
         
-        // Domain match score (40%)
-        const jobDomainIds = job.job_domains?.map((d: any) => d.domain_id) || [];
-        const domainMatches = jobDomainIds.filter((id: string) => currentDomainIds.includes(id)).length;
-        if (currentDomainIds.length > 0) {
-          score += (domainMatches / currentDomainIds.length) * 40;
+        // Domain match score (35%)
+        if (profile && totalUniqueDomains > 0) {
+          const jobDomainIds = job.job_domains?.map((d: any) => d.domain_id) || [];
+          const domainMatchCount = jobDomainIds.filter((id: string) => 
+            profileDomainIds.includes(id)
+          ).length;
+          score += (domainMatchCount / totalUniqueDomains) * 35;
         }
 
-        // Skills match score (40%)
-        const jobSkillIds = job.job_skills?.map((s: any) => s.skill_id) || [];
-        const skillMatches = jobSkillIds.filter((id: string) => currentSkillIds.includes(id)).length;
-        if (currentSkillIds.length > 0) {
-          score += (skillMatches / currentSkillIds.length) * 40;
+        // Skills match score (35%)
+        if (profile && totalUniqueSkills > 0) {
+          const jobSkillIds = job.job_skills?.map((s: any) => s.skill_id) || [];
+          const skillMatchCount = jobSkillIds.filter((id: string) => 
+            profileSkillIds.includes(id)
+          ).length;
+          score += (skillMatchCount / totalUniqueSkills) * 35;
         }
 
-        // Recency boost (20%)
+        // Job type alignment (15%)
+        if (profile && job.job_type && profile.jobTypes[job.job_type]) {
+          score += 15;
+        }
+
+        // Recency boost (15%)
         const daysSincePosted = Math.floor((Date.now() - new Date(job.created_at).getTime()) / (1000 * 60 * 60 * 24));
-        if (daysSincePosted < 7) score += 20;
-        else if (daysSincePosted < 14) score += 15;
-        else if (daysSincePosted < 30) score += 10;
+        if (daysSincePosted < 7) score += 15;
+        else if (daysSincePosted < 14) score += 10;
+        else if (daysSincePosted < 30) score += 5;
 
         return { ...job, relevanceScore: score };
       });
@@ -167,6 +249,6 @@ export const useRecommendedJobs = (jobId: string | undefined) => {
 
       return recommendedJobs;
     },
-    enabled: !!jobId,
+    enabled: !!currentJobId,
   });
 };

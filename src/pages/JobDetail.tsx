@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import Footer from '@/components/Footer';
 import { useJob } from '@/hooks/useJobs';
 import { useRecommendedJobs } from '@/hooks/useRecommendedJobs';
 import { useTopBlogs } from '@/hooks/useTopBlogs';
+import { addViewedJob } from '@/hooks/useSessionJobHistory';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import TopBlogsCarousel from '@/components/TopBlogsCarousel';
 
@@ -20,6 +21,13 @@ const JobDetail = () => {
   const { data: job, isLoading } = useJob(jobId);
   const { data: recommendedJobs = [] } = useRecommendedJobs(jobId);
   const { data: topBlogs = [] } = useTopBlogs();
+
+  // Track viewed job in session history for better recommendations
+  useEffect(() => {
+    if (jobId) {
+      addViewedJob(jobId);
+    }
+  }, [jobId]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     location: [],
