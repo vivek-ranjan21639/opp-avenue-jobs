@@ -43,14 +43,17 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
   };
 
   const scroll = (direction: 'left' | 'right') => {
-    const totalItems = items.length;
+    const totalItems = jobsOnly ? jobs.length : items.length;
+    if (totalItems === 0) return;
     if (direction === 'right') {
       currentIndexRef.current = (currentIndexRef.current + 1) % totalItems;
     } else {
       currentIndexRef.current = (currentIndexRef.current - 1 + totalItems) % totalItems;
     }
     scrollToIndex(currentIndexRef.current);
-    pauseAutoScroll();
+    if (!jobsOnly) {
+      pauseAutoScroll();
+    }
   };
 
   // Pause auto-scroll for 10 seconds on manual interaction
