@@ -39,11 +39,19 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
     <div className="job-card cursor-pointer" onClick={() => onClick(job)}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
-          <span className="text-primary-foreground font-bold text-lg">
-            {job.company.charAt(0)}
-          </span>
-        </div>
+        {job.companyLogo ? (
+          <img 
+            src={job.companyLogo} 
+            alt={`${job.company} logo`}
+            className="w-12 h-12 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-lg">
+              {job.company.charAt(0)}
+            </span>
+          </div>
+        )}
         <div>
           <h3 className="font-semibold text-lg text-card-foreground mb-1">{job.title}</h3>
           <div className="flex items-center gap-2 text-muted-foreground">
