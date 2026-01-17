@@ -29,10 +29,20 @@ export const useJobs = () => {
   return useQuery({
     queryKey: ['jobs'],
     queryFn: async () => {
+      // Only select non-sensitive columns - exclude application_email from bulk listings
       const { data, error } = await supabase
         .from('jobs')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          job_type,
+          work_mode,
+          salary_min,
+          salary_max,
+          currency,
+          created_at,
+          application_link,
           companies (
             id,
             name,
@@ -80,7 +90,6 @@ export const useJobs = () => {
         companyLogo: job.companies?.logo_url,
         sector: job.companies?.sector,
         domains: job.job_domains?.map((jd: any) => jd.domains?.name).filter(Boolean) || [],
-        applicationEmail: job.application_email,
         applicationLink: job.application_link,
         locations: job.job_locations?.map((jl: any) => jl.locations).filter(Boolean) || [],
         work_mode: job.work_mode
@@ -95,10 +104,24 @@ export const useJob = (jobId: string | undefined) => {
     queryFn: async () => {
       if (!jobId) throw new Error('Job ID is required');
 
+      // Explicit column selection for job detail - application_email only available on detail view
       const { data, error } = await supabase
         .from('jobs')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          responsibilities,
+          qualifications,
+          job_type,
+          work_mode,
+          salary_min,
+          salary_max,
+          currency,
+          deadline,
+          created_at,
+          application_email,
+          application_link,
           companies (
             id,
             name,
