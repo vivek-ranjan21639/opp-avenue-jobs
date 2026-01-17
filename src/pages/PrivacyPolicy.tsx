@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
@@ -27,6 +28,11 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+      <SEO 
+        title="Privacy Policy"
+        description="Learn how Opp Avenue handles and protects your personal data. Our commitment to your privacy and data security."
+        canonical="/privacy-policy"
+      />
       <Header
         onAdvertiseClick={() => setShowAdvertise(true)}
         onSearchChange={setSearchQuery}

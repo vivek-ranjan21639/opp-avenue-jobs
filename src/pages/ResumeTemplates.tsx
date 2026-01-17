@@ -7,6 +7,7 @@ import { FileText, ArrowLeft, Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useResources } from "@/hooks/useResources";
+import SEO from "@/components/SEO";
 
 const ResumeTemplates = () => {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ const ResumeTemplates = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Resume Templates"
+        description="Professional resume templates tailored for railway industry positions. Download free templates to create a standout resume."
+        canonical="/resources/resume-templates"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

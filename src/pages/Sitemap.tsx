@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const Sitemap = () => {
   const navigate = useNavigate();
@@ -60,13 +61,8 @@ const Sitemap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
-      <Header
-        onAdvertiseClick={() => setShowAdvertise(true)}
-        onSearchChange={setSearchQuery}
-        onFiltersChange={setActiveFilters}
-        searchQuery={searchQuery}
-        activeFilters={activeFilters}
-      />
+      <SEO title="Sitemap" description="Navigate through all pages and sections of Opp Avenue." canonical="/sitemap" />
+      <Header onAdvertiseClick={() => setShowAdvertise(true)} onSearchChange={setSearchQuery} onFiltersChange={setActiveFilters} searchQuery={searchQuery} activeFilters={activeFilters} />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-6xl">
         <div className="space-y-12">

@@ -14,6 +14,8 @@ import { useTopBlogs } from '@/hooks/useTopBlogs';
 import { addViewedJob } from '@/hooks/useSessionJobHistory';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import TopBlogsCarousel from '@/components/TopBlogsCarousel';
+import SEO from '@/components/SEO';
+import JobPostingSchema from '@/components/seo/JobPostingSchema';
 
 const JobDetail = () => {
   const { jobId } = useParams();
@@ -94,6 +96,27 @@ const JobDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
+      <SEO 
+        title={`${job.title} at ${job.company_name}`}
+        description={job.description?.slice(0, 160) || `Apply for ${job.title} position at ${job.company_name}. ${job.type} role in ${job.location}.`}
+        canonical={`/job/${jobId}`}
+        ogType="job"
+      />
+      <JobPostingSchema 
+        title={job.title}
+        description={job.description || ''}
+        companyName={job.company_name}
+        companyLogo={job.companyLogo}
+        locations={job.locations}
+        salaryMin={job.salary_min}
+        salaryMax={job.salary_max}
+        currency={job.currency || 'INR'}
+        jobType={job.type}
+        workMode={job.work_mode}
+        datePosted={job.created_at}
+        validThrough={job.deadline}
+        jobId={job.id}
+      />
       <FloatingBubbles />
       
       

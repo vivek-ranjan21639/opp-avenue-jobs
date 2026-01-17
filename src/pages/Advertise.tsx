@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import Header, { FilterState } from '@/components/Header';
 import FloatingBubbles from '@/components/FloatingBubbles';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const Advertise = () => {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ const Advertise = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
+      <SEO 
+        title="Advertise With Us"
+        description="Reach over 1 lakh daily users by advertising on Opp Avenue. Connect with professionals actively seeking career opportunities."
+        canonical="/advertise"
+      />
       <FloatingBubbles />
       
       <div className="relative z-10">

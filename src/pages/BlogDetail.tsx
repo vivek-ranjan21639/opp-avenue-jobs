@@ -7,6 +7,8 @@ import { Calendar, User, Tag, ArrowLeft, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useBlog } from "@/hooks/useBlogs";
 import { format } from "date-fns";
+import SEO from "@/components/SEO";
+import BlogPostingSchema from "@/components/seo/BlogPostingSchema";
 
 const BlogDetail = () => {
   const { blogId } = useParams();
@@ -73,6 +75,27 @@ const BlogDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={blog.title}
+        description={blog.summary || blog.title}
+        canonical={`/blog/${blogId}`}
+        ogType="article"
+        publishedTime={blog.published_at || undefined}
+        modifiedTime={blog.updated_at || undefined}
+        author={blog.author?.name}
+        ogImage={blog.thumbnail_url || undefined}
+      />
+      <BlogPostingSchema 
+        title={blog.title}
+        description={blog.summary || blog.title}
+        slug={blogId || ''}
+        authorName={blog.author?.name}
+        authorUrl={blog.author?.profile_url || undefined}
+        publishedDate={blog.published_at || undefined}
+        modifiedDate={blog.updated_at || undefined}
+        thumbnailUrl={blog.thumbnail_url || undefined}
+        readTimeMinutes={blog.read_time_minutes || undefined}
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

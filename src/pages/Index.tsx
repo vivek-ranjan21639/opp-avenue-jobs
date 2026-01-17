@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { useJobs } from '@/hooks/useJobs';
 import { useFeaturedContent } from '@/hooks/useFeaturedContent';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
+import SEO from '@/components/SEO';
+import WebsiteSchema from '@/components/seo/WebsiteSchema';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -197,6 +199,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary relative">
+      <SEO 
+        title="Find Your Dream Job"
+        description="Discover exciting career opportunities in the railway industry. Browse thousands of job listings from top companies and find your perfect role today."
+        canonical="/"
+      />
+      <WebsiteSchema />
+      
       {/* Floating Bubbles Background */}
       <FloatingBubbles />
       

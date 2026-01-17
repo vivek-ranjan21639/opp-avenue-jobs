@@ -6,6 +6,7 @@ import AdUnit from "@/components/AdUnit";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
+import SEO from "@/components/SEO";
 
 const CareerGuides = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const CareerGuides = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Career Guides"
+        description="Comprehensive guides to help you navigate your railway career path. Expert advice on career development and industry insights."
+        canonical="/resources/career-guides"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

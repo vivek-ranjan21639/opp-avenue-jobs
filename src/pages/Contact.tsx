@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+      <SEO 
+        title="Contact Us"
+        description="Have questions or need assistance? Contact the Opp Avenue team. We're here to help you find your dream job."
+        canonical="/contact"
+      />
       <Header
         onAdvertiseClick={() => setShowAdvertise(true)}
         onSearchChange={setSearchQuery}
