@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const Disclaimer = () => {
   const navigate = useNavigate();
@@ -27,13 +28,8 @@ const Disclaimer = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
-      <Header
-        onAdvertiseClick={() => setShowAdvertise(true)}
-        onSearchChange={setSearchQuery}
-        onFiltersChange={setActiveFilters}
-        searchQuery={searchQuery}
-        activeFilters={activeFilters}
-      />
+      <SEO title="Disclaimer" description="Important disclaimers and notices about using Opp Avenue job portal." canonical="/disclaimer" />
+      <Header onAdvertiseClick={() => setShowAdvertise(true)} onSearchChange={setSearchQuery} onFiltersChange={setActiveFilters} searchQuery={searchQuery} activeFilters={activeFilters} />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none space-y-6">

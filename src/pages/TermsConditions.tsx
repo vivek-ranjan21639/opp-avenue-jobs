@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 
 const TermsConditions = () => {
   const navigate = useNavigate();
@@ -27,6 +28,11 @@ const TermsConditions = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+      <SEO 
+        title="Terms & Conditions"
+        description="Read the terms and conditions for using Opp Avenue. Understand your rights and responsibilities as a user."
+        canonical="/terms"
+      />
       <Header
         onAdvertiseClick={() => setShowAdvertise(true)}
         onSearchChange={setSearchQuery}

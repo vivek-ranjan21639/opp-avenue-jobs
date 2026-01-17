@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useResources } from "@/hooks/useResources";
 import { format } from "date-fns";
+import SEO from "@/components/SEO";
 
 const IndustryReports = () => {
   const navigate = useNavigate();
@@ -20,6 +21,11 @@ const IndustryReports = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Industry Reports"
+        description="Latest reports and insights about the railway industry trends. Download comprehensive industry analysis and market research."
+        canonical="/resources/industry-reports"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

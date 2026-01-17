@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Header, { FilterState } from '@/components/Header';
 import AdvertisePage from '@/components/AdvertisePage';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
+import OrganizationSchema from '@/components/seo/OrganizationSchema';
 
 const About = () => {
   const navigate = useNavigate();
@@ -24,6 +26,12 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+      <SEO 
+        title="About Us"
+        description="Learn about Opp Avenue - your trusted platform for discovering exciting career opportunities and connecting talented professionals with leading companies."
+        canonical="/about"
+      />
+      <OrganizationSchema />
       <Header
         onAdvertiseClick={() => setShowAdvertise(true)}
         onSearchChange={setSearchQuery}

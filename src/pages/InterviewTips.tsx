@@ -6,6 +6,7 @@ import AdUnit from "@/components/AdUnit";
 import { Video, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
+import SEO from "@/components/SEO";
 
 const InterviewTips = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const InterviewTips = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Interview Tips"
+        description="Video tutorials and articles to help you ace your railway job interviews. Expert tips and strategies for interview success."
+        canonical="/resources/interview-tips"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

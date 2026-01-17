@@ -6,6 +6,7 @@ import { BookOpen, FileText, Video, Download, ExternalLink, Sparkles } from "luc
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFeaturedResources, useNewResources } from "@/hooks/useResources";
 import { Badge } from "@/components/ui/badge";
+import SEO from "@/components/SEO";
 
 const Resources = () => {
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ const Resources = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Career Resources"
+        description="Explore our collection of helpful resources to advance your career in the railway industry. Career guides, resume templates, interview tips, and more."
+        canonical="/resources"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""

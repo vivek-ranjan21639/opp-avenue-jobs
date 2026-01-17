@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useBlogs, useBlogTags } from "@/hooks/useBlogs";
 import { useBlogAuthors } from "@/hooks/useBlogAuthors";
 import { format } from "date-fns";
+import SEO from "@/components/SEO";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -43,6 +44,11 @@ const Blogs = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Career Blog & Insights"
+        description="Stay updated with the latest news, insights, and trends in the railway industry. Expert career advice and industry updates."
+        canonical="/blogs"
+      />
       <Header
         onAdvertiseClick={() => {}}
         searchQuery=""
