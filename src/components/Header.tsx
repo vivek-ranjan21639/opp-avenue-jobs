@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useJobs } from '@/hooks/useJobs';
+import oppAvenueLogo from '@/assets/opp-avenue-logo.png';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -347,9 +348,11 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between gap-4 mb-3">
           {/* Logo and Brand */}
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">O</span>
-            </div>
+            <img 
+              src={oppAvenueLogo} 
+              alt="Opp Avenue Logo" 
+              className="w-8 h-8 rounded-lg object-cover"
+            />
             <h1 className="text-base sm:text-xl font-bold text-foreground truncate">Opp Avenue</h1>
           </div>
 
