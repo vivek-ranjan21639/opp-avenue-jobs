@@ -196,7 +196,13 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ title, items = [], 
             // Render jobs directly for "You May Also Like" section
             jobs.map((job) => (
               <div key={job.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px]">
-                <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-xl p-1 shadow-md hover:shadow-lg transition-shadow border border-primary/20">
+                <div 
+                  className="rounded-xl p-1 shadow-md hover:shadow-lg transition-shadow"
+                  style={{
+                    background: 'linear-gradient(135deg, hsl(30 50% 85% / 0.4), hsl(35 45% 80% / 0.3))',
+                    border: '1px solid hsl(30 40% 75% / 0.5)'
+                  }}
+                >
                   <JobCard
                     job={job}
                     onClick={() => handleJobClick(job)}
