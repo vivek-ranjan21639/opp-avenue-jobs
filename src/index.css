@@ -228,13 +228,18 @@
   /* Job card animations */
   .job-card {
     @apply bg-card border border-card-border rounded-xl p-4;
-    @apply shadow-card hover:shadow-primary transition-all duration-300;
+    @apply shadow-card transition-all duration-300;
     @apply hover:-translate-y-2 hover:scale-[1.02];
     @apply w-full;
     min-height: 280px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+
+  .job-card:hover {
+    box-shadow: 0 8px 30px hsl(36 30% 75% / 0.4), 0 4px 15px hsl(36 25% 80% / 0.3);
+    border-color: hsl(36 35% 78%);
   }
 
   /* Social sidebar styling */
