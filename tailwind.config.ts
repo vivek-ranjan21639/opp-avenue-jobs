@@ -77,8 +77,8 @@ export default {
 			},
 			boxShadow: {
 				'soft': '0 2px 20px hsl(36 25% 70% / 0.2)',
-				'card': '0 4px 25px hsl(210 25% 15% / 0.06)',
-				'primary': '0 8px 35px hsl(30 50% 70% / 0.35), 0 4px 20px hsl(35 45% 75% / 0.25)',
+				'card': '0 4px 25px hsl(30 50% 70% / 0.15)',
+				'primary': '0 8px 35px hsl(30 50% 70% / 0.4), 0 4px 20px hsl(35 45% 75% / 0.3)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
