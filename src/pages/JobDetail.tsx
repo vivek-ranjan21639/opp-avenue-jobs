@@ -56,7 +56,7 @@ const JobDetail = () => {
           />
           <main className="px-4 md:px-8 py-8">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-card rounded-2xl shadow-primary p-6 animate-pulse">
+              <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 animate-pulse">
                 <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
                 <div className="h-6 bg-muted rounded w-1/2 mb-6"></div>
                 <div className="h-32 bg-muted rounded"></div>
@@ -137,7 +137,7 @@ const JobDetail = () => {
             </div>
 
             {/* Job Header */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+            <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
               <div className="flex items-center gap-4 mb-6">
                 {job.companyLogo ? (
                   <img 
@@ -317,7 +317,7 @@ const JobDetail = () => {
 
             {/* Skills Required */}
             {job.skills && job.skills.length > 0 && (
-              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+              <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-card-foreground">Skills Required</h2>
                 <div className="flex flex-wrap gap-2">
                   {job.skills.map((skill, index) => (
@@ -330,7 +330,7 @@ const JobDetail = () => {
             )}
 
             {/* Job Description */}
-            <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+            <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-card-foreground">About the Role</h2>
               <div className="prose prose-sm max-w-none text-muted-foreground">
                 {job.description && <p className="mb-4">{job.description}</p>}
@@ -366,7 +366,7 @@ const JobDetail = () => {
 
             {/* Eligibility Criteria */}
             {job.eligibility && (
-              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+              <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-card-foreground">Eligibility Criteria</h2>
                 <div className="space-y-4 text-muted-foreground">
                   {job.eligibility.education_level && (
@@ -407,7 +407,7 @@ const JobDetail = () => {
 
             {/* Benefits & Perks */}
             {job.benefits && job.benefits.length > 0 && (
-              <div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
+              <div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-card-foreground">Benefits & Perks</h2>
                 <div className="flex flex-wrap gap-2">
                   {job.benefits.map((benefit, index) => (
