@@ -1,155 +1,74 @@
-# Vercel Prerendering Implementation Plan
 
-## Overview
-Implement static site generation (SSG) with prerendering for improved SEO and performance on Vercel deployment.
+# Plan: Change Job Detail Cards Blue Ring to Peach
 
----
+## Summary
+The main content cards/blocks on the Job Detail page currently have a blue-tinted ring/glow. This plan will update the styling to use a consistent peach color that matches the site's warm cream aesthetic.
 
-## Phase 1: Foundation Setup
+## Current State Analysis
+The Job Detail page contains multiple content blocks (About the Role, Skills Required, Eligibility Criteria, Benefits & Perks, etc.) that use:
+- `bg-card rounded-2xl shadow-primary p-6 mb-6`
 
-### 1.1 Install Dependencies
-- `react-helmet-async` - Dynamic meta tag management
-- `vite-plugin-prerender` - Static HTML generation at build time
-
-### 1.2 Configure Helmet Provider
-- Wrap app with `HelmetProvider` in `main.tsx`
-- Create reusable `SEO` component for consistent meta tag management
-
----
-
-## Phase 2: SEO Meta Tags Implementation
-
-### 2.1 Create SEO Component (`src/components/SEO.tsx`)
-- Title, description, canonical URL
-- Open Graph tags (og:title, og:description, og:image, og:url)
-- Twitter Card tags
-- JSON-LD structured data support
-
-### 2.2 Add SEO to All Pages
-| Page | Title | Structured Data |
-|------|-------|-----------------|
-| Index | "Find Your Dream Job - JobPortal" | WebSite schema |
-| JobDetail | "{Job Title} at {Company}" | JobPosting schema |
-| BlogDetail | "{Blog Title}" | BlogPosting schema |
-| Blogs | "Career Blog & Insights" | Blog schema |
-| About | "About Us" | Organization schema |
-| Contact | "Contact Us" | ContactPage schema |
-| Resources | "Career Resources" | CollectionPage schema |
-| All others | Appropriate titles | Basic meta tags |
-
----
-
-## Phase 3: Structured Data (JSON-LD)
-
-### 3.1 Schema Types to Implement
-- **WebSite** - Homepage with search action
-- **JobPosting** - Individual job pages (required for Google Jobs)
-- **BlogPosting** - Individual blog posts
-- **Organization** - About page
-- **BreadcrumbList** - Navigation breadcrumbs
-
-### 3.2 Create JSON-LD Components
-- `src/components/seo/WebsiteSchema.tsx`
-- `src/components/seo/JobPostingSchema.tsx`
-- `src/components/seo/BlogPostingSchema.tsx`
-- `src/components/seo/OrganizationSchema.tsx`
-
----
-
-## Phase 4: Sitemap & Robots.txt
-
-### 4.1 Dynamic XML Sitemap
-- Create build script to generate `sitemap.xml`
-- Include all static routes
-- Fetch and include all job/blog URLs from Supabase
-- Add lastmod dates
-
-### 4.2 Update robots.txt
-- Add sitemap reference
-- Configure crawl directives
-
----
-
-## Phase 5: Vite Prerender Configuration
-
-### 5.1 Configure vite-plugin-prerender
-- Define static routes for prerendering
-- Configure renderer options (headless Chrome)
-- Set up post-process hooks for HTML optimization
-
-### 5.2 Static Routes to Prerender
+The `shadow-primary` was recently updated in `tailwind.config.ts` to use peach tones:
 ```
-/, /blogs, /about, /contact, /resources, 
-/career-guides, /resume-templates, /interview-tips,
-/industry-reports, /advertise, /privacy-policy,
-/terms-conditions, /cookie-policy, /disclaimer, /sitemap
+'primary': '0 8px 35px hsl(30 50% 70% / 0.4), 0 4px 20px hsl(35 45% 75% / 0.3)'
 ```
 
----
+However, the user is still seeing blue rings. This is likely due to:
+1. **Browser caching** of the old CSS
+2. **The `--primary` CSS variable** still being set to blue (`210 100% 45%`) which may be used by other utilities
 
-## Phase 6: Vercel Configuration
+## Changes Required
 
-### 6.1 Create vercel.json
-- Configure rewrites for SPA fallback
-- Set caching headers for static assets
-- Configure build output
+### 1. Create a Dedicated Peach Shadow Utility
+**File:** `tailwind.config.ts`
 
-### 6.2 Build Script Updates
-- Add sitemap generation to build process
-- Configure environment for prerendering
+Add a new `shadow-peach` utility specifically for the Job Detail page cards to ensure the peach glow is applied consistently:
+```typescript
+boxShadow: {
+  'soft': '0 2px 20px hsl(36 25% 70% / 0.2)',
+  'card': '0 4px 25px hsl(30 50% 70% / 0.15)',
+  'primary': '0 8px 35px hsl(30 50% 70% / 0.4), 0 4px 20px hsl(35 45% 75% / 0.3)',
+  'peach-glow': '0 0 0 1px hsl(30 50% 75% / 0.3), 0 8px 35px hsl(30 50% 70% / 0.4), 0 4px 20px hsl(35 45% 75% / 0.3)',
+}
+```
 
----
+### 2. Update Job Detail Page Cards
+**File:** `src/pages/JobDetail.tsx`
 
-## Phase 7: Performance Optimizations
+Replace `shadow-primary` with `shadow-peach-glow` on all the main content cards:
+- Job Header card (line 140)
+- Skills Required card (line 320)  
+- About the Role card (line 333)
+- Eligibility Criteria card (line 369)
+- Benefits & Perks card (line 410)
 
-### 7.1 Critical Resource Hints
-- Add preconnect for Supabase API
-- Preload critical fonts/assets
-- Configure resource priorities
+**Example change:**
+```tsx
+// Before:
+<div className="bg-card rounded-2xl shadow-primary p-6 mb-6">
 
-### 7.2 Image Optimization
-- Ensure all images have alt attributes
-- Add loading="lazy" for below-fold images
-- Add width/height to prevent CLS
+// After:
+<div className="bg-card rounded-2xl shadow-peach-glow p-6 mb-6">
+```
 
----
+### 3. Add Peach Border for Extra Visibility
+To ensure the peach ring is clearly visible, add a subtle peach border to the cards:
 
-## Files to Create/Modify
+**File:** `src/pages/JobDetail.tsx`
 
-### New Files:
-- `src/components/SEO.tsx` - Main SEO component
-- `src/components/seo/WebsiteSchema.tsx`
-- `src/components/seo/JobPostingSchema.tsx`
-- `src/components/seo/BlogPostingSchema.tsx`
-- `src/components/seo/OrganizationSchema.tsx`
-- `scripts/generate-sitemap.mjs` - Sitemap generator
-- `vercel.json` - Vercel configuration
+Update classes to include a peach border:
+```tsx
+<div className="bg-card rounded-2xl shadow-peach-glow border border-[hsl(30_50%_80%)] p-6 mb-6">
+```
 
-### Modified Files:
-- `src/main.tsx` - Add HelmetProvider
-- `index.html` - Add preconnect hints
-- `vite.config.ts` - Add prerender plugin
-- `package.json` - Add build scripts
-- `public/robots.txt` - Add sitemap reference
-- All pages in `src/pages/` - Add SEO component
+## Technical Details
 
----
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `tailwind.config.ts` | Add utility | New `shadow-peach-glow` with ring effect |
+| `src/pages/JobDetail.tsx` | Update classes | 5 cards updated from `shadow-primary` to `shadow-peach-glow` with peach border |
 
-## Implementation Order
-1. Install dependencies
-2. Create SEO component and schemas
-3. Update main.tsx with HelmetProvider
-4. Add SEO to all pages
-5. Create sitemap generator script
-6. Update robots.txt
-7. Configure Vite prerendering
-8. Create vercel.json
-9. Update index.html with resource hints
-10. Test and verify
-
----
-
-## Limitations & Notes
-- Dynamic routes (job/blog details) require ISR or on-demand regeneration for fresh data
-- Build time increases with more prerendered pages
-- Supabase connection required during build for sitemap generation
+## Visual Result
+- All Job Detail content cards will have a warm peach glow/ring
+- The effect will be visible as a subtle peach-tinted shadow and border
+- Matches the existing peach theme used elsewhere on the site (job card hover states, featured carousel)
