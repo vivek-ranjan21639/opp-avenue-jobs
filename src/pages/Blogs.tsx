@@ -9,6 +9,7 @@ import { useBlogs, useBlogTags } from "@/hooks/useBlogs";
 import { useBlogAuthors } from "@/hooks/useBlogAuthors";
 import { format } from "date-fns";
 import SEO from "@/components/SEO";
+import { usePrerenderReady } from "@/hooks/usePrerenderReady";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -17,6 +18,9 @@ const Blogs = () => {
   const { data: allBlogs, isLoading } = useBlogs();
   const { data: tags } = useBlogTags();
   const { data: authors } = useBlogAuthors();
+
+  // Signal prerenderer when blogs are loaded
+  usePrerenderReady(!isLoading && !!allBlogs);
 
   // Filter blogs by tag and author
   const blogs = allBlogs?.filter(blog => {
