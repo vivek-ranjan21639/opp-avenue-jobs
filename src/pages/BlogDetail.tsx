@@ -9,11 +9,15 @@ import { useBlog } from "@/hooks/useBlogs";
 import { format } from "date-fns";
 import SEO from "@/components/SEO";
 import BlogPostingSchema from "@/components/seo/BlogPostingSchema";
+import { usePrerenderReady } from "@/hooks/usePrerenderReady";
 
 const BlogDetail = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
   const { data: blog, isLoading } = useBlog(blogId);
+
+  // Signal prerenderer when blog is loaded
+  usePrerenderReady(!isLoading && !!blog);
 
   useEffect(() => {
     window.scrollTo(0, 0);

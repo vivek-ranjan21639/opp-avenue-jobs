@@ -16,6 +16,7 @@ import FeaturedCarousel from '@/components/FeaturedCarousel';
 import TopBlogsCarousel from '@/components/TopBlogsCarousel';
 import SEO from '@/components/SEO';
 import JobPostingSchema from '@/components/seo/JobPostingSchema';
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 
 const JobDetail = () => {
   const { jobId } = useParams();
@@ -23,6 +24,9 @@ const JobDetail = () => {
   const { data: job, isLoading } = useJob(jobId);
   const { data: recommendedJobs = [] } = useRecommendedJobs(jobId);
   const { data: topBlogs = [] } = useTopBlogs();
+
+  // Signal prerenderer when job is loaded
+  usePrerenderReady(!isLoading && !!job);
 
   // Track viewed job in session history for better recommendations
   useEffect(() => {

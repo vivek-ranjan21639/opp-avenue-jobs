@@ -13,6 +13,7 @@ import { useFeaturedContent } from '@/hooks/useFeaturedContent';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import SEO from '@/components/SEO';
 import WebsiteSchema from '@/components/seo/WebsiteSchema';
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,7 +34,8 @@ const Index = () => {
     workMode: []
   });
 
-  // Filter jobs based on search and filters
+  // Signal prerenderer when jobs are loaded
+  usePrerenderReady(!isLoading && allJobs.length > 0);
   const filteredJobs = useMemo(() => {
     let filtered = [...allJobs];
     
