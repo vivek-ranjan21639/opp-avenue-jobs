@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdUnit from "@/components/AdUnit";
@@ -12,6 +13,7 @@ import SEO from "@/components/SEO";
 const ResumeTemplates = () => {
   const navigate = useNavigate();
   const { data: templates, isLoading } = useResources('content');
+  usePrerenderReady(!isLoading);
 
   useEffect(() => {
     window.scrollTo(0, 0);

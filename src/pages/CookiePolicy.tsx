@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header, { FilterState } from '@/components/Header';
@@ -9,6 +10,7 @@ import SEO from '@/components/SEO';
 
 const CookiePolicy = () => {
   const navigate = useNavigate();
+  usePrerenderReady(true);
   const [showAdvertise, setShowAdvertise] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({

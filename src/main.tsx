@@ -3,6 +3,9 @@ import { HelmetProvider } from 'react-helmet-async'
 import App from './App.tsx'
 import './index.css'
 
+// Initialize prerenderReady for Netlify's Prerender extension
+window.prerenderReady = false;
+
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <HelmetProvider>
@@ -10,13 +13,11 @@ root.render(
   </HelmetProvider>
 );
 
-// Signal prerenderer that the app shell is ready
-// Individual pages will dispatch their own events when data loads
+// Fallback: if no page signals ready within 5 seconds, signal anyway
 window.addEventListener('load', () => {
-  // Fallback: dispatch prerender-ready after 5 seconds if page doesn't dispatch it
   setTimeout(() => {
-    if (!document.querySelector('[data-prerender-ready]')) {
-      document.dispatchEvent(new Event('prerender-ready'));
+    if (!window.prerenderReady) {
+      window.prerenderReady = true;
     }
   }, 5000);
 });

@@ -1,24 +1,16 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Hook to signal that a page is ready for prerendering
- * Call this when critical data has loaded
+ * Hook to signal that a page is ready for prerendering.
+ * Sets window.prerenderReady = true, which Netlify's Prerender extension checks.
  */
 export function usePrerenderReady(isReady: boolean) {
-  const hasDispatched = useRef(false);
+  const hasSignaled = useRef(false);
 
   useEffect(() => {
-    if (isReady && !hasDispatched.current) {
-      hasDispatched.current = true;
-      
-      // Mark that this page has handled prerender
-      const marker = document.createElement('div');
-      marker.setAttribute('data-prerender-ready', 'true');
-      marker.style.display = 'none';
-      document.body.appendChild(marker);
-      
-      // Dispatch the prerender-ready event
-      document.dispatchEvent(new Event('prerender-ready'));
+    if (isReady && !hasSignaled.current) {
+      hasSignaled.current = true;
+      window.prerenderReady = true;
     }
   }, [isReady]);
 }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdUnit from "@/components/AdUnit";
@@ -14,6 +15,7 @@ import SEO from "@/components/SEO";
 const IndustryReports = () => {
   const navigate = useNavigate();
   const { data: reports, isLoading } = useResources('resource');
+  usePrerenderReady(!isLoading);
 
   useEffect(() => {
     window.scrollTo(0, 0);
