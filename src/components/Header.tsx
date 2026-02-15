@@ -278,18 +278,8 @@ const Header: React.FC<HeaderProps> = ({
     };
     
     return getDynamicFilterOptions();
-  }, [
-    allJobs,
-    searchQuery, 
-    JSON.stringify(activeFilters.location),
-    JSON.stringify(activeFilters.jobType),
-    JSON.stringify(activeFilters.experience),
-    JSON.stringify(activeFilters.salaryRange),
-    JSON.stringify(activeFilters.domain),
-    JSON.stringify(activeFilters.skills),
-    JSON.stringify(activeFilters.companies),
-    JSON.stringify(activeFilters.workMode)
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allJobs, searchQuery, activeFilters]);
 
   const handleFilterChange = (filterKey: keyof FilterState, option: string) => {
     const currentValues = activeFilters[filterKey];
