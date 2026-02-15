@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { BookOpen, FileText, Video, Download, ExternalLink, Sparkles } from "lucide-react";
@@ -12,6 +13,7 @@ const Resources = () => {
   const navigate = useNavigate();
   const { data: featuredResources, isLoading: loadingFeatured } = useFeaturedResources();
   const { data: newResources, isLoading: loadingNew } = useNewResources();
+  usePrerenderReady(!loadingFeatured && !loadingNew);
 
   useEffect(() => {
     window.scrollTo(0, 0);

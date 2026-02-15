@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import { ArrowLeft, Target, Users, Zap, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import OrganizationSchema from '@/components/seo/OrganizationSchema';
 
 const About = () => {
   const navigate = useNavigate();
+  usePrerenderReady(true);
   const [showAdvertise, setShowAdvertise] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({

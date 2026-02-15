@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePrerenderReady } from '@/hooks/usePrerenderReady';
 import { ArrowLeft, Users, Eye, MessageCircle, Linkedin, Phone, Mail, Calendar, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import SEO from '@/components/SEO';
 
 const Advertise = () => {
   const navigate = useNavigate();
+  usePrerenderReady(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     location: [],
