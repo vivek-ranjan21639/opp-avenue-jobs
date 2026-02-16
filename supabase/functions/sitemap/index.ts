@@ -10,24 +10,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const STATIC_ROUTES = [
-  { path: "/", priority: "1.0", changefreq: "daily" },
-  { path: "/about", priority: "0.7", changefreq: "monthly" },
-  { path: "/advertise", priority: "0.5", changefreq: "monthly" },
-  { path: "/blogs", priority: "0.8", changefreq: "daily" },
-  { path: "/contact", priority: "0.5", changefreq: "monthly" },
-  { path: "/resources", priority: "0.7", changefreq: "weekly" },
-  { path: "/resources/career-guides", priority: "0.6", changefreq: "weekly" },
-  { path: "/resources/resume-templates", priority: "0.6", changefreq: "weekly" },
-  { path: "/resources/interview-tips", priority: "0.6", changefreq: "weekly" },
-  { path: "/resources/industry-reports", priority: "0.6", changefreq: "weekly" },
-  { path: "/privacy-policy", priority: "0.3", changefreq: "yearly" },
-  { path: "/terms", priority: "0.3", changefreq: "yearly" },
-  { path: "/disclaimer", priority: "0.3", changefreq: "yearly" },
-  { path: "/cookie-policy", priority: "0.3", changefreq: "yearly" },
-  { path: "/sitemap", priority: "0.4", changefreq: "weekly" },
-];
-
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
@@ -54,8 +36,13 @@ Deno.serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     const today = new Date().toISOString().split("T")[0];
 
-    // Fetch jobs and blogs in parallel
-    const [jobsResult, blogsResult] = await Promise.all([
+    // Fetch static routes, jobs, and blogs in parallel
+    const [routesResult, jobsResult, blogsResult] = await Promise.all([
+      supabase
+        .from("static_routes")
+        .select("path, priority, changefreq")
+        .eq("is_active", true)
+        .order("path"),
       supabase
         .from("jobs")
         .select("id, updated_at")
@@ -69,12 +56,16 @@ Deno.serve(async (req) => {
         .order("updated_at", { ascending: false }),
     ]);
 
-    // Build URL entries
     const entries: string[] = [];
 
-    // Static routes
-    for (const route of STATIC_ROUTES) {
-      entries.push(toUrlEntry(`${SITE_URL}${route.path}`, today, route.changefreq, route.priority));
+    // Hardcoded homepage
+    entries.push(toUrlEntry(`${SITE_URL}/`, today, "daily", "1.0"));
+
+    // DB-driven static routes
+    if (routesResult.data) {
+      for (const route of routesResult.data) {
+        entries.push(toUrlEntry(`${SITE_URL}${route.path}`, today, route.changefreq, route.priority));
+      }
     }
 
     // Job routes
