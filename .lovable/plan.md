@@ -1,87 +1,65 @@
 
 
-# Comprehensive Netlify Prerendering for ALL Pages
+# Auto-Prerendering for New Pages
 
 ## Problem
-Currently only 4 out of 17 pages have prerender signaling, and those 4 use the wrong mechanism. Netlify's Prerender extension requires `window.prerenderReady = true` (a global variable), but the code dispatches a custom DOM event instead. This means Netlify's headless browser never gets the signal, and must wait for the 10-second timeout on every page.
+Every new page requires manually importing and calling `usePrerenderReady`. If you forget, that page won't signal Netlify's prerender extension properly.
+
+## Solution
+Create a **Layout wrapper component** that automatically calls `usePrerenderReady(true)` for any page it wraps. Pages with async data can override this by calling the hook themselves (the hook already has a guard to only signal once).
 
 ## Changes
 
-### 1. Update the Prerender Hook (`src/hooks/usePrerenderReady.ts`)
-Replace the custom DOM event with `window.prerenderReady = true`, which is what Netlify checks.
+### 1. Create `src/components/PageLayout.tsx`
+A new layout component that:
+- Wraps page content with Header and Footer (which every page already uses)
+- Calls `usePrerenderReady(true)` by default (for static pages)
+- Accepts an optional `prerenderReady` prop so dynamic pages can control timing (e.g., `prerenderReady={!isLoading}`)
 
-### 2. Add TypeScript Declaration (`src/vite-env.d.ts`)
-Add `prerenderReady` to the global `Window` interface so TypeScript accepts `window.prerenderReady`.
+### 2. Update `src/hooks/usePrerenderReady.ts`
+Ensure the hook resets `window.prerenderReady = false` on route changes so each page navigation gets a fresh signal. This is important for SPA navigation where Netlify re-renders on new URLs.
 
-### 3. Update Fallback in `src/main.tsx`
-Change the 5-second fallback from dispatching a custom event to setting `window.prerenderReady = true`. Also initialize `window.prerenderReady = false` at startup.
+### 3. Refactor all 17 existing pages
+Replace the repeated Header/Footer/usePrerenderReady boilerplate with `<PageLayout>`. For example:
 
-### 4. Add `usePrerenderReady` to ALL Remaining Pages
+**Static page (About):**
+```tsx
+// Before
+usePrerenderReady(true);
+return (<><Header .../><main>...</main><Footer/></>);
 
-**Pages with async data (signal after data loads):**
+// After
+return (<PageLayout><main>...</main></PageLayout>);
+```
 
-| Page | File | Signal Condition |
-|------|------|-----------------|
-| Resources | `src/pages/Resources.tsx` | `!loadingFeatured` |
-| Career Guides | `src/pages/CareerGuides.tsx` | `!isLoading` |
-| Resume Templates | `src/pages/ResumeTemplates.tsx` | `!isLoading` |
-| Interview Tips | `src/pages/InterviewTips.tsx` | `!isLoading` |
-| Industry Reports | `src/pages/IndustryReports.tsx` | `!isLoading` |
-| Sitemap | `src/pages/Sitemap.tsx` | `true` (static content) |
+**Dynamic page (Index):**
+```tsx
+// Before
+usePrerenderReady(!isLoading);
+return (<><Header .../><main>...</main><Footer/></>);
 
-**Pages with static content (signal immediately):**
+// After
+return (<PageLayout prerenderReady={!isLoading}><main>...</main></PageLayout>);
+```
 
-| Page | File |
-|------|------|
-| About | `src/pages/About.tsx` |
-| Advertise | `src/pages/Advertise.tsx` |
-| Contact | `src/pages/Contact.tsx` |
-| Privacy Policy | `src/pages/PrivacyPolicy.tsx` |
-| Terms & Conditions | `src/pages/TermsConditions.tsx` |
-| Disclaimer | `src/pages/Disclaimer.tsx` |
-| Cookie Policy | `src/pages/CookiePolicy.tsx` |
+### 4. Add to `static_routes` table
+As a reminder/checklist: whenever you create a new page, also insert a row into the `static_routes` table in Supabase so it appears in the XML sitemap.
 
-Each static page gets: `usePrerenderReady(true)` -- signals immediately since there's no data to wait for.
+## Checklist for Adding a New Page (After This Change)
 
-### 5. Already Handled (4 pages -- just need the hook fix)
-- `Index.tsx` -- signals after jobs load
-- `JobDetail.tsx` -- signals after job loads
-- `BlogDetail.tsx` -- signals after blog loads
-- `Blogs.tsx` -- signals after blogs load
+1. Create the page component in `src/pages/`
+2. Wrap content in `<PageLayout>` (prerendering handled automatically)
+3. If the page fetches data, pass `prerenderReady={!isLoading}`
+4. Add the route to `App.tsx`
+5. Add a row to the `static_routes` table in Supabase for the sitemap
 
-These already call `usePrerenderReady` and will automatically work once the hook internals are updated.
+## Files Summary
 
-## Summary of All Files
+| File | Action |
+|------|--------|
+| `src/components/PageLayout.tsx` | Create -- shared layout with auto prerender signal |
+| `src/hooks/usePrerenderReady.ts` | Minor update -- ensure single-signal guard works across navigations |
+| All 17 page files | Refactor -- use `PageLayout` instead of manual Header/Footer/usePrerenderReady |
 
-| File | Action | What Changes |
-|------|--------|-------------|
-| `src/hooks/usePrerenderReady.ts` | Modify | Set `window.prerenderReady = true` instead of dispatching event |
-| `src/vite-env.d.ts` | Modify | Add `prerenderReady` to Window interface |
-| `src/main.tsx` | Modify | Initialize `window.prerenderReady = false`, update fallback |
-| `src/pages/About.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/Advertise.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/Contact.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/PrivacyPolicy.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/TermsConditions.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/Disclaimer.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/CookiePolicy.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/Sitemap.tsx` | Modify | Add `usePrerenderReady(true)` |
-| `src/pages/Resources.tsx` | Modify | Add `usePrerenderReady(!loadingFeatured)` |
-| `src/pages/CareerGuides.tsx` | Modify | Add `usePrerenderReady(!isLoading)` |
-| `src/pages/ResumeTemplates.tsx` | Modify | Add `usePrerenderReady(!isLoading)` |
-| `src/pages/InterviewTips.tsx` | Modify | Add `usePrerenderReady(!isLoading)` |
-| `src/pages/IndustryReports.tsx` | Modify | Add `usePrerenderReady(!isLoading)` |
-
-**Total: 16 files modified, 0 new files, all 17 pages covered.**
-
-## How It Works End-to-End
-
-1. Netlify's Prerender extension intercepts requests from bots/crawlers
-2. It opens the page in a headless browser
-3. The browser loads React, fetches data from Supabase
-4. When data is ready, the page sets `window.prerenderReady = true`
-5. Netlify captures the fully-rendered HTML and serves it to the bot
-6. Result is cached at Netlify's CDN for up to 3 days (or until next deploy)
-7. Human visitors get the normal SPA experience -- no change for them
-
-No UI/UX changes. No new dependencies. Just making every page properly signal readiness to Netlify's prerender system.
+## Benefit
+New pages are prerender-ready by default just by using `<PageLayout>`. No extra imports or hooks to remember.
