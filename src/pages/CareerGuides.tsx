@@ -1,45 +1,19 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AdUnit from "@/components/AdUnit";
-import { BookOpen, ArrowLeft } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
+import AdUnit from "@/components/AdUnit";
 import SEO from "@/components/SEO";
+import PageLayout from "@/components/PageLayout";
 
 const CareerGuides = () => {
-  const navigate = useNavigate();
   const { data: guides, isLoading } = useResources('category');
-  usePrerenderReady(!isLoading);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageLayout prerenderReady={!isLoading}>
       <SEO 
         title="Career Guides"
         description="Comprehensive guides to help you navigate your railway career path. Expert advice on career development and industry insights."
         canonical="/resources/career-guides"
-      />
-      <Header
-        onAdvertiseClick={() => {}}
-        searchQuery=""
-        onSearchChange={() => {}}
-        activeFilters={{
-          location: [],
-          jobType: [],
-          experience: [],
-          salaryRange: [],
-          domain: [],
-          skills: [],
-          companies: [],
-          workMode: []
-        }}
-        onFiltersChange={() => {}}
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
@@ -78,7 +52,6 @@ const CareerGuides = () => {
                     )}
                   </CardContent>
                 </Card>
-                {/* Ad after every 3rd guide */}
                 {(index + 1) % 3 === 0 && index < guides.length - 1 && (
                   <div className="my-6">
                     <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 3)}`} />
@@ -91,9 +64,7 @@ const CareerGuides = () => {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 };
 

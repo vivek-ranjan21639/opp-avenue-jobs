@@ -1,46 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Header, { FilterState } from '@/components/Header';
-import AdvertisePage from '@/components/AdvertisePage';
-import Footer from '@/components/Footer';
+import PageLayout from '@/components/PageLayout';
 import SEO from '@/components/SEO';
 
 const PrivacyPolicy = () => {
-  const navigate = useNavigate();
-  usePrerenderReady(true);
-  const [showAdvertise, setShowAdvertise] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState<FilterState>({
-    location: [],
-    jobType: [],
-    experience: [],
-    salaryRange: [],
-    domain: [],
-    skills: [],
-    companies: [],
-    workMode: []
-  });
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <PageLayout className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
       <SEO 
         title="Privacy Policy"
         description="Learn how Opp Avenue handles and protects your personal data. Our commitment to your privacy and data security."
         canonical="/privacy-policy"
-      />
-      <Header
-        onAdvertiseClick={() => setShowAdvertise(true)}
-        onSearchChange={setSearchQuery}
-        onFiltersChange={setActiveFilters}
-        searchQuery={searchQuery}
-        activeFilters={activeFilters}
       />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-4xl">
@@ -111,10 +78,7 @@ const PrivacyPolicy = () => {
           </section>
         </div>
       </main>
-
-      <Footer />
-      <AdvertisePage isOpen={showAdvertise} onClose={() => setShowAdvertise(false)} />
-    </div>
+    </PageLayout>
   );
 };
 

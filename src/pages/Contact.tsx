@@ -1,49 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import { ArrowLeft, Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import Header, { FilterState } from '@/components/Header';
-import AdvertisePage from '@/components/AdvertisePage';
-import Footer from '@/components/Footer';
+import PageLayout from '@/components/PageLayout';
 import SEO from '@/components/SEO';
 
 const Contact = () => {
-  const navigate = useNavigate();
-  usePrerenderReady(true);
-  const [showAdvertise, setShowAdvertise] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState<FilterState>({
-    location: [],
-    jobType: [],
-    experience: [],
-    salaryRange: [],
-    domain: [],
-    skills: [],
-    companies: [],
-    workMode: []
-  });
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <PageLayout className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
       <SEO 
         title="Contact Us"
         description="Have questions or need assistance? Contact the Opp Avenue team. We're here to help you find your dream job."
         canonical="/contact"
-      />
-      <Header
-        onAdvertiseClick={() => setShowAdvertise(true)}
-        onSearchChange={setSearchQuery}
-        onFiltersChange={setActiveFilters}
-        searchQuery={searchQuery}
-        activeFilters={activeFilters}
       />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-6xl">
@@ -66,18 +35,10 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 <form className="space-y-4">
-                  <div>
-                    <Input placeholder="Your Name" className="w-full" />
-                  </div>
-                  <div>
-                    <Input type="email" placeholder="Your Email" className="w-full" />
-                  </div>
-                  <div>
-                    <Input placeholder="Subject" className="w-full" />
-                  </div>
-                  <div>
-                    <Textarea placeholder="Your Message" className="w-full min-h-[150px]" />
-                  </div>
+                  <div><Input placeholder="Your Name" className="w-full" /></div>
+                  <div><Input type="email" placeholder="Your Email" className="w-full" /></div>
+                  <div><Input placeholder="Subject" className="w-full" /></div>
+                  <div><Textarea placeholder="Your Message" className="w-full min-h-[150px]" /></div>
                   <Button className="w-full">
                     <Send className="w-4 h-4 mr-2" />
                     Send Message
@@ -138,10 +99,7 @@ const Contact = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
-      <AdvertisePage isOpen={showAdvertise} onClose={() => setShowAdvertise(false)} />
-    </div>
+    </PageLayout>
   );
 };
 
