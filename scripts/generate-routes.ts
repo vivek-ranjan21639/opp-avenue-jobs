@@ -17,7 +17,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SUPABASE_URL = "https://nudjyemktgioxmxwnxev.supabase.co";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-const STATIC_ROUTES = [
+const FALLBACK_STATIC_ROUTES = [
   '/',
   '/about',
   '/advertise',
@@ -38,14 +38,35 @@ const STATIC_ROUTES = [
 async function generateRoutes(): Promise<string[]> {
   if (!SUPABASE_KEY) {
     console.warn('⚠️ No Supabase key found. Using static routes only.');
-    return STATIC_ROUTES;
+    return FALLBACK_STATIC_ROUTES;
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   console.log('🔍 Starting route discovery...\n');
 
+  let staticRoutes: string[] = ['/'];
   let jobRoutes: string[] = [];
   let blogRoutes: string[] = [];
+
+  // Fetch static routes from DB
+  try {
+    const { data: routes, error } = await supabase
+      .from('static_routes')
+      .select('path')
+      .eq('is_active', true)
+      .order('path');
+
+    if (error) {
+      console.warn('⚠️ Error fetching static routes:', error.message);
+      staticRoutes = FALLBACK_STATIC_ROUTES;
+    } else {
+      staticRoutes = ['/', ...(routes || []).map(r => r.path)];
+      console.log(`📄 Static routes: ${staticRoutes.length}`);
+    }
+  } catch (e) {
+    console.warn('⚠️ Failed to fetch static routes, using fallback.');
+    staticRoutes = FALLBACK_STATIC_ROUTES;
+  }
 
   try {
     const today = new Date().toISOString().split('T')[0];
@@ -81,7 +102,7 @@ async function generateRoutes(): Promise<string[]> {
     console.warn('⚠️ Failed to fetch blogs, skipping.');
   }
 
-  const allRoutes = [...STATIC_ROUTES, ...jobRoutes, ...blogRoutes];
+  const allRoutes = [...staticRoutes, ...jobRoutes, ...blogRoutes];
   console.log(`\n✅ Total routes: ${allRoutes.length}`);
   return allRoutes;
 }
@@ -95,7 +116,7 @@ async function main() {
   } catch (error) {
     console.error('Failed to generate routes, using static fallback:', error);
     const outputPath = path.join(__dirname, 'routes.json');
-    fs.writeFileSync(outputPath, JSON.stringify(STATIC_ROUTES, null, 2));
+    fs.writeFileSync(outputPath, JSON.stringify(FALLBACK_STATIC_ROUTES, null, 2));
     console.log(`📁 Fallback routes written to: ${outputPath}`);
   }
 }

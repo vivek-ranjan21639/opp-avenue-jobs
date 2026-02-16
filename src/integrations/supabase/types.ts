@@ -653,6 +653,33 @@ export type Database = {
         }
         Relationships: []
       }
+      static_routes: {
+        Row: {
+          changefreq: string
+          created_at: string
+          id: string
+          is_active: boolean
+          path: string
+          priority: string
+        }
+        Insert: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path: string
+          priority?: string
+        }
+        Update: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          priority?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string | null
