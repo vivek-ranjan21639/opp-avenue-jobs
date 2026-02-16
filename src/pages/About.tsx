@@ -1,46 +1,18 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import { ArrowLeft, Target, Users, Zap, Award } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Target, Users, Zap, Award } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Header, { FilterState } from '@/components/Header';
-import AdvertisePage from '@/components/AdvertisePage';
-import Footer from '@/components/Footer';
+import PageLayout from '@/components/PageLayout';
 import SEO from '@/components/SEO';
 import OrganizationSchema from '@/components/seo/OrganizationSchema';
 
 const About = () => {
-  const navigate = useNavigate();
-  usePrerenderReady(true);
-  const [showAdvertise, setShowAdvertise] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState<FilterState>({
-    location: [],
-    jobType: [],
-    experience: [],
-    salaryRange: [],
-    domain: [],
-    skills: [],
-    companies: [],
-    workMode: []
-  });
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <PageLayout className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
       <SEO 
         title="About Us"
         description="Learn about Opp Avenue - your trusted platform for discovering exciting career opportunities and connecting talented professionals with leading companies."
         canonical="/about"
       />
       <OrganizationSchema />
-      <Header
-        onAdvertiseClick={() => setShowAdvertise(true)}
-        onSearchChange={setSearchQuery}
-        onFiltersChange={setActiveFilters}
-        searchQuery={searchQuery}
-        activeFilters={activeFilters}
-      />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-6xl">
         <div className="space-y-12">
@@ -159,10 +131,7 @@ const About = () => {
           </section>
         </div>
       </main>
-
-      <Footer />
-      <AdvertisePage isOpen={showAdvertise} onClose={() => setShowAdvertise(false)} />
-    </div>
+    </PageLayout>
   );
 };
 

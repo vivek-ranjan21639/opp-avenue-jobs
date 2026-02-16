@@ -1,33 +1,11 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import { ArrowLeft, Home, Info, Mail, FileText, Shield, Cookie, Map } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Header, { FilterState } from '@/components/Header';
-import AdvertisePage from '@/components/AdvertisePage';
-import Footer from '@/components/Footer';
+import { Home, Shield, Mail } from 'lucide-react';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import PageLayout from '@/components/PageLayout';
 import SEO from '@/components/SEO';
 
 const Sitemap = () => {
   const navigate = useNavigate();
-  usePrerenderReady(true);
-  const [showAdvertise, setShowAdvertise] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState<FilterState>({
-    location: [],
-    jobType: [],
-    experience: [],
-    salaryRange: [],
-    domain: [],
-    skills: [],
-    companies: [],
-    workMode: []
-  });
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const siteStructure = [
     {
@@ -62,9 +40,8 @@ const Sitemap = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <PageLayout className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
       <SEO title="Sitemap" description="Navigate through all pages and sections of Opp Avenue." canonical="/sitemap" />
-      <Header onAdvertiseClick={() => setShowAdvertise(true)} onSearchChange={setSearchQuery} onFiltersChange={setActiveFilters} searchQuery={searchQuery} activeFilters={activeFilters} />
 
       <main className="container mx-auto px-4 pt-4 pb-12 max-w-6xl">
         <div className="space-y-12">
@@ -80,15 +57,13 @@ const Sitemap = () => {
           <div className="space-y-8">
             {siteStructure.map((section, index) => (
               <Card key={index} className="border-border/50 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <section.icon className="w-5 h-5 text-primary" />
                     </div>
                     <CardTitle className="text-2xl">{section.category}</CardTitle>
                   </div>
-                </CardHeader>
-                <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {section.pages.map((page, pageIndex) => (
                       <div
@@ -105,16 +80,13 @@ const Sitemap = () => {
                       </div>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </Card>
             ))}
           </div>
         </div>
       </main>
-
-      <Footer />
-      <AdvertisePage isOpen={showAdvertise} onClose={() => setShowAdvertise(false)} />
-    </div>
+    </PageLayout>
   );
 };
 

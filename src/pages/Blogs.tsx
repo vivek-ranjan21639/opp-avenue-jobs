@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Calendar, User, Tag, ArrowUp, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +7,7 @@ import { useBlogs, useBlogTags } from "@/hooks/useBlogs";
 import { useBlogAuthors } from "@/hooks/useBlogAuthors";
 import { format } from "date-fns";
 import SEO from "@/components/SEO";
-import { usePrerenderReady } from "@/hooks/usePrerenderReady";
+import PageLayout from "@/components/PageLayout";
 
 const Blogs = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -19,19 +17,12 @@ const Blogs = () => {
   const { data: tags } = useBlogTags();
   const { data: authors } = useBlogAuthors();
 
-  // Signal prerenderer when blogs are loaded
-  usePrerenderReady(!isLoading && !!allBlogs);
-
   // Filter blogs by tag and author
   const blogs = allBlogs?.filter(blog => {
     const matchesTag = !selectedTag || blog.tags.some(tag => tag.name === selectedTag);
     const matchesAuthor = !selectedAuthor || blog.author?.name === selectedAuthor;
     return matchesTag && matchesAuthor;
   });
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   // Scroll-to-top button visibility
   useEffect(() => {
@@ -47,27 +38,11 @@ const Blogs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageLayout prerenderReady={!isLoading && !!allBlogs}>
       <SEO 
         title="Career Blog & Insights"
         description="Stay updated with the latest news, insights, and trends in the railway industry. Expert career advice and industry updates."
         canonical="/blogs"
-      />
-      <Header
-        onAdvertiseClick={() => {}}
-        searchQuery=""
-        onSearchChange={() => {}}
-        activeFilters={{
-          location: [],
-          jobType: [],
-          experience: [],
-          salaryRange: [],
-          domain: [],
-          skills: [],
-          companies: [],
-          workMode: []
-        }}
-        onFiltersChange={() => {}}
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-4 pb-12">
@@ -298,9 +273,7 @@ const Blogs = () => {
           <ArrowUp className="h-4 w-4" />
         </Button>
       )}
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 };
 

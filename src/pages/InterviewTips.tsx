@@ -1,45 +1,19 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AdUnit from "@/components/AdUnit";
-import { Video, ArrowLeft } from "lucide-react";
+import { Video } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResources } from "@/hooks/useResources";
+import AdUnit from "@/components/AdUnit";
 import SEO from "@/components/SEO";
+import PageLayout from "@/components/PageLayout";
 
 const InterviewTips = () => {
-  const navigate = useNavigate();
   const { data: tips, isLoading } = useResources('content');
-  usePrerenderReady(!isLoading);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageLayout prerenderReady={!isLoading}>
       <SEO 
         title="Interview Tips"
         description="Video tutorials and articles to help you ace your railway job interviews. Expert tips and strategies for interview success."
         canonical="/resources/interview-tips"
-      />
-      <Header
-        onAdvertiseClick={() => {}}
-        searchQuery=""
-        onSearchChange={() => {}}
-        activeFilters={{
-          location: [],
-          jobType: [],
-          experience: [],
-          salaryRange: [],
-          domain: [],
-          skills: [],
-          companies: [],
-          workMode: []
-        }}
-        onFiltersChange={() => {}}
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
@@ -90,7 +64,6 @@ const InterviewTips = () => {
                     )}
                   </CardContent>
                 </Card>
-                {/* Ad after every 3rd tip */}
                 {(index + 1) % 3 === 0 && index < tips.length - 1 && (
                   <div className="my-6">
                     <AdUnit size="rectangle" label={`In-content Ad ${Math.floor((index + 1) / 3)}`} />
@@ -103,9 +76,7 @@ const InterviewTips = () => {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 };
 

@@ -1,23 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { usePrerenderReady } from '@/hooks/usePrerenderReady';
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { BookOpen, FileText, Video, Download, ExternalLink, Sparkles } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFeaturedResources, useNewResources } from "@/hooks/useResources";
-import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
+import PageLayout from "@/components/PageLayout";
 
 const Resources = () => {
-  const navigate = useNavigate();
   const { data: featuredResources, isLoading: loadingFeatured } = useFeaturedResources();
   const { data: newResources, isLoading: loadingNew } = useNewResources();
-  usePrerenderReady(!loadingFeatured && !loadingNew);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const resourceCategories = [
     {
@@ -51,27 +40,11 @@ const Resources = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageLayout prerenderReady={!loadingFeatured && !loadingNew}>
       <SEO 
         title="Career Resources"
         description="Explore our collection of helpful resources to advance your career in the railway industry. Career guides, resume templates, interview tips, and more."
         canonical="/resources"
-      />
-      <Header
-        onAdvertiseClick={() => {}}
-        searchQuery=""
-        onSearchChange={() => {}}
-        activeFilters={{
-          location: [],
-          jobType: [],
-          experience: [],
-          salaryRange: [],
-          domain: [],
-          skills: [],
-          companies: [],
-          workMode: []
-        }}
-        onFiltersChange={() => {}}
       />
       
       <main className="max-w-[1008px] mx-auto px-4 pt-8 pb-12">
@@ -107,7 +80,7 @@ const Resources = () => {
           </div>
         )}
 
-        {/* Featured Resources - "You should go through" */}
+        {/* Featured Resources */}
         {!loadingFeatured && featuredResources && featuredResources.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
@@ -156,9 +129,7 @@ const Resources = () => {
           })}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 };
 
