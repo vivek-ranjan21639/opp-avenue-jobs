@@ -1,65 +1,80 @@
 
 
-# Auto-Prerendering for New Pages
+# Enable Netlify Prerender Extension (Zero Build Impact)
 
-## Problem
-Every new page requires manually importing and calling `usePrerenderReady`. If you forget, that page won't signal Netlify's prerender extension properly.
+## Current Problem
 
-## Solution
-Create a **Layout wrapper component** that automatically calls `usePrerenderReady(true)` for any page it wraps. Pages with async data can override this by calling the hook themselves (the hook already has a guard to only signal once).
+The SSR checker shows a blank `<div id="root"></div>` because your site is a client-side SPA. Crawlers receive empty HTML. The `window.prerenderReady` signal is already implemented in your code but nothing is consuming it.
 
-## Changes
+## Solution: Netlify Prerender Extension (Runtime, Not Build-Time)
 
-### 1. Create `src/components/PageLayout.tsx`
-A new layout component that:
-- Wraps page content with Header and Footer (which every page already uses)
-- Calls `usePrerenderReady(true)` by default (for static pages)
-- Accepts an optional `prerenderReady` prop so dynamic pages can control timing (e.g., `prerenderReady={!isLoading}`)
+Netlify has a **built-in Prerender extension** that works at runtime -- it does NOT slow down your build at all. When a crawler/bot requests a page, Netlify intercepts the request, renders it in a headless browser, waits for `window.prerenderReady === true`, and serves the fully rendered HTML. Regular users still get the fast SPA.
 
-### 2. Update `src/hooks/usePrerenderReady.ts`
-Ensure the hook resets `window.prerenderReady = false` on route changes so each page navigation gets a fresh signal. This is important for SPA navigation where Netlify re-renders on new URLs.
+Your code already has everything needed (`window.prerenderReady`, `usePrerenderReady` hook, `PageLayout` wrapper). We just need to enable it and make a few small tweaks.
 
-### 3. Refactor all 17 existing pages
-Replace the repeated Header/Footer/usePrerenderReady boilerplate with `<PageLayout>`. For example:
+## Steps
 
-**Static page (About):**
-```tsx
-// Before
-usePrerenderReady(true);
-return (<><Header .../><main>...</main><Footer/></>);
+### 1. Enable Netlify Prerender Extension (Manual -- One Time)
 
-// After
-return (<PageLayout><main>...</main></PageLayout>);
+Go to your Netlify dashboard:
+1. Visit https://app.netlify.com/extensions/prerender
+2. Install the extension to your team
+3. Go to your project > Extensions > Prerender > **Enable prerendering**
+4. Save and re-deploy
+
+This is the only manual step. Once enabled, it works for ALL pages automatically -- current and future.
+
+### 2. Small Code Fixes
+
+**a) Fix `index.html` -- Add `<meta name="fragment" content="!">` tag**
+
+This meta tag tells crawlers that this page supports the AJAX crawling scheme and has pre-rendered content available. Netlify's prerender extension looks for this.
+
+**b) Update `netlify.toml` -- Add bot detection header**
+
+Add a custom header to help the prerender extension identify cacheable responses:
+
+```
+[build.environment]
+  PRERENDER_ENABLED = "true"
 ```
 
-**Dynamic page (Index):**
-```tsx
-// Before
-usePrerenderReady(!isLoading);
-return (<><Header .../><main>...</main><Footer/></>);
+**c) Verify `usePrerenderReady` reset logic**
 
-// After
-return (<PageLayout prerenderReady={!isLoading}><main>...</main></PageLayout>);
-```
+The current hook resets `window.prerenderReady = false` on mount. For prerendering (where the bot loads the page fresh each time), this is correct. No change needed.
 
-### 4. Add to `static_routes` table
-As a reminder/checklist: whenever you create a new page, also insert a row into the `static_routes` table in Supabase so it appears in the XML sitemap.
+### 3. No Build-Time Prerendering Required
 
-## Checklist for Adding a New Page (After This Change)
+The Netlify Prerender extension handles everything at the edge/runtime:
+- No Puppeteer in your build
+- No build time increase
+- Works for dynamic routes (`/job/:id`, `/blog/:slug`) automatically
+- Works for any new pages you add (as long as they use `PageLayout`)
+- Cached results are served for subsequent bot requests
 
-1. Create the page component in `src/pages/`
-2. Wrap content in `<PageLayout>` (prerendering handled automatically)
-3. If the page fetches data, pass `prerenderReady={!isLoading}`
-4. Add the route to `App.tsx`
-5. Add a row to the `static_routes` table in Supabase for the sitemap
+## Files to Modify
 
-## Files Summary
-
-| File | Action |
+| File | Change |
 |------|--------|
-| `src/components/PageLayout.tsx` | Create -- shared layout with auto prerender signal |
-| `src/hooks/usePrerenderReady.ts` | Minor update -- ensure single-signal guard works across navigations |
-| All 17 page files | Refactor -- use `PageLayout` instead of manual Header/Footer/usePrerenderReady |
+| `index.html` | Add `<meta name="fragment" content="!">` in `<head>` |
+| `netlify.toml` | Add `PRERENDER_ENABLED` env var for clarity |
 
-## Benefit
-New pages are prerender-ready by default just by using `<PageLayout>`. No extra imports or hooks to remember.
+## What Happens After This
+
+- Crawlers request any page (e.g., `/about`, `/job/123`, `/blog/my-post`)
+- Netlify detects it's a bot via User-Agent
+- Netlify's serverless function renders the page in a headless browser
+- It waits for `window.prerenderReady === true` (your existing signal)
+- Returns fully rendered HTML to the crawler
+- Caches the result for 24-48 hours
+- Regular users still get the fast SPA experience
+
+## Future-Proof
+
+When you add new resource categories, blogs, or any page:
+1. Wrap it in `<PageLayout>` (already your pattern)
+2. Add the route in `App.tsx`
+3. Done -- Netlify prerender handles it automatically at runtime
+
+No build scripts, no route discovery, no Puppeteer -- the prerender extension handles all bot rendering on-demand.
+
