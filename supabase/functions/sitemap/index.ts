@@ -98,8 +98,8 @@ ${entries.join("\n")}
     });
   } catch (error) {
     console.error("Sitemap generation error:", error);
-    return new Response("Internal Server Error", {
-      status: 500,
+    return new Response("Service temporarily unavailable", {
+      status: 503,
       headers: corsHeaders,
     });
   }
