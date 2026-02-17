@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import DOMPurify from "dompurify";
 import AdUnit from "@/components/AdUnit";
 import { Calendar, User, Tag, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,12 @@ import { format } from "date-fns";
 import SEO from "@/components/SEO";
 import BlogPostingSchema from "@/components/seo/BlogPostingSchema";
 import PageLayout from "@/components/PageLayout";
+
+const PURIFY_CONFIG = {
+  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'span', 'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'hr', 'sup', 'sub', 'figure', 'figcaption'],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id', 'width', 'height', 'loading'],
+  ALLOW_DATA_ATTR: false,
+};
 
 const BlogDetail = () => {
   const { blogId } = useParams();
@@ -91,25 +98,31 @@ const BlogDetail = () => {
                 ))}
               </div>
 
-              {blog.content && (
-                <>
-                  <div 
-                    className="text-foreground leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: blog.content.split('</p>').slice(0, 3).join('</p>') + '</p>' }}
-                    style={{ fontSize: '1.125rem', lineHeight: '1.75rem' }}
-                  />
-                  
-                  <div className="my-8">
-                    <AdUnit size="rectangle" label="In-content Ad 1" />
-                  </div>
-                  
-                  <div 
-                    className="text-foreground leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: '<p>' + blog.content.split('</p>').slice(3).join('</p>') }}
-                    style={{ fontSize: '1.125rem', lineHeight: '1.75rem' }}
-                  />
-                </>
-              )}
+              {blog.content && (() => {
+                const sanitized = DOMPurify.sanitize(blog.content, PURIFY_CONFIG);
+                const parts = sanitized.split('</p>');
+                const firstPart = parts.slice(0, 3).join('</p>') + '</p>';
+                const secondPart = '<p>' + parts.slice(3).join('</p>');
+                return (
+                  <>
+                    <div 
+                      className="text-foreground leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: firstPart }}
+                      style={{ fontSize: '1.125rem', lineHeight: '1.75rem' }}
+                    />
+                    
+                    <div className="my-8">
+                      <AdUnit size="rectangle" label="In-content Ad 1" />
+                    </div>
+                    
+                    <div 
+                      className="text-foreground leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: secondPart }}
+                      style={{ fontSize: '1.125rem', lineHeight: '1.75rem' }}
+                    />
+                  </>
+                );
+              })()}
             </article>
             
             <div className="mt-12">
