@@ -3,6 +3,12 @@
   publish = "dist"
 
 [[redirects]]
+  from = "/sitemap.xml"
+  to = "https://nudjyemktgioxmxwnxev.supabase.co/functions/v1/sitemap"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/assets/*"
   to = "/assets/:splat"
   status = 200
