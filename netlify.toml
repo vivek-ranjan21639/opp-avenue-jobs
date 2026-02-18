@@ -2,6 +2,9 @@
   command = "npx tsx scripts/generate-routes.ts && npx vite build"
   publish = "dist"
 
+[build.environment]
+  PRERENDER_ENABLED = "true"
+
 [[redirects]]
   from = "/sitemap.xml"
   to = "https://nudjyemktgioxmxwnxev.supabase.co/functions/v1/sitemap"
