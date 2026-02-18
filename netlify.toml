@@ -39,3 +39,8 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
+
+# Register Netlify Edge Function for bot prerendering
+[[edge_functions]]
+  function = "bot-prerender"
+  path = "/*"
