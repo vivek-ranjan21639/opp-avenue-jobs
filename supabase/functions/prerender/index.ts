@@ -381,17 +381,27 @@ Deno.serve(async (req) => {
         <section>
           <h2>Our Mission</h2>
           <p>To simplify the job search process and make quality opportunities accessible to everyone.</p>
+          <p>We believe that finding the right job should be straightforward and empowering. Our platform brings together job seekers and employers in a seamless, efficient way.</p>
         </section>
         <section>
           <h2>Our Vision</h2>
           <p>Building the future of work through innovation and technology.</p>
+          <p>We envision a world where every professional can easily find opportunities that match their skills, passions, and career goals.</p>
         </section>
         <section>
           <h2>Our Values</h2>
           <ul>
-            <li><strong>People First</strong> - We prioritize the needs of job seekers and employers.</li>
-            <li><strong>Quality</strong> - We curate high-quality job listings from reputable companies.</li>
-            <li><strong>Innovation</strong> - We continuously improve our platform with the latest technology.</li>
+            <li><strong>People First</strong> - We prioritize the needs of job seekers and employers, ensuring a user-friendly experience for all.</li>
+            <li><strong>Quality</strong> - We curate high-quality job listings from reputable companies to ensure the best opportunities.</li>
+            <li><strong>Innovation</strong> - We continuously improve our platform with the latest technology to serve you better.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Platform Highlights</h2>
+          <ul>
+            <li><strong>500+</strong> Active Job Listings</li>
+            <li><strong>50+</strong> Partner Companies</li>
+            <li><strong>10k+</strong> Job Seekers</li>
           </ul>
         </section>`;
 
@@ -461,8 +471,33 @@ Deno.serve(async (req) => {
       bodyContent = `<h1>Cookie Policy</h1><p>This policy explains how we use cookies on our platform.</p>`;
     } else if (path === '/advertise') {
       title = "Advertise with Us";
-      description = "Promote your company and job openings on Opp Avenue. Reach thousands of job seekers.";
-      bodyContent = `<h1>Advertise with Opp Avenue</h1><p>Reach thousands of active job seekers. Promote your company and openings on our platform.</p>`;
+      description = "Reach over 1 lakh daily users by advertising on Opp Avenue. Connect with professionals actively seeking career opportunities.";
+      bodyContent = `
+        <h1>Advertise with Opp Avenue</h1>
+        <p>Reach out to 1lakh+ daily users by advertising at our platform.</p>
+        <section>
+          <h2>Why Advertise at Our Platform</h2>
+          <ul>
+            <li><strong>Total Page Views:</strong> 53 Lakhs/monthly</li>
+            <li><strong>Unique Visitors:</strong> 17.84 Lakhs/monthly</li>
+            <li><strong>WhatsApp Subscribers:</strong> 4.47 Lakhs over 750+ groups</li>
+            <li><strong>LinkedIn Followers:</strong> 1.80 Lakhs</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Advertising Benefits</h2>
+          <ul>
+            <li><strong>Massive Reach</strong> - Connect with over 1 lakh daily active users seeking opportunities.</li>
+            <li><strong>Targeted Audience</strong> - Reach professionals actively looking for career opportunities.</li>
+            <li><strong>Multi-Channel</strong> - Leverage our website, WhatsApp groups, and LinkedIn presence.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Get Started Today</h2>
+          <p><strong>Call us at:</strong> +91 98765 43210</p>
+          <p><strong>Email us at:</strong> ads@oppavenue.com</p>
+          <p>We will contact you within 24 hours to discuss your advertising needs.</p>
+        </section>`;
     } else if (path === '/sitemap') {
       title = "Sitemap";
       description = "Navigate all pages on Opp Avenue.";
