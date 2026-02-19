@@ -439,36 +439,225 @@ Deno.serve(async (req) => {
       bodyContent = `<h1>Career Guides</h1><p>Expert guides to help you navigate your professional journey and make informed career decisions.</p>`;
     } else if (path === '/resources/resume-templates') {
       title = "Resume Templates";
-      description = "Professional resume templates to help you stand out.";
-      bodyContent = `<h1>Resume Templates</h1><p>Professional, ATS-friendly resume templates designed to help you land your dream job.</p>`;
+      description = "Professional resume templates tailored for railway industry positions. Download free templates to create a standout resume.";
+      bodyContent = `<h1>Resume Templates</h1>
+        <p>Professional resume templates tailored for railway industry positions.</p>`;
     } else if (path === '/resources/interview-tips') {
       title = "Interview Tips";
-      description = "Expert interview preparation tips and strategies.";
-      bodyContent = `<h1>Interview Tips</h1><p>Comprehensive interview preparation guides, common questions, and expert strategies.</p>`;
+      description = "Video tutorials and articles to help you ace your railway job interviews. Expert tips and strategies for interview success.";
+      bodyContent = `<h1>Interview Tips</h1>
+        <p>Video tutorials and articles to help you ace your railway job interviews.</p>`;
     } else if (path === '/resources/industry-reports') {
       title = "Industry Reports";
-      description = "In-depth industry reports and market analysis.";
-      bodyContent = `<h1>Industry Reports</h1><p>Stay ahead with our in-depth industry analysis, salary trends, and job market reports.</p>`;
+      description = "Latest reports and insights about the railway industry trends. Download comprehensive industry analysis and market research.";
+      bodyContent = `<h1>Industry Reports</h1>
+        <p>Latest reports and insights about the railway industry trends.</p>`;
     } else if (path === '/contact') {
       title = "Contact Us";
-      description = "Get in touch with Opp Avenue. We're here to help with your career journey.";
-      bodyContent = `<h1>Contact Us</h1><p>Have questions? Reach out to us at contact@oppavenue.com</p>`;
+      description = "Have questions or need assistance? Contact the Opp Avenue team. We're here to help you find your dream job.";
+      bodyContent = `
+        <h1>Contact Us</h1>
+        <p>Have questions or need assistance? We're here to help. Reach out to us through any of the channels below.</p>
+        <section>
+          <h2>Send us a message</h2>
+          <p>Fill out the form on our website and we'll get back to you soon.</p>
+        </section>
+        <section>
+          <h2>Email Us</h2>
+          <p>Send us an email anytime: <a href="mailto:contact@oppavenue.com">contact@oppavenue.com</a></p>
+        </section>
+        <section>
+          <h2>Call Us</h2>
+          <p>Mon-Fri from 9am to 6pm: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+        </section>
+        <section>
+          <h2>Visit Us</h2>
+          <p>123 Business Street, Suite 100, New York, NY 10001</p>
+        </section>`;
     } else if (path === '/privacy-policy') {
       title = "Privacy Policy";
-      description = "Read Opp Avenue's privacy policy to understand how we collect, use, and protect your information.";
-      bodyContent = `<h1>Privacy Policy</h1><p>Your privacy is important to us. This policy outlines how we handle your data.</p>`;
+      description = "Learn how Opp Avenue handles and protects your personal data. Our commitment to your privacy and data security.";
+      bodyContent = `
+        <h1>Privacy Policy</h1>
+        <section>
+          <h2>1. Introduction</h2>
+          <p>Welcome to Opp Avenue. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights.</p>
+        </section>
+        <section>
+          <h2>2. Information We Collect</h2>
+          <p>We may collect, use, store and transfer different kinds of personal data about you:</p>
+          <ul>
+            <li>Identity Data: includes first name, last name, username or similar identifier</li>
+            <li>Contact Data: includes email address and telephone numbers</li>
+            <li>Technical Data: includes internet protocol (IP) address, browser type and version</li>
+            <li>Usage Data: includes information about how you use our website and services</li>
+          </ul>
+        </section>
+        <section>
+          <h2>3. How We Use Your Information</h2>
+          <p>We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:</p>
+          <ul>
+            <li>To provide and maintain our service</li>
+            <li>To notify you about changes to our service</li>
+            <li>To provide customer support</li>
+            <li>To gather analysis or valuable information to improve our service</li>
+            <li>To monitor the usage of our service</li>
+          </ul>
+        </section>
+        <section>
+          <h2>4. Data Security</h2>
+          <p>We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed.</p>
+        </section>
+        <section>
+          <h2>5. Your Legal Rights</h2>
+          <p>Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:</p>
+          <ul>
+            <li>Request access to your personal data</li>
+            <li>Request correction of your personal data</li>
+            <li>Request erasure of your personal data</li>
+            <li>Object to processing of your personal data</li>
+            <li>Request restriction of processing your personal data</li>
+          </ul>
+        </section>
+        <section>
+          <h2>6. Contact Us</h2>
+          <p>If you have any questions about this privacy policy, please contact us at privacy@oppavenue.com</p>
+        </section>`;
     } else if (path === '/terms') {
       title = "Terms & Conditions";
-      description = "Read Opp Avenue's terms and conditions for using our platform.";
-      bodyContent = `<h1>Terms &amp; Conditions</h1><p>Please read these terms carefully before using our platform.</p>`;
+      description = "Read the terms and conditions for using Opp Avenue. Understand your rights and responsibilities as a user.";
+      bodyContent = `
+        <h1>Terms and Conditions</h1>
+        <section>
+          <h2>1. Agreement to Terms</h2>
+          <p>By accessing and using Opp Avenue, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these terms, please do not use our services.</p>
+        </section>
+        <section>
+          <h2>2. Use License</h2>
+          <p>Permission is granted to temporarily access the materials on Opp Avenue for personal, non-commercial transitory viewing only. Under this license you may not:</p>
+          <ul>
+            <li>Modify or copy the materials</li>
+            <li>Use the materials for any commercial purpose or for any public display</li>
+            <li>Attempt to reverse engineer any software contained on Opp Avenue</li>
+            <li>Remove any copyright or other proprietary notations from the materials</li>
+          </ul>
+        </section>
+        <section>
+          <h2>3. User Accounts</h2>
+          <p>When you create an account with us, you must provide accurate, complete, and current information at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account.</p>
+        </section>
+        <section>
+          <h2>4. Job Listings</h2>
+          <p>Opp Avenue provides a platform for employers to post job listings and for job seekers to find opportunities. We do not guarantee the accuracy, completeness, or quality of any job listings. Users are responsible for verifying the legitimacy of job postings.</p>
+        </section>
+        <section>
+          <h2>5. Prohibited Uses</h2>
+          <p>You may not use Opp Avenue:</p>
+          <ul>
+            <li>For any unlawful purpose or to solicit others to perform unlawful acts</li>
+            <li>To violate any international, federal, provincial or state regulations, rules, laws, or local ordinances</li>
+            <li>To infringe upon or violate our intellectual property rights or the intellectual property rights of others</li>
+            <li>To harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate</li>
+            <li>To submit false or misleading information</li>
+          </ul>
+        </section>
+        <section>
+          <h2>6. Limitation of Liability</h2>
+          <p>In no event shall Opp Avenue or its suppliers be liable for any damages arising out of the use or inability to use the materials on Opp Avenue.</p>
+        </section>
+        <section>
+          <h2>7. Modifications</h2>
+          <p>Opp Avenue may revise these terms of service at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.</p>
+        </section>
+        <section>
+          <h2>8. Contact Information</h2>
+          <p>If you have any questions about these Terms and Conditions, please contact us at legal@oppavenue.com</p>
+        </section>`;
     } else if (path === '/disclaimer') {
       title = "Disclaimer";
-      description = "Read Opp Avenue's disclaimer regarding the information provided on our platform.";
-      bodyContent = `<h1>Disclaimer</h1><p>Important information about the content on our platform.</p>`;
+      description = "Important disclaimers and notices about using Opp Avenue job portal.";
+      bodyContent = `
+        <h1>Disclaimer</h1>
+        <section>
+          <h2>General Information</h2>
+          <p>The information provided by Opp Avenue on our website is for general informational purposes only. All information on the site is provided in good faith, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site.</p>
+        </section>
+        <section>
+          <h2>External Links Disclaimer</h2>
+          <p>Our website may contain links to other websites or content belonging to or originating from third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.</p>
+          <p>We do not warrant, endorse, guarantee, or assume responsibility for the accuracy or reliability of any information offered by third-party websites linked through the site.</p>
+        </section>
+        <section>
+          <h2>Job Listings Disclaimer</h2>
+          <p>Opp Avenue acts as a platform connecting job seekers with employers. We do not:</p>
+          <ul>
+            <li>Verify the accuracy of job postings</li>
+            <li>Guarantee the legitimacy of employers or job offers</li>
+            <li>Endorse any particular employer or job listing</li>
+            <li>Guarantee employment or interview opportunities</li>
+            <li>Take responsibility for the hiring process or employment outcomes</li>
+          </ul>
+          <p>Users are advised to conduct their own due diligence and research before applying for any position or engaging with any employer through our platform.</p>
+        </section>
+        <section>
+          <h2>Professional Disclaimer</h2>
+          <p>The site cannot and does not contain professional career advice. The career information is provided for general informational and educational purposes only and is not a substitute for professional advice.</p>
+        </section>
+        <section>
+          <h2>Errors and Omissions Disclaimer</h2>
+          <p>While we have made every attempt to ensure that the information contained in this site has been obtained from reliable sources, Opp Avenue is not responsible for any errors or omissions. All information is provided "as is", with no guarantee of completeness, accuracy, timeliness or of the results obtained from the use of this information.</p>
+        </section>
+        <section>
+          <h2>Fair Use Disclaimer</h2>
+          <p>This site may contain copyrighted material, the use of which has not always been specifically authorized by the copyright owner. We believe this constitutes a "fair use" of any such copyrighted material as provided for in section 107 of the US Copyright Law.</p>
+        </section>
+        <section>
+          <h2>Contact Us</h2>
+          <p>If you have any questions about this Disclaimer, please contact us at legal@oppavenue.com</p>
+        </section>`;
     } else if (path === '/cookie-policy') {
       title = "Cookie Policy";
-      description = "Learn about how Opp Avenue uses cookies to improve your browsing experience.";
-      bodyContent = `<h1>Cookie Policy</h1><p>This policy explains how we use cookies on our platform.</p>`;
+      description = "Learn how Opp Avenue uses cookies to enhance your browsing experience.";
+      bodyContent = `
+        <h1>Cookie Policy</h1>
+        <section>
+          <h2>What Are Cookies</h2>
+          <p>Cookies are small pieces of text sent to your web browser by a website you visit. A cookie file is stored in your web browser and allows the website or a third-party to recognize you and make your next visit easier and the website more useful to you.</p>
+          <p>Cookies can be "persistent" or "session" cookies. Persistent cookies remain on your personal computer or mobile device when you go offline, while session cookies are deleted as soon as you close your web browser.</p>
+        </section>
+        <section>
+          <h2>How We Use Cookies</h2>
+          <p>When you use and access Opp Avenue, we may place a number of cookies files in your web browser. We use cookies for the following purposes:</p>
+          <ul>
+            <li>To enable certain functions of the website</li>
+            <li>To provide analytics</li>
+            <li>To store your preferences</li>
+            <li>To enable advertisements delivery, including behavioral advertising</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Types of Cookies We Use</h2>
+          <h3>Essential Cookies</h3>
+          <p>These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services.</p>
+          <h3>Analytics Cookies</h3>
+          <p>These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.</p>
+          <h3>Functionality Cookies</h3>
+          <p>These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or by third party providers whose services we have added to our pages.</p>
+          <h3>Advertising Cookies</h3>
+          <p>These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites.</p>
+        </section>
+        <section>
+          <h2>Third-Party Cookies</h2>
+          <p>In addition to our own cookies, we may also use various third-party cookies to report usage statistics of the website, deliver advertisements on and through the website, and so on.</p>
+        </section>
+        <section>
+          <h2>Your Choices Regarding Cookies</h2>
+          <p>If you'd like to delete cookies or instruct your web browser to delete or refuse cookies, please visit the help pages of your web browser. Please note, however, that if you delete cookies or refuse to accept them, you might not be able to use all of the features we offer.</p>
+        </section>
+        <section>
+          <h2>More Information</h2>
+          <p>For more information about cookies and how we use them, please contact us at privacy@oppavenue.com</p>
+        </section>`;
     } else if (path === '/advertise') {
       title = "Advertise with Us";
       description = "Reach over 1 lakh daily users by advertising on Opp Avenue. Connect with professionals actively seeking career opportunities.";
