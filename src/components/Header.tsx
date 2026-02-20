@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search, Filter, MapPin, Briefcase, GraduationCap, IndianRupee, Building, Users, Home, Linkedin, MessageCircle, Phone, Mail, X, Menu, Code, Layers, Building2, Award, DollarSign } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -43,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({
   const [showFilters, setShowFilters] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [manualToggle, setManualToggle] = useState(false);
+  const [filterSearchQueries, setFilterSearchQueries] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -313,6 +314,52 @@ const Header: React.FC<HeaderProps> = ({
     return Object.values(activeFilters).reduce((count, filters) => count + filters.length, 0);
   };
 
+  const renderFilterDropdownContent = (filter: typeof filterOptions[0], textSize: string = 'text-xs') => {
+    const searchQuery = filterSearchQueries[filter.key] || '';
+    const filteredOptions = searchQuery
+      ? filter.options.filter(opt => opt.toLowerCase().includes(searchQuery.toLowerCase()))
+      : filter.options;
+
+    return (
+      <>
+        {filter.options.length > 5 && (
+          <div className="p-2 border-b border-border sticky top-0 bg-card z-10">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder={`Search ${filter.label.toLowerCase()}...`}
+                value={searchQuery}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setFilterSearchQueries(prev => ({ ...prev, [filter.key]: e.target.value }));
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+                className={`w-full pl-7 pr-2 py-1.5 ${textSize} rounded-md border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary`}
+              />
+            </div>
+          </div>
+        )}
+        {filteredOptions.length > 0 ? (
+          filteredOptions.map((option) => (
+            <DropdownMenuCheckboxItem
+              key={option}
+              checked={activeFilters[filter.key].includes(option)}
+              onCheckedChange={() => handleFilterChange(filter.key, option)}
+              className={textSize}
+            >
+              {option}
+            </DropdownMenuCheckboxItem>
+          ))
+        ) : (
+          <div className={`px-2 py-2 ${textSize} text-muted-foreground`}>
+            {searchQuery ? 'No matches found' : 'No options available'}
+          </div>
+        )}
+      </>
+    );
+  };
+
   return (
     <header className="sticky-header border-none">
       {/* Social Media Links - Mobile Top (Home Page Only) */}
@@ -539,21 +586,10 @@ const Header: React.FC<HeaderProps> = ({
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
-                      {filter.options.length > 0 ? (
-                        filter.options.map((option) => (
-                          <DropdownMenuCheckboxItem
-                            key={option}
-                            checked={activeFilters[filter.key].includes(option)}
-                            onCheckedChange={() => handleFilterChange(filter.key, option)}
-                            className="text-xs"
-                          >
-                            {option}
-                          </DropdownMenuCheckboxItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
-                      )}
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto bg-card" align="center"
+                      onCloseAutoFocus={() => setFilterSearchQueries(prev => ({ ...prev, [filter.key]: '' }))}
+                    >
+                      {renderFilterDropdownContent(filter, 'text-xs')}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ))}
@@ -580,21 +616,10 @@ const Header: React.FC<HeaderProps> = ({
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
-                      {filter.options.length > 0 ? (
-                        filter.options.map((option) => (
-                          <DropdownMenuCheckboxItem
-                            key={option}
-                            checked={activeFilters[filter.key].includes(option)}
-                            onCheckedChange={() => handleFilterChange(filter.key, option)}
-                            className="text-xs"
-                          >
-                            {option}
-                          </DropdownMenuCheckboxItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
-                      )}
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto bg-card" align="center"
+                      onCloseAutoFocus={() => setFilterSearchQueries(prev => ({ ...prev, [filter.key]: '' }))}
+                    >
+                      {renderFilterDropdownContent(filter, 'text-xs')}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ))}
@@ -621,21 +646,10 @@ const Header: React.FC<HeaderProps> = ({
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto" align="center">
-                      {filter.options.length > 0 ? (
-                        filter.options.map((option) => (
-                          <DropdownMenuCheckboxItem
-                            key={option}
-                            checked={activeFilters[filter.key].includes(option)}
-                            onCheckedChange={() => handleFilterChange(filter.key, option)}
-                            className="text-xs"
-                          >
-                            {option}
-                          </DropdownMenuCheckboxItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-2 text-xs text-muted-foreground">No options</div>
-                      )}
+                    <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto bg-card" align="center"
+                      onCloseAutoFocus={() => setFilterSearchQueries(prev => ({ ...prev, [filter.key]: '' }))}
+                    >
+                      {renderFilterDropdownContent(filter, 'text-xs')}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ))}
@@ -679,21 +693,10 @@ const Header: React.FC<HeaderProps> = ({
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-52 max-h-64 overflow-y-auto" align="center">
-                      {filter.options.length > 0 ? (
-                        filter.options.map((option) => (
-                          <DropdownMenuCheckboxItem
-                            key={option}
-                            checked={activeFilters[filter.key].includes(option)}
-                            onCheckedChange={() => handleFilterChange(filter.key, option)}
-                            className="text-sm"
-                          >
-                            {option}
-                          </DropdownMenuCheckboxItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-2 text-sm text-muted-foreground">No options</div>
-                      )}
+                    <DropdownMenuContent className="w-52 max-h-64 overflow-y-auto bg-card" align="center"
+                      onCloseAutoFocus={() => setFilterSearchQueries(prev => ({ ...prev, [filter.key]: '' }))}
+                    >
+                      {renderFilterDropdownContent(filter, 'text-sm')}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ))}
@@ -737,23 +740,10 @@ const Header: React.FC<HeaderProps> = ({
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center">
-                      {filter.options.length > 0 ? (
-                        filter.options.map((option) => (
-                          <DropdownMenuCheckboxItem
-                            key={option}
-                            checked={activeFilters[filter.key].includes(option)}
-                            onCheckedChange={() => handleFilterChange(filter.key, option)}
-                            className="text-sm"
-                          >
-                            {option}
-                          </DropdownMenuCheckboxItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-2 text-sm text-muted-foreground">
-                          No options available
-                        </div>
-                      )}
+                    <DropdownMenuContent className="w-56 max-h-64 overflow-y-auto bg-card border-border shadow-lg" align="center"
+                      onCloseAutoFocus={() => setFilterSearchQueries(prev => ({ ...prev, [filter.key]: '' }))}
+                    >
+                      {renderFilterDropdownContent(filter, 'text-sm')}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ))}
