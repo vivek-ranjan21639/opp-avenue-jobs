@@ -472,6 +472,7 @@ export type Database = {
           description: string | null
           human_id: string | null
           id: string
+          jd_file_url: string | null
           job_type: Database["public"]["Enums"]["job_type_enum"] | null
           qualifications: string[] | null
           responsibilities: string[] | null
@@ -481,6 +482,7 @@ export type Database = {
           title: string
           updated_at: string
           updated_by: string | null
+          vacancies: number | null
           work_mode: Database["public"]["Enums"]["work_mode_enum"] | null
         }
         Insert: {
@@ -494,6 +496,7 @@ export type Database = {
           description?: string | null
           human_id?: string | null
           id?: string
+          jd_file_url?: string | null
           job_type?: Database["public"]["Enums"]["job_type_enum"] | null
           qualifications?: string[] | null
           responsibilities?: string[] | null
@@ -503,6 +506,7 @@ export type Database = {
           title: string
           updated_at?: string
           updated_by?: string | null
+          vacancies?: number | null
           work_mode?: Database["public"]["Enums"]["work_mode_enum"] | null
         }
         Update: {
@@ -516,6 +520,7 @@ export type Database = {
           description?: string | null
           human_id?: string | null
           id?: string
+          jd_file_url?: string | null
           job_type?: Database["public"]["Enums"]["job_type_enum"] | null
           qualifications?: string[] | null
           responsibilities?: string[] | null
@@ -525,6 +530,7 @@ export type Database = {
           title?: string
           updated_at?: string
           updated_by?: string | null
+          vacancies?: number | null
           work_mode?: Database["public"]["Enums"]["work_mode_enum"] | null
         }
         Relationships: [
