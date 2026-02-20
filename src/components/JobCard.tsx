@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Clock, IndianRupee, Building } from 'lucide-react';
+import { MapPin, Clock, IndianRupee, Building, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export interface Job {
@@ -21,6 +21,7 @@ export interface Job {
   applicationLink?: string;
   locations?: any[];
   work_mode?: string;
+  vacancies?: number | null;
 }
 
 interface LocationData {
@@ -63,22 +64,24 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
 
       {/* Job Details */}
       <div className="space-y-3 mb-4">
-        {/* Row 1: Work Mode */}
-        {job.work_mode && (
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">{job.work_mode}</Badge>
-          </div>
-        )}
+        {/* Row 1: Work Mode + Vacancies */}
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary" className="text-xs">{job.work_mode || 'NA'}</Badge>
+          <Badge variant="outline" className="text-xs flex items-center gap-1">
+            <Users className="w-3 h-3" />
+            {job.vacancies ? `${job.vacancies} ${job.vacancies === 1 ? 'vacancy' : 'vacancies'}` : 'NA'}
+          </Badge>
+        </div>
 
         {/* Row 2: Location and Salary */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
-            <span>{job.location}</span>
+            <span>{job.location || 'NA'}</span>
           </div>
           <div className="flex items-center gap-1">
             <IndianRupee className="w-4 h-4" />
-            <span>{job.salary}</span>
+            <span>{job.salary || 'NA'}</span>
           </div>
         </div>
 
@@ -86,10 +89,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
         <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-hidden">
           <div className="flex items-center gap-1 shrink-0">
             <Clock className="w-4 h-4 shrink-0" />
-            <span className="whitespace-nowrap">{job.postedTime}</span>
+            <span className="whitespace-nowrap">{job.postedTime || 'NA'}</span>
           </div>
-          <Badge variant="outline" className="text-xs whitespace-nowrap shrink-0">{job.type}</Badge>
-          <Badge variant="outline" className="text-xs whitespace-nowrap shrink-0">{job.experience}</Badge>
+          <Badge variant="outline" className="text-xs whitespace-nowrap shrink-0">{job.type || 'NA'}</Badge>
+          <Badge variant="outline" className="text-xs whitespace-nowrap shrink-0">{job.experience || 'NA'}</Badge>
         </div>
       </div>
 

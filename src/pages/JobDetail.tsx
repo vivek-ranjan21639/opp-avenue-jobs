@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, IndianRupee, Building, Users, Calendar, ExternalLink, Send, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header, { FilterState } from '@/components/Header';
@@ -166,7 +166,7 @@ const JobDetail = () => {
               </div>
 
               {/* Job Overview Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
                 <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-xl">
                   <MapPin className="w-5 h-5 text-primary" />
                   <div>
@@ -178,7 +178,7 @@ const JobDetail = () => {
                         ))}
                       </div>
                     ) : (
-                      <p className="font-medium">{job.location}</p>
+                      <p className="font-medium">NA</p>
                     )}
                     {job.work_mode && (
                       <Badge variant="secondary" className="mt-1 text-xs">
@@ -192,7 +192,7 @@ const JobDetail = () => {
                   <IndianRupee className="w-5 h-5 text-success" />
                   <div>
                     <p className="text-sm text-muted-foreground">Salary</p>
-                    <p className="font-medium">{job.salary}</p>
+                    <p className="font-medium">{job.salary || 'NA'}</p>
                   </div>
                 </div>
                 
@@ -200,7 +200,7 @@ const JobDetail = () => {
                   <Clock className="w-5 h-5 text-accent" />
                   <div>
                     <p className="text-sm text-muted-foreground">Job Type</p>
-                    <p className="font-medium">{job.type}</p>
+                    <p className="font-medium">{job.type || 'NA'}</p>
                   </div>
                 </div>
                 
@@ -208,7 +208,15 @@ const JobDetail = () => {
                   <Users className="w-5 h-5 text-purple-500" />
                   <div>
                     <p className="text-sm text-muted-foreground">Experience</p>
-                    <p className="font-medium">{job.experience}</p>
+                    <p className="font-medium">{job.experience || 'NA'}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-xl">
+                  <Users className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Vacancies</p>
+                    <p className="font-medium">{job.vacancies || 'NA'}</p>
                   </div>
                 </div>
               </div>
@@ -314,6 +322,16 @@ const JobDetail = () => {
                   >
                     <ExternalLink className="w-4 h-4" />
                     View Company
+                  </Button>
+                )}
+                {job.jd_file_url && (
+                  <Button 
+                    onClick={() => window.open(job.jd_file_url, '_blank')}
+                    variant="outline" 
+                    className="rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download JD
                   </Button>
                 )}
               </div>
