@@ -10,9 +10,27 @@ import BlogPostingSchema from "@/components/seo/BlogPostingSchema";
 import PageLayout from "@/components/PageLayout";
 
 const PURIFY_CONFIG = {
-  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'span', 'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'hr', 'sup', 'sub', 'figure', 'figcaption'],
-  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id', 'width', 'height', 'loading'],
+  ALLOWED_TAGS: [
+    'p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote',
+    'img', 'span', 'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+    'pre', 'code', 'hr', 'sup', 'sub', 'figure', 'figcaption',
+    // Rich media tags
+    'video', 'audio', 'source', 'iframe', 'picture', 'track',
+  ],
+  ALLOWED_ATTR: [
+    'href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id',
+    'width', 'height', 'loading',
+    // Media attributes
+    'controls', 'autoplay', 'loop', 'muted', 'preload', 'poster',
+    'type', 'kind', 'srclang', 'label', 'default',
+    // Iframe attributes
+    'frameborder', 'allowfullscreen', 'allow', 'sandbox',
+    'style',
+  ],
   ALLOW_DATA_ATTR: false,
+  ADD_TAGS: ['iframe'],
+  ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
 };
 
 const BlogDetail = () => {

@@ -282,3 +282,54 @@
     }
   }
 }
+
+/* Blog rich media content styles */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.prose iframe {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: none;
+}
+
+.prose video {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+.prose audio {
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.prose figure {
+  margin: 1.5rem 0;
+}
+
+.prose figure figcaption {
+  text-align: center;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.5rem;
+}
+
+.prose a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.prose a:hover {
+  color: hsl(var(--primary-hover));
+}
