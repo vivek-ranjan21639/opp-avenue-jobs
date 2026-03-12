@@ -1,80 +1,43 @@
 
 
-# Enable Netlify Prerender Extension (Zero Build Impact)
+## Plan: DOCX-to-HTML Blog Upload Pipeline
 
-## Current Problem
+### How It Works
 
-The SSR checker shows a blank `<div id="root"></div>` because your site is a client-side SPA. Crawlers receive empty HTML. The `window.prerenderReady` signal is already implemented in your code but nothing is consuming it.
+You upload a `.docx` file to a Supabase Storage bucket. A Supabase Edge Function receives the file, converts it to HTML using the **mammoth** library, and stores the resulting HTML in the blog's `content` column. This way you write blogs in Word and the system handles conversion automatically.
 
-## Solution: Netlify Prerender Extension (Runtime, Not Build-Time)
+### Architecture
 
-Netlify has a **built-in Prerender extension** that works at runtime -- it does NOT slow down your build at all. When a crawler/bot requests a page, Netlify intercepts the request, renders it in a headless browser, waits for `window.prerenderReady === true`, and serves the fully rendered HTML. Regular users still get the fast SPA.
-
-Your code already has everything needed (`window.prerenderReady`, `usePrerenderReady` hook, `PageLayout` wrapper). We just need to enable it and make a few small tweaks.
-
-## Steps
-
-### 1. Enable Netlify Prerender Extension (Manual -- One Time)
-
-Go to your Netlify dashboard:
-1. Visit https://app.netlify.com/extensions/prerender
-2. Install the extension to your team
-3. Go to your project > Extensions > Prerender > **Enable prerendering**
-4. Save and re-deploy
-
-This is the only manual step. Once enabled, it works for ALL pages automatically -- current and future.
-
-### 2. Small Code Fixes
-
-**a) Fix `index.html` -- Add `<meta name="fragment" content="!">` tag**
-
-This meta tag tells crawlers that this page supports the AJAX crawling scheme and has pre-rendered content available. Netlify's prerender extension looks for this.
-
-**b) Update `netlify.toml` -- Add bot detection header**
-
-Add a custom header to help the prerender extension identify cacheable responses:
-
-```
-[build.environment]
-  PRERENDER_ENABLED = "true"
+```text
+Upload DOCX → Supabase Storage (blog-docs bucket)
+                    ↓
+         Edge Function "convert-docx"
+           (mammoth.js: DOCX → HTML)
+                    ↓
+         UPDATE blogs SET content = <html>
 ```
 
-**c) Verify `usePrerenderReady` reset logic**
+### Implementation Steps
 
-The current hook resets `window.prerenderReady = false` on mount. For prerendering (where the bot loads the page fresh each time), this is correct. No change needed.
+1. **Create a `blog-docs` storage bucket** (public: false) via SQL migration for uploading DOCX files.
 
-### 3. No Build-Time Prerendering Required
+2. **Create edge function `convert-docx`**
+   - Accepts `{ blog_id, file_path }` in the request body
+   - Downloads the DOCX from Storage using the service role key
+   - Converts to HTML using `mammoth` (npm library, works in Deno)
+   - Updates `blogs.content` with the generated HTML
+   - Returns success/error response
 
-The Netlify Prerender extension handles everything at the edge/runtime:
-- No Puppeteer in your build
-- No build time increase
-- Works for dynamic routes (`/job/:id`, `/blog/:slug`) automatically
-- Works for any new pages you add (as long as they use `PageLayout`)
-- Cached results are served for subsequent bot requests
+3. **No frontend changes needed for blog rendering** — the existing `BlogDetail.tsx` already renders HTML content with DOMPurify sanitization and rich media support.
 
-## Files to Modify
+### Technical Details
 
-| File | Change |
-|------|--------|
-| `index.html` | Add `<meta name="fragment" content="!">` in `<head>` |
-| `netlify.toml` | Add `PRERENDER_ENABLED` env var for clarity |
+- **mammoth.js** is the standard DOCX→HTML converter. It preserves headings, lists, bold/italic, links, tables, and images. Images embedded in the DOCX are extracted as base64 data URIs in the HTML.
+- The edge function uses `SUPABASE_SERVICE_ROLE_KEY` to read from storage and update the blogs table, bypassing RLS.
+- Blog authors upload DOCX via Supabase Dashboard (Storage → blog-docs) or any admin interface, then call the edge function with the blog ID and file path.
 
-## What Happens After This
+### Limitations to Be Aware Of
 
-- Crawlers request any page (e.g., `/about`, `/job/123`, `/blog/my-post`)
-- Netlify detects it's a bot via User-Agent
-- Netlify's serverless function renders the page in a headless browser
-- It waits for `window.prerenderReady === true` (your existing signal)
-- Returns fully rendered HTML to the crawler
-- Caches the result for 24-48 hours
-- Regular users still get the fast SPA experience
-
-## Future-Proof
-
-When you add new resource categories, blogs, or any page:
-1. Wrap it in `<PageLayout>` (already your pattern)
-2. Add the route in `App.tsx`
-3. Done -- Netlify prerender handles it automatically at runtime
-
-No build scripts, no route discovery, no Puppeteer -- the prerender extension handles all bot rendering on-demand.
+- Complex Word formatting (custom fonts, colors, text boxes) may not convert perfectly — mammoth focuses on semantic HTML.
+- Embedded images become base64 data URIs, which increases HTML size. A future enhancement could upload images to storage separately.
 
