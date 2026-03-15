@@ -62,6 +62,41 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_processing_log: {
+        Row: {
+          blog_id: string
+          error_message: string | null
+          file_path: string
+          id: string
+          processed_at: string
+          status: string
+        }
+        Insert: {
+          blog_id: string
+          error_message?: string | null
+          file_path: string
+          id?: string
+          processed_at?: string
+          status?: string
+        }
+        Update: {
+          blog_id?: string
+          error_message?: string | null
+          file_path?: string
+          id?: string
+          processed_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_processing_log_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_tags: {
         Row: {
           blog_id: string
@@ -156,6 +191,7 @@ export type Database = {
       }
       companies: {
         Row: {
+          career_page_url: string | null
           contact_email: string | null
           created_at: string
           culture_summary: string | null
@@ -172,6 +208,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          career_page_url?: string | null
           contact_email?: string | null
           created_at?: string
           culture_summary?: string | null
@@ -188,6 +225,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          career_page_url?: string | null
           contact_email?: string | null
           created_at?: string
           culture_summary?: string | null
@@ -336,6 +374,41 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jd_processing_log: {
+        Row: {
+          error_message: string | null
+          file_path: string
+          id: string
+          processed_at: string
+          staging_job_id: string | null
+          status: string
+        }
+        Insert: {
+          error_message?: string | null
+          file_path: string
+          id?: string
+          processed_at?: string
+          staging_job_id?: string | null
+          status?: string
+        }
+        Update: {
+          error_message?: string | null
+          file_path?: string
+          id?: string
+          processed_at?: string
+          staging_job_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jd_processing_log_staging_job_id_fkey"
+            columns: ["staging_job_id"]
+            isOneToOne: false
+            referencedRelation: "staging_jobs"
             referencedColumns: ["id"]
           },
         ]
@@ -567,6 +640,41 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_processing_log: {
+        Row: {
+          error_message: string | null
+          file_path: string
+          id: string
+          processed_at: string
+          resource_id: string
+          status: string
+        }
+        Insert: {
+          error_message?: string | null
+          file_path: string
+          id?: string
+          processed_at?: string
+          resource_id: string
+          status?: string
+        }
+        Update: {
+          error_message?: string | null
+          file_path?: string
+          id?: string
+          processed_at?: string
+          resource_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_processing_log_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resources: {
         Row: {
           content_text: string | null
@@ -574,6 +682,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           display_order: number | null
+          doc_file_path: string | null
           external_url: string | null
           file_url: string | null
           highlight_type:
@@ -593,6 +702,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           display_order?: number | null
+          doc_file_path?: string | null
           external_url?: string | null
           file_url?: string | null
           highlight_type?:
@@ -612,6 +722,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           display_order?: number | null
+          doc_file_path?: string | null
           external_url?: string | null
           file_url?: string | null
           highlight_type?:
@@ -631,6 +742,53 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_jobs: {
+        Row: {
+          approved_at: string | null
+          company_id: string
+          created_at: string
+          file_path: string | null
+          id: string
+          raw_content: string | null
+          scraped_at: string
+          source_url: string
+          status: Database["public"]["Enums"]["scraped_job_status"]
+          title: string
+        }
+        Insert: {
+          approved_at?: string | null
+          company_id: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          raw_content?: string | null
+          scraped_at?: string
+          source_url: string
+          status?: Database["public"]["Enums"]["scraped_job_status"]
+          title: string
+        }
+        Update: {
+          approved_at?: string | null
+          company_id?: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          raw_content?: string | null
+          scraped_at?: string
+          source_url?: string
+          status?: Database["public"]["Enums"]["scraped_job_status"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -658,6 +816,104 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      staging_jobs: {
+        Row: {
+          application_email: string | null
+          application_link: string | null
+          approved_at: string | null
+          created_at: string
+          currency: string | null
+          deadline: string | null
+          description: string | null
+          file_path: string | null
+          id: string
+          job_type: string | null
+          parsed_benefits: Json | null
+          parsed_company_name: string | null
+          parsed_culture_points: Json | null
+          parsed_domains: Json | null
+          parsed_eligibility: Json | null
+          parsed_locations: Json | null
+          parsed_skills: Json | null
+          qualifications: string[] | null
+          responsibilities: string[] | null
+          review_notes: string | null
+          review_status: Database["public"]["Enums"]["staging_review_status"]
+          salary_max: number | null
+          salary_min: number | null
+          source_scraped_job_id: string | null
+          title: string
+          vacancies: number | null
+          work_mode: string | null
+        }
+        Insert: {
+          application_email?: string | null
+          application_link?: string | null
+          approved_at?: string | null
+          created_at?: string
+          currency?: string | null
+          deadline?: string | null
+          description?: string | null
+          file_path?: string | null
+          id?: string
+          job_type?: string | null
+          parsed_benefits?: Json | null
+          parsed_company_name?: string | null
+          parsed_culture_points?: Json | null
+          parsed_domains?: Json | null
+          parsed_eligibility?: Json | null
+          parsed_locations?: Json | null
+          parsed_skills?: Json | null
+          qualifications?: string[] | null
+          responsibilities?: string[] | null
+          review_notes?: string | null
+          review_status?: Database["public"]["Enums"]["staging_review_status"]
+          salary_max?: number | null
+          salary_min?: number | null
+          source_scraped_job_id?: string | null
+          title: string
+          vacancies?: number | null
+          work_mode?: string | null
+        }
+        Update: {
+          application_email?: string | null
+          application_link?: string | null
+          approved_at?: string | null
+          created_at?: string
+          currency?: string | null
+          deadline?: string | null
+          description?: string | null
+          file_path?: string | null
+          id?: string
+          job_type?: string | null
+          parsed_benefits?: Json | null
+          parsed_company_name?: string | null
+          parsed_culture_points?: Json | null
+          parsed_domains?: Json | null
+          parsed_eligibility?: Json | null
+          parsed_locations?: Json | null
+          parsed_skills?: Json | null
+          qualifications?: string[] | null
+          responsibilities?: string[] | null
+          review_notes?: string | null
+          review_status?: Database["public"]["Enums"]["staging_review_status"]
+          salary_max?: number | null
+          salary_min?: number | null
+          source_scraped_job_id?: string | null
+          title?: string
+          vacancies?: number | null
+          work_mode?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staging_jobs_source_scraped_job_id_fkey"
+            columns: ["source_scraped_job_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       static_routes: {
         Row: {
@@ -737,6 +993,8 @@ export type Database = {
       job_type_enum: "Full-time" | "Part-time" | "Internship" | "Contract"
       resource_highlight_type: "featured" | "new" | "general"
       resource_type: "category" | "resource" | "content"
+      scraped_job_status: "pending" | "approved" | "rejected"
+      staging_review_status: "pending_review" | "approved" | "rejected"
       work_mode_enum: "Remote" | "On-site" | "Hybrid"
     }
     CompositeTypes: {
@@ -871,6 +1129,8 @@ export const Constants = {
       job_type_enum: ["Full-time", "Part-time", "Internship", "Contract"],
       resource_highlight_type: ["featured", "new", "general"],
       resource_type: ["category", "resource", "content"],
+      scraped_job_status: ["pending", "approved", "rejected"],
+      staging_review_status: ["pending_review", "approved", "rejected"],
       work_mode_enum: ["Remote", "On-site", "Hybrid"],
     },
   },
