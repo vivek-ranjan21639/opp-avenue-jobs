@@ -50,9 +50,7 @@ const IndustryReports = () => {
                   </CardHeader>
                   <CardContent>
                     {report.content_text && (
-                      <div className="mb-4">
-                        <p className="text-muted-foreground">{report.content_text}</p>
-                      </div>
+                      <div className="prose prose-sm max-w-none text-muted-foreground mb-4" dangerouslySetInnerHTML={{ __html: report.content_text }} />
                     )}
                     {report.file_url && (
                       <Button className="gap-2" asChild>

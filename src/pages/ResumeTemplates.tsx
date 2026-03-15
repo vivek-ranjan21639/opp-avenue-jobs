@@ -39,9 +39,7 @@ const ResumeTemplates = () => {
                   </CardHeader>
                   <CardContent>
                     {template.content_text && (
-                      <div className="mb-4">
-                        <p className="text-muted-foreground">{template.content_text}</p>
-                      </div>
+                      <div className="prose prose-sm max-w-none text-muted-foreground mb-4" dangerouslySetInnerHTML={{ __html: template.content_text }} />
                     )}
                     {template.file_url && (
                       <Button className="gap-2" asChild>
