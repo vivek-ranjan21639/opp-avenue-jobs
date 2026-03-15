@@ -18,22 +18,20 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const body = await req.json();
-    const { mode, blog_id, file_path } = body;
+    const { mode, resource_id, file_path } = body;
 
-    // Batch mode: process all new files in blog-docs bucket
     if (mode === "batch") {
       return await handleBatch(supabase);
     }
 
-    // Single mode: process one specific blog
-    if (!blog_id || !file_path) {
+    if (!resource_id || !file_path) {
       return new Response(
-        JSON.stringify({ error: "blog_id and file_path are required (or use mode: 'batch')" }),
+        JSON.stringify({ error: "resource_id and file_path are required (or use mode: 'batch')" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const result = await processFile(supabase, blog_id, file_path);
+    const result = await processFile(supabase, resource_id, file_path);
     return new Response(JSON.stringify(result), {
       status: result.success ? 200 : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -47,18 +45,20 @@ Deno.serve(async (req) => {
   }
 });
 
-async function processFile(supabase: any, blogId: string, filePath: string) {
+async function processFile(supabase: any, resourceId: string, filePath: string) {
   try {
+    // Download DOCX from resource-docs bucket
     const { data: fileData, error: downloadError } = await supabase.storage
-      .from("blog-docs")
+      .from("resource-docs")
       .download(filePath);
 
     if (downloadError || !fileData) {
-      const errMsg = `Failed to download file: ${downloadError?.message}`;
-      await logProcessing(supabase, blogId, filePath, "error", errMsg);
+      const errMsg = `Failed to download: ${downloadError?.message}`;
+      await logProcessing(supabase, resourceId, filePath, "error", errMsg);
       return { success: false, error: errMsg };
     }
 
+    // Convert DOCX to HTML
     const arrayBuffer = await fileData.arrayBuffer();
     const result = await mammoth.convertToHtml(
       { arrayBuffer },
@@ -74,85 +74,70 @@ async function processFile(supabase: any, blogId: string, filePath: string) {
     );
 
     const html = result.value;
-    const warnings = result.messages;
 
-    if (warnings.length > 0) {
-      console.log("Mammoth conversion warnings:", warnings);
-    }
-
+    // Update resource content_text with HTML
     const { error: updateError } = await supabase
-      .from("blogs")
-      .update({ content: html })
-      .eq("id", blogId);
+      .from("resources")
+      .update({ content_text: html })
+      .eq("id", resourceId);
 
     if (updateError) {
-      const errMsg = `Failed to update blog: ${updateError.message}`;
-      await logProcessing(supabase, blogId, filePath, "error", errMsg);
+      const errMsg = `Failed to update resource: ${updateError.message}`;
+      await logProcessing(supabase, resourceId, filePath, "error", errMsg);
       return { success: false, error: errMsg };
     }
 
-    await logProcessing(supabase, blogId, filePath, "success", null);
+    await logProcessing(supabase, resourceId, filePath, "success", null);
     return {
       success: true,
-      message: "Blog content updated from DOCX",
-      warnings: warnings.map((w: { message: string }) => w.message),
+      message: "Resource content updated from DOCX",
       html_length: html.length,
+      warnings: result.messages.map((w: { message: string }) => w.message),
     };
   } catch (err) {
     const errMsg = (err as Error).message;
-    await logProcessing(supabase, blogId, filePath, "error", errMsg);
+    await logProcessing(supabase, resourceId, filePath, "error", errMsg);
     return { success: false, error: errMsg };
   }
 }
 
 async function handleBatch(supabase: any) {
-  // List all files in blog-docs bucket
-  const { data: files, error: listError } = await supabase.storage
-    .from("blog-docs")
-    .list("", { limit: 1000 });
+  // Get all resources with doc_file_path set
+  const { data: resources, error: resErr } = await supabase
+    .from("resources")
+    .select("id, doc_file_path")
+    .not("doc_file_path", "is", null);
 
-  if (listError) {
+  if (resErr) {
     return new Response(
-      JSON.stringify({ error: `Failed to list files: ${listError.message}` }),
+      JSON.stringify({ error: `Failed to fetch resources: ${resErr.message}` }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
   // Get already-processed files
   const { data: processed } = await supabase
-    .from("blog_processing_log")
+    .from("resource_processing_log")
     .select("file_path")
     .eq("status", "success");
 
   const processedPaths = new Set((processed || []).map((p: any) => p.file_path));
 
-  // Filter to only DOCX files not yet processed
-  const docxFiles = (files || []).filter(
-    (f: any) => f.name?.endsWith(".docx") && !processedPaths.has(f.name)
+  // Filter to only new files
+  const toProcess = (resources || []).filter(
+    (r: any) => r.doc_file_path && !processedPaths.has(r.doc_file_path)
   );
 
-  // For each new file, try to match a blog by slug (filename without extension)
   const results = [];
-  for (const file of docxFiles) {
-    const slug = file.name.replace(".docx", "");
-    const { data: blogs } = await supabase
-      .from("blogs")
-      .select("id")
-      .eq("slug", slug)
-      .limit(1);
-
-    if (blogs && blogs.length > 0) {
-      const result = await processFile(supabase, blogs[0].id, file.name);
-      results.push({ file: file.name, blog_id: blogs[0].id, ...result });
-    } else {
-      results.push({ file: file.name, success: false, error: `No blog found with slug: ${slug}` });
-    }
+  for (const resource of toProcess) {
+    const result = await processFile(supabase, resource.id, resource.doc_file_path);
+    results.push({ resource_id: resource.id, file_path: resource.doc_file_path, ...result });
   }
 
   return new Response(
     JSON.stringify({
       success: true,
-      total_files: files?.length || 0,
+      total_found: resources?.length || 0,
       already_processed: processedPaths.size,
       newly_processed: results.length,
       results,
@@ -163,14 +148,14 @@ async function handleBatch(supabase: any) {
 
 async function logProcessing(
   supabase: any,
-  blogId: string,
+  resourceId: string,
   filePath: string,
   status: string,
   errorMessage: string | null
 ) {
-  await supabase.from("blog_processing_log").upsert(
+  await supabase.from("resource_processing_log").upsert(
     {
-      blog_id: blogId,
+      resource_id: resourceId,
       file_path: filePath,
       status,
       error_message: errorMessage,

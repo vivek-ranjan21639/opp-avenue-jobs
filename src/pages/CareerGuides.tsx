@@ -38,7 +38,7 @@ const CareerGuides = () => {
                   </CardHeader>
                   <CardContent>
                     {guide.content_text && (
-                      <p className="text-muted-foreground mb-4">{guide.content_text}</p>
+                      <div className="prose prose-sm max-w-none text-muted-foreground mb-4" dangerouslySetInnerHTML={{ __html: guide.content_text }} />
                     )}
                     {guide.external_url && (
                       <a 

@@ -38,7 +38,7 @@ const InterviewTips = () => {
                   </CardHeader>
                   <CardContent>
                     {tip.content_text && (
-                      <p className="text-muted-foreground mb-4">{tip.content_text}</p>
+                      <div className="prose prose-sm max-w-none text-muted-foreground mb-4" dangerouslySetInnerHTML={{ __html: tip.content_text }} />
                     )}
                     {tip.video_url && (
                       <div className="mb-4">
