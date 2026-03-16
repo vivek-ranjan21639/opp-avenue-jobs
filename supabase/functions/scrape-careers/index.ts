@@ -6,20 +6,50 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function extractLinks(html: string, baseUrl: string): Array<{ url: string; title: string }> {
+  const linkRegex = /<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const results: Array<{ url: string; title: string }> = [];
+  let match;
+
+  while ((match = linkRegex.exec(html)) !== null) {
+    const href = match[1];
+    const anchorHtml = match[2];
+
+    // Strip HTML tags from anchor text
+    const title = anchorHtml.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+    // Resolve relative URLs
+    try {
+      const absoluteUrl = new URL(href, baseUrl).href;
+      if (absoluteUrl.startsWith("http")) {
+        results.push({ url: absoluteUrl, title: title || "Untitled Position" });
+      }
+    } catch {
+      // Skip malformed URLs
+    }
+  }
+
+  return results;
+}
+
+function isJobLink(url: string): boolean {
+  const lower = url.toLowerCase();
+  return (
+    lower.includes("/job") ||
+    lower.includes("/career") ||
+    lower.includes("/position") ||
+    lower.includes("/opening") ||
+    lower.includes("/apply") ||
+    lower.includes("/vacancy")
+  );
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
-    if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: "FIRECRAWL_API_KEY not configured. Please connect Firecrawl." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
@@ -41,72 +71,60 @@ Deno.serve(async (req) => {
 
     for (const company of companies || []) {
       try {
-        // Scrape career page with Firecrawl
-        const scrapeResponse = await fetch("https://api.firecrawl.dev/v1/scrape", {
-          method: "POST",
+        // Fetch career page HTML directly
+        const response = await fetch(company.career_page_url, {
           headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           },
-          body: JSON.stringify({
-            url: company.career_page_url,
-            formats: ["links", "markdown"],
-            onlyMainContent: true,
-          }),
         });
 
-        const scrapeData = await scrapeResponse.json();
-
-        if (!scrapeResponse.ok) {
+        if (!response.ok) {
           results.push({
             company: company.name,
             success: false,
-            error: scrapeData.error || `Status ${scrapeResponse.status}`,
+            error: `HTTP ${response.status}`,
           });
           continue;
         }
 
-        // Extract job links from the page
-        const links = scrapeData.data?.links || scrapeData.links || [];
-        const markdown = scrapeData.data?.markdown || scrapeData.markdown || "";
+        const html = await response.text();
 
-        // Filter links that look like job postings (heuristic)
-        const jobLinks = links.filter((link: string) => {
-          const lower = link.toLowerCase();
-          return (
-            lower.includes("/job") ||
-            lower.includes("/career") ||
-            lower.includes("/position") ||
-            lower.includes("/opening") ||
-            lower.includes("/apply") ||
-            lower.includes("/vacancy")
-          );
-        });
+        // Extract all links with their anchor text
+        const allLinks = extractLinks(html, company.career_page_url);
+
+        // Filter to job-related links
+        const jobLinks = allLinks.filter((link) => isJobLink(link.url));
 
         let newCount = 0;
 
-        for (const jobUrl of jobLinks) {
+        for (const job of jobLinks) {
           // Check if already scraped
           const { data: existing } = await supabase
             .from("scraped_jobs")
             .select("id")
             .eq("company_id", company.id)
-            .eq("source_url", jobUrl)
+            .eq("source_url", job.url)
             .limit(1);
 
           if (existing && existing.length > 0) continue;
 
-          // Extract title from URL or use generic
-          const urlParts = jobUrl.split("/");
-          const titleFromUrl = urlParts[urlParts.length - 1]
-            ?.replace(/[-_]/g, " ")
-            .replace(/\.\w+$/, "")
-            .trim() || "Untitled Position";
+          // Use anchor text as title, fallback to URL-derived title
+          const title =
+            job.title ||
+            job.url
+              .split("/")
+              .pop()
+              ?.replace(/[-_]/g, " ")
+              .replace(/\.\w+$/, "")
+              .trim() ||
+            "Untitled Position";
 
           await supabase.from("scraped_jobs").insert({
             company_id: company.id,
-            source_url: jobUrl,
-            title: titleFromUrl,
+            source_url: job.url,
+            title,
             status: "pending",
             raw_content: null,
           });
@@ -117,7 +135,7 @@ Deno.serve(async (req) => {
         results.push({
           company: company.name,
           success: true,
-          total_links: links.length,
+          total_links: allLinks.length,
           job_links: jobLinks.length,
           new_jobs: newCount,
         });
