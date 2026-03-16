@@ -1,32 +1,53 @@
 
+# Comprehensive Automation Plan
 
-## Plan: Replace Firecrawl with Free Native Fetch Scraper
+## Status: ✅ Implementation Complete
 
-The current `scrape-careers` function depends on Firecrawl (paid API). We'll replace it with a free approach using native `fetch` to download the HTML and a regex-based link extractor — no external dependencies or API keys needed.
+All migrations, edge functions, frontend updates, and documentation have been created.
 
-### What changes
+---
 
-**File: `supabase/functions/scrape-careers/index.ts`**
+## What Was Built
 
-Replace the Firecrawl API call with:
-1. Direct `fetch` of the company's `career_page_url` with a browser-like User-Agent header
-2. Parse the raw HTML to extract all `<a href="...">` links and their anchor text using regex
-3. Resolve relative URLs to absolute using the page's base URL
-4. Filter links using the existing job-URL heuristics (same logic already in place)
-5. Also extract a better title from the anchor text instead of just URL slugs
-6. Remove the `FIRECRAWL_API_KEY` check entirely — no API key needed
+### A. Resource Storage & DOCX-to-HTML Conversion ✅
+- **Storage buckets**: `resource-docs` (private), `resource-files` (public)
+- **Table**: `resource_processing_log` — tracks converted DOCX files
+- **Column**: `doc_file_path` added to `resources` table
+- **Edge function**: `convert-resource-doc` — single + batch mode
+- **Frontend**: All 4 resource pages render `content_text` as HTML via `dangerouslySetInnerHTML`
 
-### Technical details
+### B. Incremental Blog DOCX Conversion ✅
+- **Table**: `blog_processing_log` — tracks converted blog DOCX files
+- **Edge function**: `convert-docx` updated with batch mode
 
-- Use `fetch(url, { headers: { "User-Agent": "Mozilla/5.0 ..." } })` to get HTML as text
-- Extract links with regex: `/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi`
-- Strip HTML tags from anchor text to get clean title
-- Resolve relative URLs with `new URL(href, baseUrl)`
-- Everything else (dedup check against `scraped_jobs`, insert new entries) stays the same
-- No external service, no API key, completely free
+### C. Automated Career Page Scraping ✅
+- **Column**: `career_page_url` added to `companies` table
+- **Table**: `scraped_jobs` — stores discovered listings
+- **Edge function**: `scrape-careers` — uses Firecrawl API
+- ⚠️ **Prerequisite**: Firecrawl connector must be linked before use
 
-### Limitations
+### D. JD Parsing with Staging Review ✅
+- **Table**: `staging_jobs` — parsed JD data awaiting admin review
+- **Table**: `jd_processing_log` — tracks parsed JD files
+- **Edge function**: `parse-jd` — parses DOCX from `JDs/pending/` → `staging_jobs`
+- **Edge function**: `approve-staging-job` — intelligent upsert to all live tables
 
-- Won't work on heavily JS-rendered career pages (SPA sites like Greenhouse iframes). For those, the raw HTML won't contain job links. This is a known trade-off vs Firecrawl.
-- Most corporate career pages serve server-rendered HTML with job links, so this will work for the majority of cases.
+### E. Expired JD Cleanup ✅
+- **Edge function**: `cleanup-expired-jds` — deletes files for expired jobs
 
+### F. Database Schema Organization ✅
+- All tables have `[GROUP]` prefix comments (JOBS, BLOGS, RESOURCES, SITE)
+- `DATABASE_SCHEMA.md` created with full table diagram
+
+---
+
+## Remaining Setup (Manual)
+
+1. **Connect Firecrawl** for `scrape-careers` to work
+2. **Set up pg_cron** schedules for daily automation:
+   - `scrape-careers` — daily
+   - `cleanup-expired-jds` — daily
+   - `convert-docx` batch — as needed
+   - `convert-resource-doc` batch — as needed
+3. **Populate `career_page_url`** on companies for scraping
+4. **Upload JD DOCX files** to `JDs/pending/` folder using the structured template
