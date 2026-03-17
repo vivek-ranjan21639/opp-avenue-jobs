@@ -58,7 +58,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel>Jobs</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
