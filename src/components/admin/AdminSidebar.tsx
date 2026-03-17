@@ -76,7 +76,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel>Blogs</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
