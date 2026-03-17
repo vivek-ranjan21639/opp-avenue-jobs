@@ -23,6 +23,15 @@ import Disclaimer from "./pages/Disclaimer";
 import CookiePolicy from "./pages/CookiePolicy";
 import Sitemap from "./pages/Sitemap";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminStagingJobs from "./pages/admin/AdminStagingJobs";
+import AdminScrapedJobs from "./pages/admin/AdminScrapedJobs";
+import AdminUploadJD from "./pages/admin/AdminUploadJD";
+import AdminLiveJobs from "./pages/admin/AdminLiveJobs";
+import AdminBlogs from "./pages/admin/AdminBlogs";
+import AdminResources from "./pages/admin/AdminResources";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +60,19 @@ const App = () => (
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/sitemap" element={<Sitemap />} />
+
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="jobs/staging" element={<AdminStagingJobs />} />
+            <Route path="jobs/scraped" element={<AdminScrapedJobs />} />
+            <Route path="jobs/upload" element={<AdminUploadJD />} />
+            <Route path="jobs/live" element={<AdminLiveJobs />} />
+            <Route path="blogs" element={<AdminBlogs />} />
+            <Route path="resources" element={<AdminResources />} />
+          </Route>
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
