@@ -36,7 +36,7 @@ export default function AdminScrapedJobs() {
     }
   };
 
-  const updateStatus = async (id: string, status: string) => {
+  const updateStatus = async (id: string, status: "approved" | "pending" | "rejected") => {
     await supabase.from("scraped_jobs").update({ status }).eq("id", id);
     toast({ title: `Job ${status}` });
     load();
