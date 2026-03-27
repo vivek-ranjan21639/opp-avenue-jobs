@@ -9,16 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Edit, FileText, Loader2, RefreshCw, Upload } from "lucide-react";
+import { Plus, Edit, Loader2 } from "lucide-react";
+import BlogEditor from "@/components/admin/BlogEditor";
 
 export default function AdminBlogs() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [converting, setConverting] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [editBlog, setEditBlog] = useState<any | null>(null);
-  const [newBlog, setNewBlog] = useState({ title: "", slug: "", summary: "", status: "draft" });
-  const [docxFile, setDocxFile] = useState<File | null>(null);
+  const [newBlog, setNewBlog] = useState({ title: "", slug: "", summary: "", status: "draft", content: "" });
+  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
   const load = async () => {
@@ -34,24 +34,28 @@ export default function AdminBlogs() {
   useEffect(() => { load(); }, []);
 
   const createBlog = async () => {
+    setSaving(true);
     const { error } = await supabase.from("blogs").insert({
       title: newBlog.title,
       slug: newBlog.slug,
       summary: newBlog.summary,
       status: newBlog.status as any,
+      content: newBlog.content || null,
     });
+    setSaving(false);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Blog created" });
       setShowCreate(false);
-      setNewBlog({ title: "", slug: "", summary: "", status: "draft" });
+      setNewBlog({ title: "", slug: "", summary: "", status: "draft", content: "" });
       load();
     }
   };
 
   const updateBlog = async () => {
     if (!editBlog) return;
+    setSaving(true);
     const { error } = await supabase
       .from("blogs")
       .update({
@@ -62,8 +66,10 @@ export default function AdminBlogs() {
         featured: editBlog.featured,
         top_blog: editBlog.top_blog,
         thumbnail_url: editBlog.thumbnail_url,
+        content: editBlog.content,
       })
       .eq("id", editBlog.id);
+    setSaving(false);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
@@ -73,69 +79,27 @@ export default function AdminBlogs() {
     }
   };
 
-  const uploadDocx = async (blogId: string, slug: string) => {
-    if (!docxFile) return;
-    const fileName = `${slug}.docx`;
-    const { error: uploadErr } = await supabase.storage
-      .from("blog-docs")
-      .upload(fileName, docxFile, { upsert: true });
-    if (uploadErr) {
-      toast({ title: "Upload failed", description: uploadErr.message, variant: "destructive" });
-      return;
-    }
-    // Now convert
-    setConverting(true);
-    const { data, error } = await supabase.functions.invoke("convert-docx", {
-      body: { blog_id: blogId, file_path: fileName },
-    });
-    setConverting(false);
-    if (error) {
-      toast({ title: "Conversion failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Content converted", description: `${data?.html_length || 0} chars of HTML generated` });
-      setDocxFile(null);
-      load();
-    }
-  };
-
-  const batchConvert = async () => {
-    setConverting(true);
-    const { data, error } = await supabase.functions.invoke("convert-docx", {
-      body: { mode: "batch" },
-    });
-    setConverting(false);
-    if (error) {
-      toast({ title: "Batch conversion failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Batch conversion done", description: `${data?.newly_processed || 0} blogs converted` });
-      load();
-    }
-  };
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Blogs</h1>
-        <div className="flex gap-2">
-          <Button onClick={batchConvert} variant="outline" disabled={converting}>
-            {converting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <RefreshCw className="h-4 w-4 mr-1" />}
-            Batch Convert
-          </Button>
-          <Dialog open={showCreate} onOpenChange={setShowCreate}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1" /> New Blog</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>Create Blog</DialogTitle></DialogHeader>
-              <div className="space-y-3">
-                <Input placeholder="Title" value={newBlog.title} onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })} />
-                <Input placeholder="slug-url" value={newBlog.slug} onChange={(e) => setNewBlog({ ...newBlog, slug: e.target.value })} />
-                <Textarea placeholder="Summary" value={newBlog.summary} onChange={(e) => setNewBlog({ ...newBlog, summary: e.target.value })} />
-                <Button onClick={createBlog} className="w-full">Create</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Dialog open={showCreate} onOpenChange={setShowCreate}>
+          <DialogTrigger asChild>
+            <Button><Plus className="h-4 w-4 mr-1" /> New Blog</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Create Blog</DialogTitle></DialogHeader>
+            <div className="space-y-3">
+              <Input placeholder="Title" value={newBlog.title} onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })} />
+              <Input placeholder="slug-url" value={newBlog.slug} onChange={(e) => setNewBlog({ ...newBlog, slug: e.target.value })} />
+              <Textarea placeholder="Summary" value={newBlog.summary} onChange={(e) => setNewBlog({ ...newBlog, summary: e.target.value })} />
+              <BlogEditor content={newBlog.content} onChange={(html) => setNewBlog({ ...newBlog, content: html })} />
+              <Button onClick={createBlog} className="w-full" disabled={saving}>
+                {saving && <Loader2 className="h-4 w-4 animate-spin mr-1" />} Create
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {loading ? (
@@ -159,11 +123,11 @@ export default function AdminBlogs() {
                 <div className="flex items-center gap-2 ml-4">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => { setEditBlog({ ...blog }); setDocxFile(null); }}>
+                      <Button variant="outline" size="sm" onClick={() => setEditBlog({ ...blog })}>
                         <Edit className="h-4 w-4 mr-1" /> Edit
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader><DialogTitle>Edit Blog</DialogTitle></DialogHeader>
                       {editBlog && editBlog.id === blog.id && (
                         <div className="space-y-3">
@@ -185,22 +149,15 @@ export default function AdminBlogs() {
                             </label>
                           </div>
 
-                          <div className="border rounded-lg p-4 space-y-3">
-                            <p className="text-sm font-medium">Upload DOCX Content</p>
-                            <input type="file" accept=".docx" onChange={(e) => setDocxFile(e.target.files?.[0] || null)} />
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              disabled={!docxFile || converting}
-                              onClick={() => uploadDocx(editBlog.id, editBlog.slug)}
-                            >
-                              {converting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Upload className="h-4 w-4 mr-1" />}
-                              Upload & Convert
-                            </Button>
-                          </div>
+                          <BlogEditor
+                            content={editBlog.content || ""}
+                            onChange={(html) => setEditBlog({ ...editBlog, content: html })}
+                          />
 
                           <div className="flex gap-2 justify-end">
-                            <Button onClick={updateBlog}>Save Changes</Button>
+                            <Button onClick={updateBlog} disabled={saving}>
+                              {saving && <Loader2 className="h-4 w-4 animate-spin mr-1" />} Save Changes
+                            </Button>
                           </div>
                         </div>
                       )}
