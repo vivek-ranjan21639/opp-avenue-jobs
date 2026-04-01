@@ -225,7 +225,7 @@ export default function AdminBlogs() {
       title: editForm.title,
       slug: editForm.slug,
       summary: editForm.summary,
-      status: editForm.status,
+      status: editForm.status as any,
       featured: editForm.featured,
       top_blog: editForm.top_blog,
       thumbnail_url: editForm.thumbnail_url || null,
