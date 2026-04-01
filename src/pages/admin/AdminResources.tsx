@@ -9,23 +9,22 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Edit, Loader2, RefreshCw, Upload, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
+import { Plus, Edit, Loader2, ArrowUp, ArrowDown, Trash2, Upload } from "lucide-react";
 import ResourceEditor from "@/components/admin/ResourceEditor";
 
 export default function AdminResources() {
   const [resources, setResources] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [converting, setConverting] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [editRes, setEditRes] = useState<any | null>(null);
-  const [docxFile, setDocxFile] = useState<File | null>(null);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryParent, setNewCategoryParent] = useState("");
   const [creatingCategory, setCreatingCategory] = useState(false);
   const [downloadableFile, setDownloadableFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [newRes, setNewRes] = useState({
-    title: "", description: "", type: "resource" as const, parent_id: "",
-    content_type: "none" as string, external_url: "", highlight_type: "general" as string,
+    title: "", description: "", parent_id: "",
+    content_type: "text" as string, external_url: "", highlight_type: "general" as string,
     content_text: "",
   });
   const { toast } = useToast();
@@ -44,6 +43,13 @@ export default function AdminResources() {
 
   const categories = resources.filter((r) => r.type === "category");
 
+  // Build category label with parent hierarchy
+  const getCategoryLabel = (cat: any): string => {
+    if (!cat.parent_id) return cat.title;
+    const parent = categories.find(c => c.id === cat.parent_id);
+    return parent ? `${getCategoryLabel(parent)} › ${cat.title}` : cat.title;
+  };
+
   const createCategory = async () => {
     if (!newCategoryName.trim()) return;
     setCreatingCategory(true);
@@ -51,6 +57,7 @@ export default function AdminResources() {
       title: newCategoryName.trim(),
       type: "category" as const,
       content_type: "none" as const,
+      parent_id: newCategoryParent || null,
     });
     setCreatingCategory(false);
     if (error) {
@@ -58,15 +65,20 @@ export default function AdminResources() {
     } else {
       toast({ title: "Category created" });
       setNewCategoryName("");
+      setNewCategoryParent("");
       load();
     }
   };
 
   const createResource = async () => {
+    // Auto-determine type: if parent_id is set → "resource", if content_type is "none" and no parent → could be category
+    // But since we have explicit category creation, all resources created here are "resource" or "content"
+    const resolvedType = newRes.content_type === "none" ? "resource" : "content";
+
     const { error } = await supabase.from("resources").insert({
       title: newRes.title,
       description: newRes.description || null,
-      type: newRes.type as any,
+      type: resolvedType as any,
       parent_id: newRes.parent_id || null,
       content_type: newRes.content_type as any,
       external_url: newRes.external_url || null,
@@ -78,7 +90,7 @@ export default function AdminResources() {
     } else {
       toast({ title: "Resource created" });
       setShowCreate(false);
-      setNewRes({ title: "", description: "", type: "resource", parent_id: "", content_type: "none", external_url: "", highlight_type: "general", content_text: "" });
+      setNewRes({ title: "", description: "", parent_id: "", content_type: "text", external_url: "", highlight_type: "general", content_text: "" });
       load();
     }
   };
@@ -122,7 +134,7 @@ export default function AdminResources() {
     }
   };
 
-  const uploadDownloadable = async (resourceId: string) => {
+  const uploadFile = async (resourceId: string, purpose: "downloadable" | "attachment") => {
     if (!downloadableFile) return;
     setUploadingFile(true);
     const fileName = `${resourceId}/${downloadableFile.name}`;
@@ -143,43 +155,48 @@ export default function AdminResources() {
     load();
   };
 
-  const uploadAndConvert = async (resourceId: string) => {
-    if (!docxFile) return;
-    const fileName = docxFile.name;
-    const { error: uploadErr } = await supabase.storage
-      .from("resource-docs")
-      .upload(fileName, docxFile, { upsert: true });
-    if (uploadErr) {
-      toast({ title: "Upload failed", description: uploadErr.message, variant: "destructive" });
+  // Upload file during resource creation (before resource exists)
+  const [createAttachmentFile, setCreateAttachmentFile] = useState<File | null>(null);
+  const [uploadingCreateFile, setUploadingCreateFile] = useState(false);
+
+  const createResourceWithFile = async () => {
+    const resolvedType = newRes.content_type === "none" ? "resource" : "content";
+
+    const { data: inserted, error } = await supabase.from("resources").insert({
+      title: newRes.title,
+      description: newRes.description || null,
+      type: resolvedType as any,
+      parent_id: newRes.parent_id || null,
+      content_type: newRes.content_type as any,
+      external_url: newRes.external_url || null,
+      highlight_type: newRes.highlight_type as any,
+      content_text: newRes.content_type === "text" ? newRes.content_text || null : null,
+    }).select().single();
+
+    if (error || !inserted) {
+      toast({ title: "Error", description: error?.message || "Failed to create", variant: "destructive" });
       return;
     }
-    await supabase.from("resources").update({ doc_file_path: fileName }).eq("id", resourceId);
-    setConverting(true);
-    const { data, error } = await supabase.functions.invoke("convert-resource-doc", {
-      body: { resource_id: resourceId, file_path: fileName },
-    });
-    setConverting(false);
-    if (error) {
-      toast({ title: "Conversion failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Content converted", description: `${data?.html_length || 0} chars` });
-      setDocxFile(null);
-      load();
-    }
-  };
 
-  const batchConvert = async () => {
-    setConverting(true);
-    const { data, error } = await supabase.functions.invoke("convert-resource-doc", {
-      body: { mode: "batch" },
-    });
-    setConverting(false);
-    if (error) {
-      toast({ title: "Batch failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Batch done", description: `${data?.newly_processed || 0} resources converted` });
-      load();
+    // Upload file if present
+    if (createAttachmentFile) {
+      setUploadingCreateFile(true);
+      const fileName = `${inserted.id}/${createAttachmentFile.name}`;
+      const { error: uploadErr } = await supabase.storage
+        .from("resource-files")
+        .upload(fileName, createAttachmentFile, { upsert: true });
+      if (!uploadErr) {
+        const { data: urlData } = supabase.storage.from("resource-files").getPublicUrl(fileName);
+        await supabase.from("resources").update({ file_url: urlData.publicUrl }).eq("id", inserted.id);
+      }
+      setUploadingCreateFile(false);
     }
+
+    toast({ title: "Resource created" });
+    setShowCreate(false);
+    setCreateAttachmentFile(null);
+    setNewRes({ title: "", description: "", parent_id: "", content_type: "text", external_url: "", highlight_type: "general", content_text: "" });
+    load();
   };
 
   const moveOrder = async (res: any, direction: "up" | "down") => {
@@ -192,80 +209,79 @@ export default function AdminResources() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Resources</h1>
-        <div className="flex gap-2">
-          <Button onClick={batchConvert} variant="outline" disabled={converting} size="sm">
-            {converting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <RefreshCw className="h-4 w-4 mr-1" />}
-            Batch Convert
-          </Button>
-          <Dialog open={showCreate} onOpenChange={setShowCreate}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1" /> New Resource</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-              <DialogHeader><DialogTitle>Create Resource</DialogTitle></DialogHeader>
-              <div className="space-y-3">
-                <Input placeholder="Title" value={newRes.title} onChange={(e) => setNewRes({ ...newRes, title: e.target.value })} />
-                <Textarea placeholder="Description" value={newRes.description} onChange={(e) => setNewRes({ ...newRes, description: e.target.value })} />
+        <Dialog open={showCreate} onOpenChange={setShowCreate}>
+          <DialogTrigger asChild>
+            <Button><Plus className="h-4 w-4 mr-1" /> New Resource</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Create Resource</DialogTitle></DialogHeader>
+            <div className="space-y-3">
+              <Input placeholder="Title" value={newRes.title} onChange={(e) => setNewRes({ ...newRes, title: e.target.value })} />
+              <Textarea placeholder="Description" value={newRes.description} onChange={(e) => setNewRes({ ...newRes, description: e.target.value })} />
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Type</label>
-                    <select className="border rounded px-3 py-2 text-sm w-full" value={newRes.type} onChange={(e) => setNewRes({ ...newRes, type: e.target.value as any })}>
-                      <option value="category">Category</option>
-                      <option value="resource">Resource</option>
-                      <option value="content">Content</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Content Type</label>
-                    <select className="border rounded px-3 py-2 text-sm w-full" value={newRes.content_type} onChange={(e) => setNewRes({ ...newRes, content_type: e.target.value as any })}>
-                      <option value="none">None</option>
-                      <option value="text">Text (Editor)</option>
-                      <option value="file">File</option>
-                      <option value="external">External</option>
-                      <option value="video">Video</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Highlight</label>
-                    <select className="border rounded px-3 py-2 text-sm w-full" value={newRes.highlight_type} onChange={(e) => setNewRes({ ...newRes, highlight_type: e.target.value })}>
-                      <option value="general">General</option>
-                      <option value="featured">You Should Go Through</option>
-                      <option value="new">What's New</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Category selection + inline create */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Parent Category</label>
-                  <select className="border rounded px-3 py-2 text-sm w-full mb-2" value={newRes.parent_id} onChange={(e) => setNewRes({ ...newRes, parent_id: e.target.value })}>
-                    <option value="">No Parent</option>
+                  <label className="text-xs text-muted-foreground mb-1 block">Content Type</label>
+                  <select className="border rounded px-3 py-2 text-sm w-full" value={newRes.content_type} onChange={(e) => setNewRes({ ...newRes, content_type: e.target.value as any })}>
+                    <option value="text">Text (Editor)</option>
+                    <option value="file">File</option>
+                    <option value="external">External Link</option>
+                    <option value="video">Video</option>
+                    <option value="none">None</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Highlight</label>
+                  <select className="border rounded px-3 py-2 text-sm w-full" value={newRes.highlight_type} onChange={(e) => setNewRes({ ...newRes, highlight_type: e.target.value })}>
+                    <option value="general">General</option>
+                    <option value="featured">You Should Go Through</option>
+                    <option value="new">What's New</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Category selection + inline create */}
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Parent Category</label>
+                <select className="border rounded px-3 py-2 text-sm w-full mb-2" value={newRes.parent_id} onChange={(e) => setNewRes({ ...newRes, parent_id: e.target.value })}>
+                  <option value="">No Parent</option>
+                  {categories.map((c) => <option key={c.id} value={c.id}>{getCategoryLabel(c)}</option>)}
+                </select>
+                <div className="flex gap-2">
+                  <select className="border rounded px-3 py-2 text-sm w-28" value={newCategoryParent} onChange={(e) => setNewCategoryParent(e.target.value)}>
+                    <option value="">Top-level</option>
                     {categories.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
                   </select>
-                  <div className="flex gap-2">
-                    <Input placeholder="New category name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} className="text-sm" />
-                    <Button size="sm" variant="outline" onClick={createCategory} disabled={creatingCategory || !newCategoryName.trim()}>
-                      {creatingCategory ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
-                    </Button>
-                  </div>
+                  <Input placeholder="New category name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} className="text-sm flex-1" />
+                  <Button size="sm" variant="outline" onClick={createCategory} disabled={creatingCategory || !newCategoryName.trim()}>
+                    {creatingCategory ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
+                  </Button>
                 </div>
-
-                <Input placeholder="External URL" value={newRes.external_url} onChange={(e) => setNewRes({ ...newRes, external_url: e.target.value })} />
-
-                {/* TipTap editor for text content */}
-                {newRes.content_type === "text" && (
-                  <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Content</label>
-                    <ResourceEditor content={newRes.content_text} onChange={(html) => setNewRes({ ...newRes, content_text: html })} />
-                  </div>
-                )}
-
-                <Button onClick={createResource} className="w-full" disabled={!newRes.title.trim()}>Create</Button>
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+
+              <Input placeholder="External URL" value={newRes.external_url} onChange={(e) => setNewRes({ ...newRes, external_url: e.target.value })} />
+
+              {/* File attachment from local computer */}
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Attach File (from computer)</label>
+                <input type="file" onChange={(e) => setCreateAttachmentFile(e.target.files?.[0] || null)} className="text-sm" />
+                {createAttachmentFile && <p className="text-xs text-muted-foreground mt-1">Selected: {createAttachmentFile.name}</p>}
+              </div>
+
+              {/* TipTap editor for text content */}
+              {newRes.content_type === "text" && (
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Content</label>
+                  <ResourceEditor content={newRes.content_text} onChange={(html) => setNewRes({ ...newRes, content_text: html })} />
+                </div>
+              )}
+
+              <Button onClick={createResourceWithFile} className="w-full" disabled={!newRes.title.trim() || uploadingCreateFile}>
+                {uploadingCreateFile && <Loader2 className="h-4 w-4 animate-spin mr-1" />} Create
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {loading ? (
@@ -285,6 +301,7 @@ export default function AdminResources() {
                   </div>
                   <p className="text-sm text-muted-foreground truncate">
                     {res.description || "No description"} · Order: {res.display_order ?? 0}
+                    {res.file_url && " · 📎 File attached"}
                   </p>
                 </div>
                 <div className="flex items-center gap-1 ml-2">
@@ -292,7 +309,7 @@ export default function AdminResources() {
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveOrder(res, "down")}><ArrowDown className="h-3 w-3" /></Button>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => { setEditRes({ ...res }); setDocxFile(null); setDownloadableFile(null); }}>
+                      <Button variant="outline" size="sm" onClick={() => { setEditRes({ ...res }); setDownloadableFile(null); }}>
                         <Edit className="h-4 w-4 mr-1" /> Edit
                       </Button>
                     </DialogTrigger>
@@ -336,7 +353,7 @@ export default function AdminResources() {
                               <label className="text-xs text-muted-foreground mb-1 block">Parent Category</label>
                               <select className="border rounded px-3 py-2 text-sm w-full" value={editRes.parent_id || ""} onChange={(e) => setEditRes({ ...editRes, parent_id: e.target.value })}>
                                 <option value="">No Parent</option>
-                                {categories.filter(c => c.id !== editRes.id).map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+                                {categories.filter(c => c.id !== editRes.id).map((c) => <option key={c.id} value={c.id}>{getCategoryLabel(c)}</option>)}
                               </select>
                             </div>
                             <div>
@@ -357,26 +374,16 @@ export default function AdminResources() {
                             </div>
                           )}
 
-                          {/* Downloadable file upload */}
+                          {/* File upload from local computer */}
                           <div className="border rounded-lg p-4 space-y-3">
-                            <p className="text-sm font-medium">Downloadable File</p>
+                            <p className="text-sm font-medium">Attached File</p>
                             {editRes.file_url && (
-                              <p className="text-xs text-muted-foreground break-all">Current: {editRes.file_url}</p>
+                              <p className="text-xs text-muted-foreground break-all">Current: <a href={editRes.file_url} target="_blank" rel="noopener noreferrer" className="underline">{editRes.file_url}</a></p>
                             )}
                             <input type="file" onChange={(e) => setDownloadableFile(e.target.files?.[0] || null)} />
-                            <Button size="sm" variant="outline" disabled={!downloadableFile || uploadingFile} onClick={() => uploadDownloadable(editRes.id)}>
+                            <Button size="sm" variant="outline" disabled={!downloadableFile || uploadingFile} onClick={() => uploadFile(editRes.id, "downloadable")}>
                               {uploadingFile ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Upload className="h-4 w-4 mr-1" />}
                               Upload File
-                            </Button>
-                          </div>
-
-                          {/* DOCX conversion (legacy) */}
-                          <div className="border rounded-lg p-4 space-y-3">
-                            <p className="text-sm font-medium">Upload DOCX Content</p>
-                            <input type="file" accept=".docx" onChange={(e) => setDocxFile(e.target.files?.[0] || null)} />
-                            <Button size="sm" variant="outline" disabled={!docxFile || converting} onClick={() => uploadAndConvert(editRes.id)}>
-                              {converting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Upload className="h-4 w-4 mr-1" />}
-                              Upload & Convert
                             </Button>
                           </div>
 
