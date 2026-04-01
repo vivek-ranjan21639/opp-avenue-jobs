@@ -35,11 +35,13 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4] },
+        bulletList: { keepMarks: true, keepAttributes: false },
+        orderedList: { keepMarks: true, keepAttributes: false },
       }),
       Underline,
       Image.configure({ inline: false, allowBase64: true }),
       Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank' } }),
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TextAlign.configure({ types: ['heading', 'paragraph', 'image'] }),
       Placeholder.configure({ placeholder: 'Start writing your blog post…' }),
       Highlight.configure({ multicolor: true }),
       Youtube.configure({ width: 640, height: 360 }),
@@ -202,7 +204,7 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
       )}
 
       {/* Editor */}
-      <EditorContent editor={editor} className="prose prose-sm sm:prose max-w-none p-4 min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[380px]" />
+      <EditorContent editor={editor} className="tiptap-editor prose prose-sm sm:prose max-w-none p-4 min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[380px]" />
     </div>
   );
 }
