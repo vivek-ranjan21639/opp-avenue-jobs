@@ -95,7 +95,7 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
+      <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30 sticky top-0 z-10">
         <ToolBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold">
           <Bold className="h-4 w-4" />
         </ToolBtn>
